@@ -1,0 +1,115 @@
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+<!--begin::Aside-->
+<div class="aside aside-left d-flex flex-column flex-row-auto" id="kt_aside">
+    <!--begin::Aside Menu-->
+    <div class="aside-menu-wrapper flex-column-fluid" id="kt_aside_menu_wrapper">
+        <!--begin::Menu Container-->
+        <div id="kt_aside_menu" class="aside-menu min-h-lg-800px" data-menu-vertical="1"
+             data-menu-scroll="1" data-menu-dropdown-timeout="500">
+            <!--begin::Menu Nav-->
+            <ul class="menu-nav">
+                <li class="menu-item" aria-haspopup="true">
+                    <a href="index.html" class="menu-link">
+                        <i class="menu-icon flaticon-home"></i>
+                        <span class="menu-text">@Localizer["Dashboard"]</span>
+                    </a>
+                </li>
+                <li class="menu-section">
+                    <h4 class="menu-text">@Localizer["Pages"]</h4>
+                    <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+                </li>
+                <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                    <a href="javascript;;" class="menu-link menu-toggle">
+                        <i class="menu-icon flaticon-web"></i>
+                        <span class="menu-text">@Localizer["Amenities"]</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="menu-submenu">
+                        <i class="menu-arrow"></i>
+                        <ul class="menu-subnav">
+                            <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                <span class="menu-link">
+                                    <a asp-action="Index" asp-controller="Amenities" asp-area="Admin" class="menu-text">@Localizer["All"]</a>
+                                </span>
+                            </li>
+                            <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                <a asp-action="Create" asp-controller="Amenities" asp-area="Admin" class="menu-link">
+                                    <span class="menu-text">@Localizer["New"]</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                    <a href="javascript;;" class="menu-link menu-toggle">
+                        <i class="menu-icon flaticon-web"></i>
+                        <span class="menu-text">@Localizer["Requirements"]</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="menu-submenu">
+                        <i class="menu-arrow"></i>
+                        <ul class="menu-subnav">
+                            <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                <span class="menu-link">
+                                    <a asp-action="Index" asp-controller="Requirements" asp-area="Admin" class="menu-text">@Localizer["All"]</a>
+                                </span>
+                            </li>
+                            <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                <a asp-action="Create" asp-controller="Requirements" asp-area="Admin" class="menu-link">
+                                    <span class="menu-text">@Localizer["New"]</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                    <a href="javascript;;" class="menu-link menu-toggle">
+                        <i class="menu-icon flaticon-web"></i>
+                        <span class="menu-text">@Localizer["RoomTypes"]</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="menu-submenu">
+                        <i class="menu-arrow"></i>
+                        <ul class="menu-subnav">
+                            <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                <span class="menu-link">
+                                    <a asp-action="Index" asp-controller="RoomTypes" asp-area="Admin" class="menu-text">@Localizer["All"]</a>
+                                </span>
+                            </li>
+                            <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                <a asp-action="Create" asp-controller="RoomTypes" asp-area="Admin" class="menu-link">
+                                    <span class="menu-text">@Localizer["New"]</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="menu-section">
+                    <h4 class="menu-text">@Localizer["Translations"]</h4>
+                    <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+                </li>
+                <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                    <a href="javascript;;" class="menu-link menu-toggle">
+                        <i class="menu-icon flaticon-web"></i>
+                        <span class="menu-text">@Localizer["Translations"]</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="menu-submenu">
+                        <i class="menu-arrow"></i>
+                        <ul class="menu-subnav">
+                            <li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
+                                <span class="menu-link">
+                                    <a asp-action="Index" asp-controller="Translations" asp-area="Admin" class="menu-text">@Localizer["All"]</a>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+            <!--end::Menu Nav-->
+        </div>
+        <!--end::Menu Container-->
+    </div>
+    <!--end::Aside Menu-->
+</div>
+<!--end::Aside-->

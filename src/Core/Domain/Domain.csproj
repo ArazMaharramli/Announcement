@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+	</PropertyGroup>
+	<ItemGroup>
+		<None Remove="Common\" />
+		<None Remove="Entities\" />
+		<None Remove="StronglyTypedId" />
+		<None Remove="Microsoft.EntityFrameworkCore.SqlServer.NetTopologySuite" />
+	</ItemGroup>
+	<ItemGroup>
+		<Folder Include="Common\" />
+		<Folder Include="Entities\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Update="Entities\EmptyClass.cs">
+	    <Generator></Generator>
+	  </Compile>
+	  <Compile Update="Common\Translation.cs">
+	    <Generator></Generator>
+	  </Compile>
+	  <Compile Update="Common\RoomStatus.cs">
+	    <Generator></Generator>
+	  </Compile>
+	  <Compile Update="Common\Gender.cs">
+	    <Generator></Generator>
+	  </Compile>
+	  <Compile Update="Entities\Room.cs">
+	    <Generator></Generator>
+	  </Compile>
+	  <Compile Update="Entities\Amenitie.cs">
+	    <Generator></Generator>
+	  </Compile>
+	  <Compile Update="Entities\AmenitieTranslation.cs">
+	    <Generator></Generator>
+	  </Compile>
+	  <Compile Update="Entities\Requirement.cs">
+	    <Generator></Generator>
+	  </Compile>
+	  <Compile Update="Entities\RequirementTranslation.cs">
+	    <Generator></Generator>
+	  </Compile>
+	  <Compile Update="Entities\CategoryTranslation.cs">
+	    <Generator></Generator>
+	  </Compile>
+	  <Compile Update="Common\Address.cs">
+	    <Generator></Generator>
+	  </Compile>
+	  <Compile Update="Common\Meta.cs">
+	    <Generator></Generator>
+	  </Compile>
+	  <Compile Update="Common\Contact.cs">
+	    <Generator></Generator>
+	  </Compile>
+	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.NetTopologySuite" Version="6.0.2" />
+	</ItemGroup>
+</Project>

@@ -1,0 +1,33 @@
+@model WebUI.Areas.Admin.ViewModels.Amenities.EditAmenitieTranslationViewModel
+
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    ViewData["Title"] = @Localizer["EditAmenitieTranslationTitle"];
+}
+
+<div class="card card-custom">
+    <div class="card-header">
+        <h3 class="card-title font-size-h1 text-dark font-weight-bolder mr-3 mb-0">
+            @Model.Name / @Model.LangCode
+        </h3>
+        
+    </div>
+    <!--begin::Form-->
+
+    <form class="form" method="post">
+        <div class="card-body">
+            <div class="form-group">
+                <label asp-for="Name"></label>
+                <input asp-for="Name" class="form-control"/>
+                <span class="form-text text-danger" asp-validation-for="Name"></span>
+            </div>
+            <input type="hidden" asp-for="Id" />
+            <inpu type="hidden" asp-for="LangCode"></inpu>
+        </div>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary mr-2">@Localizer["Submit"]</button>
+            <button type="reset" class="btn btn-secondary">@Localizer["Cancel"]</button>
+        </div>
+    </form>
+    <!--end::Form-->
+</div>

@@ -1,0 +1,40 @@
+﻿@model WebUI.Areas.Admin.ViewModels.Requirements.CreateRequirementViewModel
+
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Title"];
+}
+@section Scripts{
+    <script>
+        autosize($('#autosizeicontextarea'));
+    </script>
+}
+<div class="card card-custom">
+    <div class="card-header">
+        <h3 class="card-title font-size-h1 text-dark font-weight-bolder mr-3 mb-0">
+           @Localizer["Title"]
+        </h3>
+
+    </div>
+    <!--begin::Form-->
+    <form class="form" method="post">
+        <div class="card-body">
+            <div class="form-group">
+                <label asp-for="Name"></label>
+                <input asp-for="Name" class="form-control form-control-solid" />
+                <span class="form-text text-danger" asp-validation-for="Name"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Icon"></label>
+                <textarea asp-for="Icon" class="form-control form-control-solid" id='autosizeicontextarea' ></textarea>
+                <span class="form-text text-danger" asp-validation-for="Icon"></span>
+            </div>
+        </div>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary mr-2">@Localizer["Submit"]</button>
+            <button type="reset" class="btn btn-secondary">@Localizer["Cancel"]</button>
+        </div>
+    </form>
+
+    <!--end::Form-->
+</div>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk.Web">
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+	</PropertyGroup>
+	<ItemGroup>
+		<None Remove="Microsoft.EntityFrameworkCore.Design" />
+		<None Remove="Areas\" />
+		<None Remove="Swashbuckle.AspNetCore" />
+		<None Remove="Microsoft.AspNetCore.Authentication.JwtBearer" />
+		<None Remove="Newtonsoft.Json" />
+		<None Remove="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" />
+		<None Remove="Controllers\V1\" />
+		<None Remove="Mapping\" />
+		<None Remove="Attributes\" />
+	</ItemGroup>
+	<ItemGroup>
+		<Folder Include="Areas\" />
+		<Folder Include="Controllers\V1\" />
+		<Folder Include="Mapping\" />
+		<Folder Include="Attributes\" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\Core\Application\Application.csproj">
+			<GlobalPropertiesToRemove>
+			</GlobalPropertiesToRemove>
+		</ProjectReference>
+		<ProjectReference Include="..\..\Infrastructure\Infrastructure\Infrastructure.csproj">
+			<GlobalPropertiesToRemove>
+			</GlobalPropertiesToRemove>
+		</ProjectReference>
+		<ProjectReference Include="..\..\Infrastructure\Persistence\Persistence.csproj">
+			<GlobalPropertiesToRemove>
+			</GlobalPropertiesToRemove>
+		</ProjectReference>
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.2">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.2">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.2" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="6.0.2" />
+	</ItemGroup>
+</Project>

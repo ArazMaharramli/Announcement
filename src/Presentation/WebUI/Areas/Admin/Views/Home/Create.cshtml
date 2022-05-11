@@ -1,0 +1,23 @@
+﻿<!--begin::Card-->
+<div class="card card-custom gutter-b example example-compact">
+    <div class="card-header">
+        <h3 class="card-title">Create Brand</h3>
+
+    </div>
+    <!--begin::Form-->
+    <form class="form" method="post">
+        <div class="card-body">
+            <div class="form-group">
+                <!--label asp-for="Name"></!--label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="form-text text-muted invalid-feedback"></span-->
+            </div>
+        </div>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary mr-2">Submit</button>
+            <button type="reset" class="btn btn-secondary">Cancel</button>
+        </div>
+    </form>
+    <!--end::Form-->
+</div>
+<!--end::Card-->

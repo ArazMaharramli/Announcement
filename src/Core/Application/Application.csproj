@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+	</PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Domain\Domain.csproj" />
+		<ProjectReference Include="..\Common\Common.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Remove="Microsoft.EntityFrameworkCore" />
+		<None Remove="Common\" />
+		<None Remove="Common\Interfaces\" />
+		<None Remove="Common\Models\" />
+		<None Remove="MediatR" />
+		<None Remove="MediatR.Extensions.Microsoft.DependencyInjection" />
+		<None Remove="FluentValidation" />
+		<None Remove="FluentValidation.DependencyInjectionExtensions" />
+		<None Remove="AutoMapper" />
+		<None Remove="AutoMapper.Extensions.Microsoft.DependencyInjection" />
+		<None Remove="Microsoft.EntityFrameworkCore.Design" />
+		<None Remove="CQRS\" />
+		<None Remove="Common\Models\ConfigModels\" />
+		<None Remove="libphonenumber-csharp" />
+		<None Remove="Microsoft.EntityFrameworkCore.SqlServer.NetTopologySuite" />
+		<None Remove="CQRS\Amenities\" />
+		<None Remove="CQRS\Amenities\Commands\" />
+		<None Remove="CQRS\Amenities\Queries\" />
+		<None Remove="CQRS\Amenities\Commands\CreateAmenitie\" />
+		<None Remove="DTOS\" />
+		<None Remove="CQRS\Amenities\Commands\UpdateAmenitie\" />
+		<None Remove="CQRS\Amenities\Commands\AddAmeniteTranslation\" />
+		<None Remove="CQRS\Amenities\Commands\DeleteAmenitie\" />
+		<None Remove="CQRS\Amenities\Queries\FindByAmenitieId\" />
+		<None Remove="CQRS\Amenities\Queries\SearchAmenities\" />
+		<None Remove="CQRS\Translations\" />
+		<None Remove="CQRS\Translations\Commands\" />
+		<None Remove="CQRS\Translations\Queries\" />
+		<None Remove="CQRS\Amenities %28copy%29\" />
+		<None Remove="CQRS\Amenities\Queries\GetAll\" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.2" />
+		<PackageReference Include="MediatR" Version="10.0.1" />
+		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+		<PackageReference Include="FluentValidation" Version="10.3.6" />
+		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="10.3.6" />
+		<PackageReference Include="AutoMapper" Version="11.0.1" />
+		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.NetTopologySuite" Version="6.0.2" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="CQRS\Amenities\" />
+	  <Folder Include="CQRS\Amenities\Commands\" />
+	  <Folder Include="CQRS\Amenities\Queries\" />
+	  <Folder Include="CQRS\Amenities\Commands\CreateAmenitie\" />
+	  <Folder Include="DTOS\" />
+	  <Folder Include="CQRS\Amenities\Commands\UpdateAmenitieIcon\" />
+	  <Folder Include="CQRS\Amenities\Commands\AddOrUpdateAmeniteTranslation\" />
+	  <Folder Include="CQRS\Amenities\Commands\DeleteAmenitie\" />
+	  <Folder Include="CQRS\Amenities\Queries\FindByAmenitieId\" />
+	  <Folder Include="CQRS\Amenities\Queries\SearchAmenities\" />
+	  <Folder Include="CQRS\Translations\" />
+	  <Folder Include="CQRS\Translations\Commands\" />
+	  <Folder Include="CQRS\Translations\Queries\" />
+	  <Folder Include="CQRS\RoomTypes\" />
+	  <Folder Include="CQRS\Amenities\Queries\GetAll\" />
+	</ItemGroup>
+</Project>

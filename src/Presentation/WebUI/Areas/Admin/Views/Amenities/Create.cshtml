@@ -1,0 +1,105 @@
+﻿@model WebUI.Areas.Admin.ViewModels.Amenities.CreateAmenitieViewModel
+
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Title"];
+}
+@section Scripts{
+
+    <script>var id = '#kt_dropzone_5';
+
+        // set the preview element template
+        var previewNode = $(id + " .dropzone-item");
+        previewNode.id = "";
+        var previewTemplate = previewNode.parent('.dropzone-items').html();
+        previewNode.remove();
+
+        var myDropzone5 = new Dropzone(id, { // Make the whole body a dropzone
+            url: HOST_URL + "/files/upload", // Set the url for your upload script location
+            parallelUploads: 1,
+            maxFilesize: 1, // Max filesize in MB
+            previewTemplate: previewTemplate,
+            previewsContainer: id + " .dropzone-items", // Define the container to display the previews
+            clickable: id + " .dropzone-select" // Define the element that should be used as click trigger to select files.
+        });
+
+        myDropzone5.on("addedfile", function (file) {
+            // Hookup the start button
+            $(document).find(id + ' .dropzone-item').css('display', '');
+        });
+
+        // Update the total progress bar
+        myDropzone5.on("totaluploadprogress", function (progress) {
+            $(id + " .progress-bar").css('width', progress + "%");
+        });
+
+        myDropzone5.on("sending", function (file) {
+            // Show the total progress bar when upload starts
+            $(id + " .progress-bar").css('opacity', "1");
+        });
+
+        // Hide the total progress bar when nothing's uploading anymore
+        myDropzone5.on("complete", function (progress) {
+            $("#Icon").val($.parseJSON(progress.xhr.response).url)
+            var thisProgressBar = id + " .dz-complete";
+            setTimeout(function () {
+                $(thisProgressBar + " .progress-bar, " + thisProgressBar + " .progress").css('opacity', '0');
+            }, 300)
+        });</script>
+}
+<div class="card card-custom">
+    <div class="card-header">
+        <h3 class="card-title font-size-h1 text-dark font-weight-bolder mr-3 mb-0">
+            @Localizer["Title"]
+        </h3>
+
+    </div>
+    <!--begin::Form-->
+    <form class="form" method="post">
+        <div class="card-body">
+            <div class="form-group">
+                <label asp-for="Name"></label>
+                <input asp-for="Name" class="form-control form-control-solid" />
+                <span class="form-text text-danger" asp-validation-for="Name"></span>
+            </div>
+            <div class="form-group">
+                <div class="dropzone dropzone-multi" id="kt_dropzone_5" style="word-break:break-word;">
+                    <div class="dropzone-panel mb-lg-0 mb-2">
+                        <a class="dropzone-select btn btn-light-primary font-weight-bold btn-sm">@Localizer["Attachfiles"]</a>
+                    </div>
+                    <div class="dropzone-items">
+                        <div class="dropzone-item" style="display:none;">
+                            <div class="dropzone-file">
+                                <div class="dropzone-filename" title="">
+                                    <span data-dz-name=""></span>
+                                    <strong>
+                                        (<span data-dz-size=""></span>)
+                                    </strong>
+                                </div>
+                                <div class="dropzone-error" data-dz-errormessage=""></div>
+                            </div>
+                            <div class="dropzone-progress">
+                                <div class="progress">
+                                    <div class="progress-bar bg-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-dz-uploadprogress=""></div>
+                                </div>
+                            </div>
+                            <div class="dropzone-toolbar">
+                                <span class="dropzone-delete" data-dz-remove="">
+                                    <i class="flaticon2-cross"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <span asp-validation-for="Icon" class="form-text text-danger"></span>
+            </div>
+            <input type="hidden" asp-for="Icon" class="form-control form-control-solid" />
+        </div>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary mr-2">@Localizer["Submit"]</button>
+            <button type="reset" class="btn btn-secondary">@Localizer["Cancel"]</button>
+        </div>
+    </form>
+
+    <!--end::Form-->
+</div>
