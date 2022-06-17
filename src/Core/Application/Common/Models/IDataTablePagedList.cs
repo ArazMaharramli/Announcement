@@ -6,6 +6,8 @@ namespace Application.Common.Models
     {
         //int PageCount { get; }
         DatatableMeta Meta { get; }
+        int RecordsTotal { get; }
+        int RecordsFiltered { get; }
         IEnumerable<T> Data { get; }
     }
 }

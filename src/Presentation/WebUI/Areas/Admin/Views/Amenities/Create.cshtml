@@ -1,51 +1,71 @@
-﻿@model WebUI.Areas.Admin.ViewModels.Amenities.CreateAmenitieViewModel
+﻿@model Application.CQRS.Amenities.Commands.CreateAmenitie.CreateAmenitieCommand
 
+@inject WebUI.Models.ConfigModels.SupportedLanguages SupportedLanguages
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
 @{
     ViewData["Title"] = Localizer["Title"];
+
+
+
+    var translations = Json.Serialize(Model.Translations).ToString();
+    translations = translations.Replace("name", "Name");
+    translations = translations.Replace("langCode", "LangCode");
 }
 @section Scripts{
+    <script src="assets/plugins/custom/formrepeater/formrepeater.bundle.js"></script>
 
-    <script>var id = '#kt_dropzone_5';
+    <script>var imageInputElement = document.querySelector("#kt_image_input_1");
+        var imageInput = new KTImageInput(imageInputElement);
 
-        // set the preview element template
-        var previewNode = $(id + " .dropzone-item");
-        previewNode.id = "";
-        var previewTemplate = previewNode.parent('.dropzone-items').html();
-        previewNode.remove();
+        imageInput.on('kt.imageinput.changed', function () {
 
-        var myDropzone5 = new Dropzone(id, { // Make the whole body a dropzone
-            url: HOST_URL + "/files/upload", // Set the url for your upload script location
-            parallelUploads: 1,
-            maxFilesize: 1, // Max filesize in MB
-            previewTemplate: previewTemplate,
-            previewsContainer: id + " .dropzone-items", // Define the container to display the previews
-            clickable: id + " .dropzone-select" // Define the element that should be used as click trigger to select files.
+            let formData = new FormData();
+
+            var files = $('#avatar').prop('files');
+
+            for (var i = 0; i != files.length; i++) {
+                formData.append("files", files[i]);
+            }
+
+            $.ajax({
+                url: "/files/upload",
+                data: formData,
+                processData: false,
+                contentType: false,
+                type: "POST",
+                success: function (res) {
+                    console.log(res);
+                    $("#Icon").val(res.url);
+
+                }
+            });
         });
 
-        myDropzone5.on("addedfile", function (file) {
-            // Hookup the start button
-            $(document).find(id + ' .dropzone-item').css('display', '');
+        imageInput.on("kt.imageinput.cancel", function () {
+            $("#Icon").val("");
         });
 
-        // Update the total progress bar
-        myDropzone5.on("totaluploadprogress", function (progress) {
-            $(id + " .progress-bar").css('width', progress + "%");
-        });
+        var json = JSON.parse('@Html.Raw(translations)');
+        console.log(json);
+        $('#Translations').repeater({
+            initEmpty: false,
+            defaultValues: json,
+            show: function () {
+                $(this).slideDown();
 
-        myDropzone5.on("sending", function (file) {
-            // Show the total progress bar when upload starts
-            $(id + " .progress-bar").css('opacity', "1");
-        });
+            },
 
-        // Hide the total progress bar when nothing's uploading anymore
-        myDropzone5.on("complete", function (progress) {
-            $("#Icon").val($.parseJSON(progress.xhr.response).url)
-            var thisProgressBar = id + " .dz-complete";
-            setTimeout(function () {
-                $(thisProgressBar + " .progress-bar, " + thisProgressBar + " .progress").css('opacity', '0');
-            }, 300)
-        });</script>
+            hide: function (deleteElement) {
+                @*console.log(deleteElement);*@
+                $(this).slideUp(deleteElement);
+            },
+
+            @*ready: function () {
+
+            }*@
+        }).setList(json);
+    </script>
 }
 <div class="card card-custom">
     <div class="card-header">
@@ -57,42 +77,72 @@
     <!--begin::Form-->
     <form class="form" method="post">
         <div class="card-body">
-            <div class="form-group">
-                <label asp-for="Name"></label>
-                <input asp-for="Name" class="form-control form-control-solid" />
-                <span class="form-text text-danger" asp-validation-for="Name"></span>
+            <!--begin::Image input-->
+            <div class="image-input image-input-empty" id="kt_image_input_1" style="background-image: url(assets/media/svg/avatars/blank.svg)">
+                <!--begin::Image preview wrapper-->
+                <div class="image-input-wrapper w-125px h-125px"></div>
+                <!--end::Image preview wrapper-->
+                <!--begin::Edit button-->
+                <label class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
+                       data-kt-image-input-action="change"
+                       data-bs-toggle="tooltip"
+                       data-bs-dismiss="click"
+                       title="Change avatar">
+                    <i class="bi bi-pencil-fill fs-7"></i>
+
+                    <!--begin::Inputs-->
+                    <input type="file" id="avatar" name="avatar" accept=".png, .jpg, .jpeg" />
+                    <input type="hidden" name="avatar_remove" />
+                    <!--end::Inputs-->
+                </label>
+                <!--end::Edit button-->
+                <!--begin::Cancel button-->
+                <span class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
+                      data-kt-image-input-action="cancel"
+                      data-bs-toggle="tooltip"
+                      data-bs-dismiss="click"
+                      title="Cancel avatar">
+                    <i class="bi bi-x fs-2"></i>
+                </span>
+                <!--end::Cancel button-->
+                <!--begin::Remove button-->
+                <span class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
+                      data-kt-image-input-action="remove"
+                      data-bs-toggle="tooltip"
+                      data-bs-dismiss="click"
+                      title="Remove avatar">
+                    <i class="bi bi-x fs-2"></i>
+                </span>
+                <!--end::Remove button-->
             </div>
-            <div class="form-group">
-                <div class="dropzone dropzone-multi" id="kt_dropzone_5" style="word-break:break-word;">
-                    <div class="dropzone-panel mb-lg-0 mb-2">
-                        <a class="dropzone-select btn btn-light-primary font-weight-bold btn-sm">@Localizer["Attachfiles"]</a>
-                    </div>
-                    <div class="dropzone-items">
-                        <div class="dropzone-item" style="display:none;">
-                            <div class="dropzone-file">
-                                <div class="dropzone-filename" title="">
-                                    <span data-dz-name=""></span>
-                                    <strong>
-                                        (<span data-dz-size=""></span>)
-                                    </strong>
-                                </div>
-                                <div class="dropzone-error" data-dz-errormessage=""></div>
+            <!--end::Image input-->
+
+            <div id="Translations">
+                <div data-repeater-list="Translations">
+                    <div data-repeater-item>
+                        <div class="form-group row mb-5">
+
+                            <div class="col-md-3">
+                                <label class="form-label">@Localizer["Language"]</label>
+                                <input class="form-control" name="LangCode" readonly type="text" />
                             </div>
-                            <div class="dropzone-progress">
-                                <div class="progress">
-                                    <div class="progress-bar bg-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-dz-uploadprogress=""></div>
-                                </div>
+                            <div class="col-md-3">
+                                <label class="form-label">@Localizer["Name"]</label>
+                                <input class="form-control" name="Name" type="text" placeholder="@(Localizer["Enter Translation"])" />
                             </div>
-                            <div class="dropzone-toolbar">
-                                <span class="dropzone-delete" data-dz-remove="">
-                                    <i class="flaticon2-cross"></i>
-                                </span>
-                            </div>
+                            @*<div class="col-md-2">
+                                    <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-3 mt-md-9">
+                                        <i class="la la-trash-o fs-3"></i>Clear
+                                    </a>
+                                </div>*@
                         </div>
                     </div>
                 </div>
-                <span asp-validation-for="Icon" class="form-text text-danger"></span>
+                <!--end::Form group-->
+
             </div>
+            <!--end::Repeater-->
+
             <input type="hidden" asp-for="Icon" class="form-control form-control-solid" />
         </div>
         <div class="card-footer">

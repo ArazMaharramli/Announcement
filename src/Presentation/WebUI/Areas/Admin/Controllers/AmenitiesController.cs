@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using WebUI.Areas.Admin.ViewModels.Amenities;
 using WebUI.Controllers;
+using WebUI.Models.ConfigModels;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -21,9 +22,12 @@ namespace WebUI.Areas.Admin.Controllers
     public class AmenitiesController : BaseController
     {
         private readonly IStringLocalizer<AmenitiesController> _localizer;
-        public AmenitiesController(IStringLocalizer<AmenitiesController> localizer)
+        private readonly SupportedLanguages _supportedLanguages;
+
+        public AmenitiesController(IStringLocalizer<AmenitiesController> localizer, SupportedLanguages supportedLanguages)
         {
             _localizer = localizer;
+            _supportedLanguages = supportedLanguages;
         }
         // GET: /<controller>/
         public IActionResult Index()
@@ -31,17 +35,19 @@ namespace WebUI.Areas.Admin.Controllers
             return View();
         }
 
-        [HttpPost]
+        //[HttpPost]
         public async Task<IActionResult> DatatableAsync()
         {
-            var searchLang = Request.Form["query[language]"].FirstOrDefault();
-            var currentPage = Request.Form["pagination[page]"].FirstOrDefault();
-            var length = Request.Form["pagination[perpage]"].FirstOrDefault();
-            var sortColumn = Request.Form["sort[field]"].FirstOrDefault();
-            var sortColumnDirection = Request.Form["sort[sort]"].FirstOrDefault();
-            var searchValue = Request.Form["query[generalSearch]"].FirstOrDefault();
+            var searchLang = "";//Request.Form["search[language]"].FirstOrDefault();
+            var start = Request.Query["start"].FirstOrDefault();
+            var length = Request.Query["length"].FirstOrDefault();
+            var sortColumnIndex = Request.Query["order[0][column]"].FirstOrDefault();
+            var sortColumn = Request.Query[$"columns[{sortColumnIndex}][name]"].FirstOrDefault();
+            var sortColumnDirection = Request.Query["order[0][dir]"].FirstOrDefault();
+            var searchValue = Request.Query["search[value]"].FirstOrDefault();
             int pageSize = string.IsNullOrEmpty(length) ? 10 : Convert.ToInt32(length);
-            int page = string.IsNullOrEmpty(currentPage) ? 1 : Convert.ToInt32(currentPage);
+            int skip = string.IsNullOrEmpty(start) ? 0 : Convert.ToInt32(start);
+
             var lang = string.IsNullOrEmpty(searchLang) ? RouteData.Values["lang"].ToString() : searchLang;
 
             var query = new SearchAmenitiesQuery
@@ -50,7 +56,7 @@ namespace WebUI.Areas.Admin.Controllers
                 LangCode = lang,
                 PageSize = pageSize,
                 SearchValue = searchValue,
-                Page = page,
+                Page = skip / pageSize + 1,
                 SortColumn = sortColumn,
                 SortColumnDirection = sortColumnDirection
             };
@@ -61,18 +67,16 @@ namespace WebUI.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View();
+            var model = new CreateAmenitieCommand
+            {
+                Translations = _supportedLanguages.Languages.Select(x => new AmenitieNameTranslationVM { LangCode = x.Culture, Name = "" }).ToList()
+            };
+            return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync(CreateAmenitieViewModel model)
+        public async Task<IActionResult> CreateAsync(CreateAmenitieCommand command)
         {
-            var command = new CreateAmenitieCommand
-            {
-                Icon = model.Icon,
-                Name = model.Name,
-                LangCode = RouteData.Values["lang"].ToString()
-            };
             var resp = await Mediator.Send(command);
             return RedirectToAction(nameof(Index), "Amenities", new { Area = "Admin" });
         }

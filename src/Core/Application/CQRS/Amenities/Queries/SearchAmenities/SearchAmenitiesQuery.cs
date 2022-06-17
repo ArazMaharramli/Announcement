@@ -38,7 +38,7 @@ namespace Application.CQRS.Amenities.Queries.SearchAmenities
             {
                 request.SortColumn = string.IsNullOrEmpty(request.SortColumn) ? nameof(AmenitieVm.UpdatedAt) : request.SortColumn;
                 request.SortColumnDirection = string.IsNullOrEmpty(request.SortColumnDirection) ? "asc" : request.SortColumnDirection;
-                
+
 
                 var list = _dbContext.Amenities
                     .Include(x => x.Translations)
@@ -50,9 +50,9 @@ namespace Application.CQRS.Amenities.Queries.SearchAmenities
                 {
                     switch (request.SortColumn)
                     {
-                        case nameof(AmenitieVm.Name):
-                            list = list.OrderBy(p => p.Name);
-                            break;
+                        //case nameof(AmenitieVm.Name):
+                        //    list = list.OrderBy(p => p.Name);
+                        //    break;
                         case nameof(AmenitieVm.UpdatedAt):
                             list = list.OrderBy(p => p.UpdatedAt);
                             break;
@@ -65,9 +65,9 @@ namespace Application.CQRS.Amenities.Queries.SearchAmenities
                 {
                     switch (request.SortColumn)
                     {
-                        case nameof(AmenitieVm.Name):
-                            list = list.OrderByDescending(p => p.Name);
-                            break;
+                        //case nameof(AmenitieVm.Name):
+                        //    list = list.OrderByDescending(p => p.Name);
+                        //    break;
                         case nameof(Amenitie.UpdatedAt):
                             list = list.OrderByDescending(p => p.UpdatedAt);
                             break;
@@ -82,7 +82,7 @@ namespace Application.CQRS.Amenities.Queries.SearchAmenities
                 if (!string.IsNullOrEmpty(request.SearchValue))
                 {
                     list = list.Where(m =>
-                            m.Name.Contains(request.SearchValue) ||
+                            m.Translations.Any(x => x.Name.Contains(request.SearchValue)) ||
                             m.UpdatedAt.ToString().Contains(request.SearchValue)
                         );
                 }
@@ -93,14 +93,13 @@ namespace Application.CQRS.Amenities.Queries.SearchAmenities
                     .Take(request.PageSize)
                     .ToListAsync(cancellationToken);
 
-                return new DataTablePagedList<AmenitieVm>(
-                    data: data,
-                    total: totalCount,
-                    page: request.Page,
-                    perpage: request.PageSize,
-                    sortColumn: request.SortColumn,
-                    sortDir: request.SortColumnDirection
-                    );
+                return new DataTablePagedList<AmenitieVm>
+                {
+                    Data = data,
+                    RecordsFiltered = data.Count,
+                    RecordsTotal = totalCount,
+                };
+
 
             }
         }

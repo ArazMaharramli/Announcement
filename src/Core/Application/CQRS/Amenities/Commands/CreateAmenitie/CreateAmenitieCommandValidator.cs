@@ -6,8 +6,7 @@ namespace Application.CQRS.Amenities.Commands.CreateAmenitie
     {
         public CreateAmenitieCommandValidator()
         {
-            RuleFor(x => x.LangCode).NotEmpty();
-            RuleFor(x => x.Name).NotEmpty();
+            RuleFor(x => x.Translations).NotEmpty();
             RuleFor(x => x.Icon).NotEmpty();
         }
     }

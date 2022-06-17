@@ -25,6 +25,7 @@ namespace WebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadAsync()
         {
+            var reqForm = Request.Form;
             var file = Request.Form.Files.Count > 0 ? Request.Form.Files[0] : null;
 
             if (file != null && file.Length > 0)
