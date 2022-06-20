@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using Application.DTOS;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +16,6 @@ namespace Application.CQRS.Amenities.Queries.FindByAmenitieId
     {
         public string Id { get; set; }
         public string LangCode { get; set; }
-        public bool Deleted { get; set; }
 
         public class Handler : IRequestHandler<FindByAmenitieIdQuery, AmenitieDto>
         {
@@ -31,10 +31,11 @@ namespace Application.CQRS.Amenities.Queries.FindByAmenitieId
             public async Task<AmenitieDto> Handle(FindByAmenitieIdQuery request, CancellationToken cancellationToken)
             {
                 var amenitie = await _dbContext.Amenities
-                    .Include(x => x.Translations.Where(y => !y.Deleted && y.LangCode == request.LangCode))
-                    .FirstOrDefaultAsync(x => x.Deleted == request.Deleted && x.Id == request.Id);
+                    .Include(x => x.Translations.Where(y => !y.Deleted))
+                    .ProjectTo<AmenitieDto>(_mapper.ConfigurationProvider, new { lang = request.LangCode })
+                    .FirstOrDefaultAsync(x => x.Id == request.Id);
 
-                return _mapper.Map<AmenitieDto>(amenitie);
+                return amenitie;
             }
         }
     }

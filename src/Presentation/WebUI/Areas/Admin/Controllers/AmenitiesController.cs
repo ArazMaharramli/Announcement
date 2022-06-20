@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application.CQRS.Amenities.Commands.CreateAmenitie;
 using Application.CQRS.Amenities.Commands.UpdateAmenitieIcon;
-using Application.CQRS.Amenities.Commands.DeleteAmenitie;
+using Application.CQRS.Amenities.Commands.Delete;
 using Application.CQRS.Amenities.Commands.AddOrUpdateAmenitieTranslation;
 using Application.CQRS.Amenities.Queries.FindByAmenitieId;
 using Application.CQRS.Amenities.Queries.SearchAmenities;
@@ -118,7 +118,7 @@ namespace WebUI.Areas.Admin.Controllers
                 Id = id,
                 LangCode = langCode
             });
-            var model = new EditAmenitieTranslationViewModel
+            var model = new AddOrUpdateAmenitieTranslationCommand
             {
                 Id = id,
                 LangCode = langCode,
@@ -128,26 +128,17 @@ namespace WebUI.Areas.Admin.Controllers
         }
 
         [HttpPost("{lang}/[area]/[controller]/[action]/{langCode}/{id}")]
-        public async Task<IActionResult> EditTranslation(EditAmenitieTranslationViewModel model)
+        public async Task<IActionResult> EditTranslation(AddOrUpdateAmenitieTranslationCommand command)
         {
-            var command = new AddOrUpdateAmenitieTranslationCommand
-            {
-                Id = model.Id,
-                Name = model.Name,
-                LangCode = model.LangCode
-            };
+
             var resp = await Mediator.Send(command);
 
             return RedirectToAction(nameof(Index), "Amenities", new { Area = "Admin" });
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete([FromBody] DeleteAmenitiesCommand command)
         {
-            var command = new DeleteAmenitieCommand
-            {
-                Id = id,
-            };
             var resp = await Mediator.Send(command);
 
             return resp ? Ok() : BadRequest(new { message = _localizer["ErrorMessage"].Value });

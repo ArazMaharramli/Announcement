@@ -1,11 +1,11 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Common.Extentions;
 using Application.Common.Interfaces;
 using Application.Common.Models;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -48,33 +48,11 @@ namespace Application.CQRS.Amenities.Queries.SearchAmenities
 
                 if (request.SortColumnDirection == "asc")
                 {
-                    switch (request.SortColumn)
-                    {
-                        //case nameof(AmenitieVm.Name):
-                        //    list = list.OrderBy(p => p.Name);
-                        //    break;
-                        case nameof(AmenitieVm.UpdatedAt):
-                            list = list.OrderBy(p => p.UpdatedAt);
-                            break;
-                        default:
-                            list = list.OrderBy(p => p.UpdatedAt);
-                            break;
-                    }
+                    list = list.OrderBy(request.SortColumn);
                 }
                 else if (request.SortColumnDirection == "desc")
                 {
-                    switch (request.SortColumn)
-                    {
-                        //case nameof(AmenitieVm.Name):
-                        //    list = list.OrderByDescending(p => p.Name);
-                        //    break;
-                        case nameof(Amenitie.UpdatedAt):
-                            list = list.OrderByDescending(p => p.UpdatedAt);
-                            break;
-                        default:
-                            list = list.OrderByDescending(p => p.UpdatedAt);
-                            break;
-                    }
+                    list = list.OrderByDescending(request.SortColumn);
                 }
 
 

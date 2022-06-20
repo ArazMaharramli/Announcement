@@ -1,4 +1,4 @@
-@model WebUI.Areas.Admin.ViewModels.Amenities.EditAmenitieTranslationViewModel
+@model Application.CQRS.Amenities.Commands.AddOrUpdateAmenitieTranslation.AddOrUpdateAmenitieTranslationCommand
 
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @{
@@ -10,7 +10,7 @@
         <h3 class="card-title font-size-h1 text-dark font-weight-bolder mr-3 mb-0">
             @Model.Name / @Model.LangCode
         </h3>
-        
+
     </div>
     <!--begin::Form-->
 
@@ -18,7 +18,7 @@
         <div class="card-body">
             <div class="form-group">
                 <label asp-for="Name"></label>
-                <input asp-for="Name" class="form-control"/>
+                <input asp-for="Name" class="form-control" />
                 <span class="form-text text-danger" asp-validation-for="Name"></span>
             </div>
             <input type="hidden" asp-for="Id" />
