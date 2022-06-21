@@ -17,7 +17,7 @@ namespace Persistence
                     {
                         x.UseNetTopologySuite();
                         x.MigrationsAssembly(typeof(MainDbContext).Assembly.FullName);
-                    }),
+                    }).LogTo(Console.WriteLine),
                     ServiceLifetime.Scoped);
 
             services.AddScoped<IDbContext>(provider => provider.GetService<MainDbContext>());

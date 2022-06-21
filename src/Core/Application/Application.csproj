@@ -30,7 +30,6 @@
 		<None Remove="DTOS\" />
 		<None Remove="CQRS\Amenities\Commands\UpdateAmenitie\" />
 		<None Remove="CQRS\Amenities\Commands\AddAmeniteTranslation\" />
-		<None Remove="CQRS\Amenities\Commands\DeleteAmenitie\" />
 		<None Remove="CQRS\Amenities\Queries\FindByAmenitieId\" />
 		<None Remove="CQRS\Amenities\Queries\SearchAmenities\" />
 		<None Remove="CQRS\Translations\" />
@@ -38,6 +37,7 @@
 		<None Remove="CQRS\Translations\Queries\" />
 		<None Remove="CQRS\Amenities %28copy%29\" />
 		<None Remove="CQRS\Amenities\Queries\GetAll\" />
+		<None Remove="CQRS\Amenities\Commands\Update\" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.2" />
@@ -53,17 +53,16 @@
 	  <Folder Include="CQRS\Amenities\" />
 	  <Folder Include="CQRS\Amenities\Commands\" />
 	  <Folder Include="CQRS\Amenities\Queries\" />
-	  <Folder Include="CQRS\Amenities\Commands\CreateAmenitie\" />
+	  <Folder Include="CQRS\Amenities\Commands\Create\" />
 	  <Folder Include="DTOS\" />
-	  <Folder Include="CQRS\Amenities\Commands\UpdateAmenitieIcon\" />
 	  <Folder Include="CQRS\Amenities\Commands\AddOrUpdateAmeniteTranslation\" />
-	  <Folder Include="CQRS\Amenities\Commands\DeleteAmenitie\" />
-	  <Folder Include="CQRS\Amenities\Queries\FindByAmenitieId\" />
+	  <Folder Include="CQRS\Amenities\Queries\FindById\" />
 	  <Folder Include="CQRS\Amenities\Queries\SearchAmenities\" />
 	  <Folder Include="CQRS\Translations\" />
 	  <Folder Include="CQRS\Translations\Commands\" />
 	  <Folder Include="CQRS\Translations\Queries\" />
 	  <Folder Include="CQRS\RoomTypes\" />
 	  <Folder Include="CQRS\Amenities\Queries\GetAll\" />
+	  <Folder Include="CQRS\Amenities\Commands\Update\" />
 	</ItemGroup>
 </Project>

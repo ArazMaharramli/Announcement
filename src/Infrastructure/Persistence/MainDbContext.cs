@@ -1,10 +1,13 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using Common;
 using Domain.Common;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Persistence.Extentions;
 
 namespace Persistence
 {
@@ -69,6 +72,7 @@ namespace Persistence
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.ApplyGlobalQueryFilter<AuditableEntity>(x => !x.Deleted);
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(MainDbContext).Assembly);
         }
     }

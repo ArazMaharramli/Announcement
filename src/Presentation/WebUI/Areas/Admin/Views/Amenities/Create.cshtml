@@ -1,4 +1,4 @@
-﻿@model Application.CQRS.Amenities.Commands.CreateAmenitie.CreateAmenitieCommand
+﻿@model Application.CQRS.Amenities.Commands.Create.CreateAmenitieCommand
 
 @inject WebUI.Models.ConfigModels.SupportedLanguages SupportedLanguages
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
@@ -6,12 +6,11 @@
 @{
     ViewData["Title"] = Localizer["Title"];
 
-
-
     var translations = Json.Serialize(Model.Translations).ToString();
     translations = translations.Replace("name", "Name");
     translations = translations.Replace("langCode", "LangCode");
 }
+
 @section Scripts{
     <script src="assets/plugins/custom/formrepeater/formrepeater.bundle.js"></script>
 

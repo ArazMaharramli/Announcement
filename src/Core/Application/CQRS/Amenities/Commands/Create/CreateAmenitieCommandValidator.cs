@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Application.CQRS.Amenities.Commands.CreateAmenitie
+namespace Application.CQRS.Amenities.Commands.Create
 {
     public class CreateAmenitieCommandValidator : AbstractValidator<CreateAmenitieCommand>
     {

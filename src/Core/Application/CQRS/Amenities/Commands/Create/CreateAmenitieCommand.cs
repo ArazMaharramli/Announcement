@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
-using AutoMapper;
 using Domain.Entities;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
-namespace Application.CQRS.Amenities.Commands.CreateAmenitie
+namespace Application.CQRS.Amenities.Commands.Create
 {
     public class CreateAmenitieCommand : IRequest<Unit>
     {
@@ -31,11 +28,14 @@ namespace Application.CQRS.Amenities.Commands.CreateAmenitie
                 var amenitie = new Amenitie
                 {
                     Icon = request.Icon,
-                    Translations = request.Translations.Select(x => new AmenitieTranslation
+                    Translations = request.Translations
+                    .Where(x => !string.IsNullOrEmpty(x.Name))
+                    .Select(x => new AmenitieTranslation
                     {
                         Name = x.Name,
                         LangCode = x.LangCode
-                    }).ToList()
+                    })
+                    .ToList()
                 };
 
                 _dbContext.Amenities.Add(amenitie);

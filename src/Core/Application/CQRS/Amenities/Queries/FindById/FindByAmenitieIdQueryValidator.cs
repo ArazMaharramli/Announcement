@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Application.CQRS.Amenities.Queries.FindByAmenitieId
+namespace Application.CQRS.Amenities.Queries.FindById
 {
     public class FindByAmenitieIdQueryValidator : AbstractValidator<FindByAmenitieIdQuery>
     {

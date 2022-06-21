@@ -29,8 +29,7 @@ namespace Application.CQRS.Amenities.Commands.AddOrUpdateAmenitieTranslation
             public async Task<bool> Handle(AddOrUpdateAmenitieTranslationCommand request, CancellationToken cancellationToken)
             {
                 var amenitie = await _dbContext.Amenities
-                    .Include(x => x.Translations
-                    .Where(y => !y.Deleted))
+                    .Include(x => x.Translations)
                     .FirstOrDefaultAsync(
                         x => !x.Deleted && x.Id == request.Id,
                     cancellationToken);
@@ -41,7 +40,7 @@ namespace Application.CQRS.Amenities.Commands.AddOrUpdateAmenitieTranslation
                 }
 
                 request.Name = request.Name.Trim();
-                var translation = amenitie.Translations.FirstOrDefault(x => !x.Deleted && x.LangCode == request.LangCode);
+                var translation = amenitie.Translations.FirstOrDefault(x => x.LangCode == request.LangCode);
                 if (translation is not null)
                 {
                     translation.Name = request.Name;

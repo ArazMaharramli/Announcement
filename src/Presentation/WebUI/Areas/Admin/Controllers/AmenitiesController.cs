@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Application.CQRS.Amenities.Commands.CreateAmenitie;
-using Application.CQRS.Amenities.Commands.UpdateAmenitieIcon;
+using Application.CQRS.Amenities.Commands.Create;
 using Application.CQRS.Amenities.Commands.Delete;
 using Application.CQRS.Amenities.Commands.AddOrUpdateAmenitieTranslation;
-using Application.CQRS.Amenities.Queries.FindByAmenitieId;
+using Application.CQRS.Amenities.Queries.FindById;
 using Application.CQRS.Amenities.Queries.SearchAmenities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
-using WebUI.Areas.Admin.ViewModels.Amenities;
 using WebUI.Controllers;
 using WebUI.Models.ConfigModels;
+using Application.CQRS.Amenities.Commands.Update;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -82,30 +80,24 @@ namespace WebUI.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> EditIcon(string id)
+        public async Task<IActionResult> Edit(string id)
         {
             var amenitie = await Mediator.Send(new FindByAmenitieIdQuery
             {
-                Id = id,
-                LangCode = RouteData.Values["lang"].ToString()
+                Id = id
             });
-            var model = new EditAmenitieIconViewModel
+            var model = new UpdateAmenitieCommand
             {
                 Id = amenitie.Id,
                 Icon = amenitie.Icon,
-                Name = amenitie.Name,
+                Translations = amenitie.Translations
             };
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditIconAsync(EditAmenitieIconViewModel model)
+        public async Task<IActionResult> Edit(UpdateAmenitieCommand command)
         {
-            var command = new UpdateAmenitieIconCommand
-            {
-                Id = model.Id,
-                Icon = model.Icon,
-            };
             var resp = await Mediator.Send(command);
             return RedirectToAction(nameof(Index), "Amenities", new { Area = "Admin" });
         }
@@ -116,13 +108,12 @@ namespace WebUI.Areas.Admin.Controllers
             var amenitie = await Mediator.Send(new FindByAmenitieIdQuery
             {
                 Id = id,
-                LangCode = langCode
             });
             var model = new AddOrUpdateAmenitieTranslationCommand
             {
                 Id = id,
                 LangCode = langCode,
-                Name = amenitie.Name
+                Name = amenitie.Translations?.FirstOrDefault(x => x.LangCode == langCode)?.Name
             };
             return View(model);
         }

@@ -1,4 +1,4 @@
-﻿namespace Application.CQRS.Amenities.Commands.CreateAmenitie
+﻿namespace Application.CQRS.Amenities.Commands.Create
 {
     public class AmenitieNameTranslationVM
     {

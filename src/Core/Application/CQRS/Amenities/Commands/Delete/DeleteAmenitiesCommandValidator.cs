@@ -4,9 +4,9 @@ using FluentValidation;
 
 namespace Application.CQRS.Amenities.Commands.Delete
 {
-    public class DeleteAmenitieCommandValidator : AbstractValidator<DeleteAmenitiesCommand>
+    public class DeleteAmenitiesCommandValidator : AbstractValidator<DeleteAmenitiesCommand>
     {
-        public DeleteAmenitieCommandValidator(IDbContext dbContext)
+        public DeleteAmenitiesCommandValidator(IDbContext dbContext)
         {
             RuleFor(x => x.Ids)
                 .NotEmpty()
