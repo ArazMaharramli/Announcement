@@ -75,11 +75,11 @@
     <Folder Include="wwwroot\adminfiles\" />
     <Folder Include="Areas\Admin\ViewModels\Translations\" />
     <Folder Include="Areas\Admin\Views\Translations\" />
-    <Folder Include="Areas\Admin\ViewModels\RoomTypes\" />
     <Folder Include="Views\Rooms\" />
     <Folder Include="Models\ViewModels\Rooms\" />
     <Folder Include="Areas\Admin\Views\Requirements\" />
     <Folder Include="Areas\Admin\Views\RoomTypes\" />
+    <Folder Include="Areas\Admin\Views\Categories\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Services\" />
@@ -113,6 +113,7 @@
     <None Remove="Models\ViewModels\Rooms\" />
     <None Remove="Areas\Admin\Views\Requirements\" />
     <None Remove="Areas\Admin\Views\RoomTypes\" />
+    <None Remove="Areas\Admin\Views\Categories\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Application\Application.csproj">
