@@ -38,6 +38,10 @@
 		<None Remove="CQRS\Amenities %28copy%29\" />
 		<None Remove="CQRS\Amenities\Queries\GetAll\" />
 		<None Remove="CQRS\Amenities\Commands\Update\" />
+		<None Remove="CQRS\Requirements\Commands\" />
+		<None Remove="CQRS\Requirements\Queries\" />
+		<None Remove="CQRS\RoomTypes\Commands\" />
+		<None Remove="CQRS\RoomTypes\Queries\" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.2" />
@@ -57,12 +61,16 @@
 	  <Folder Include="DTOS\" />
 	  <Folder Include="CQRS\Amenities\Commands\AddOrUpdateAmeniteTranslation\" />
 	  <Folder Include="CQRS\Amenities\Queries\FindById\" />
-	  <Folder Include="CQRS\Amenities\Queries\SearchAmenities\" />
+	  <Folder Include="CQRS\Amenities\Queries\Search\" />
 	  <Folder Include="CQRS\Translations\" />
 	  <Folder Include="CQRS\Translations\Commands\" />
 	  <Folder Include="CQRS\Translations\Queries\" />
 	  <Folder Include="CQRS\RoomTypes\" />
 	  <Folder Include="CQRS\Amenities\Queries\GetAll\" />
 	  <Folder Include="CQRS\Amenities\Commands\Update\" />
+	  <Folder Include="CQRS\Requirements\Commands\" />
+	  <Folder Include="CQRS\Requirements\Queries\" />
+	  <Folder Include="CQRS\RoomTypes\Commands\" />
+	  <Folder Include="CQRS\RoomTypes\Queries\" />
 	</ItemGroup>
 </Project>

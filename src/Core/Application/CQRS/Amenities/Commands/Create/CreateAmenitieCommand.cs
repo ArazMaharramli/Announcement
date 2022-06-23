@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
+using Application.CQRS.Amenities.Queries.Search;
 using Domain.Entities;
 using MediatR;
 
@@ -11,7 +12,7 @@ namespace Application.CQRS.Amenities.Commands.Create
     public class CreateAmenitieCommand : IRequest<Unit>
     {
         public string Icon { get; set; }
-        public List<AmenitieNameTranslationVM> Translations { get; set; }
+        public List<AmenitieTranslationVM> Translations { get; set; }
 
         public class Handler : IRequestHandler<CreateAmenitieCommand, Unit>
         {

@@ -7,7 +7,7 @@ namespace Domain.Entities
     public class RoomType : AuditableEntity
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
-        public string Image { get; set; }
+        public string Icon { get; set; }
 
         public ICollection<Room> Rooms { get; set; }
         public ICollection<RoomTypeTranslation> Translations { get; set; }

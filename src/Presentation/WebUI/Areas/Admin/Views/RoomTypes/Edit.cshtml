@@ -1,0 +1,154 @@
+﻿@model Application.CQRS.RoomTypes.Commands.Update.UpdateRoomTypeCommand
+
+@inject WebUI.Models.ConfigModels.SupportedLanguages SupportedLanguages
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["Title"];
+
+    var translations = Json.Serialize(Model.Translations).ToString();
+    translations = translations.Replace("name", "Name");
+    translations = translations.Replace("langCode", "LangCode");
+}
+
+@section Scripts{
+    <script src="assets/plugins/custom/formrepeater/formrepeater.bundle.js"></script>
+
+    <script>var imageInputElement = document.querySelector("#kt_image_input_1");
+        var imageInput = new KTImageInput(imageInputElement);
+
+        imageInput.on('kt.imageinput.changed', function () {
+
+            let formData = new FormData();
+
+            var files = $('#avatar').prop('files');
+
+            for (var i = 0; i != files.length; i++) {
+                formData.append("files", files[i]);
+            }
+
+            $.ajax({
+                url: "/files/upload",
+                data: formData,
+                processData: false,
+                contentType: false,
+                type: "POST",
+                success: function (res) {
+                    console.log(res);
+                    $("#Icon").val(res.url);
+
+                }
+            });
+        });
+
+        imageInput.on("kt.imageinput.cancel", function () {
+            $("#Icon").val("");
+        });
+
+        var json = JSON.parse('@Html.Raw(translations)');
+        console.log(json);
+        $('#Translations').repeater({
+            initEmpty: false,
+            defaultValues: json,
+            show: function () {
+                $(this).slideDown();
+
+            },
+
+            hide: function (deleteElement) {
+                @*console.log(deleteElement);*@
+                $(this).slideUp(deleteElement);
+            },
+
+            @*ready: function () {
+
+            }*@
+        }).setList(json);
+    </script>
+}
+<div class="card card-custom">
+    <div class="card-header">
+        <h3 class="card-title font-size-h1 text-dark font-weight-bolder mr-3 mb-0">
+            @Localizer["Title"]
+        </h3>
+
+    </div>
+    <!--begin::Form-->
+    <form class="form" method="post">
+        <div class="card-body">
+            <!--begin::Image input-->
+            <div class="image-input image-input-empty" id="kt_image_input_1" style="background-image: url(@(string.IsNullOrEmpty(Model.Icon)?"assets/media/svg/avatars/blank.svg":Model.Icon))">
+                <!--begin::Image preview wrapper-->
+                <div class="image-input-wrapper w-125px h-125px"></div>
+                <!--end::Image preview wrapper-->
+                <!--begin::Edit button-->
+                <label class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
+                       data-kt-image-input-action="change"
+                       data-bs-toggle="tooltip"
+                       data-bs-dismiss="click"
+                       title="Change avatar">
+                    <i class="bi bi-pencil-fill fs-7"></i>
+
+                    <!--begin::Inputs-->
+                    <input type="file" id="avatar" name="avatar" accept=".png, .jpg, .jpeg" />
+                    <input type="hidden" name="avatar_remove" />
+                    <!--end::Inputs-->
+                </label>
+                <!--end::Edit button-->
+                <!--begin::Cancel button-->
+                <span class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
+                      data-kt-image-input-action="cancel"
+                      data-bs-toggle="tooltip"
+                      data-bs-dismiss="click"
+                      title="Cancel avatar">
+                    <i class="bi bi-x fs-2"></i>
+                </span>
+                <!--end::Cancel button-->
+                <!--begin::Remove button-->
+                <span class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
+                      data-kt-image-input-action="remove"
+                      data-bs-toggle="tooltip"
+                      data-bs-dismiss="click"
+                      title="Remove avatar">
+                    <i class="bi bi-x fs-2"></i>
+                </span>
+                <!--end::Remove button-->
+            </div>
+            <!--end::Image input-->
+
+            <div id="Translations">
+                <div data-repeater-list="Translations">
+                    <div data-repeater-item>
+                        <div class="form-group row mb-5">
+
+                            <div class="col-md-3">
+                                <label class="form-label">@Localizer["Language"]</label>
+                                <input class="form-control" name="LangCode" readonly type="text" />
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">@Localizer["Name"]</label>
+                                <input class="form-control" name="Name" type="text" placeholder="@(Localizer["Enter Translation"])" />
+                            </div>
+                            @*<div class="col-md-2">
+                                    <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-3 mt-md-9">
+                                        <i class="la la-trash-o fs-3"></i>Clear
+                                    </a>
+                                </div>*@
+                        </div>
+                    </div>
+                </div>
+                <!--end::Form group-->
+
+            </div>
+            <!--end::Repeater-->
+
+            <input type="hidden" asp-for="Icon" class="form-control form-control-solid" />
+        </div>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary mr-2">@Localizer["Submit"]</button>
+            <button type="reset" class="btn btn-secondary">@Localizer["Cancel"]</button>
+        </div>
+    </form>
+
+    <!--end::Form-->
+</div>

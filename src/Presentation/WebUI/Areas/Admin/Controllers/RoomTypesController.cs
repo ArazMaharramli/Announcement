@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Application.CQRS.RoomTypes.Commands.AddOrUpdateRoomTypeTranslation;
-using Application.CQRS.RoomTypes.Commands.CreateRoomType;
-using Application.CQRS.RoomTypes.Commands.DeleteRoomType;
-using Application.CQRS.RoomTypes.Commands.UpdateRoomTypeImage;
-using Application.CQRS.RoomTypes.Queries.FindByRoomTypeId;
-using Application.CQRS.RoomTypes.Queries.SearchRoomTypes;
+using Application.CQRS.RoomTypes.Commands.Create;
+using Application.CQRS.RoomTypes.Commands.Delete;
+using Application.CQRS.RoomTypes.Commands.AddOrUpdateTranslation;
+using Application.CQRS.RoomTypes.Queries.FindById;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
-using WebUI.Areas.Admin.ViewModels.RoomTypes;
 using WebUI.Controllers;
+using WebUI.Models.ConfigModels;
+using Application.CQRS.RoomTypes.Commands.Update;
+using Application.CQRS.RoomTypes.Queries.Search;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,9 +20,12 @@ namespace WebUI.Areas.Admin.Controllers
     public class RoomTypesController : BaseController
     {
         private readonly IStringLocalizer<RoomTypesController> _localizer;
-        public RoomTypesController(IStringLocalizer<RoomTypesController> localizer)
+        private readonly SupportedLanguages _supportedLanguages;
+
+        public RoomTypesController(IStringLocalizer<RoomTypesController> localizer, SupportedLanguages supportedLanguages)
         {
             _localizer = localizer;
+            _supportedLanguages = supportedLanguages;
         }
         // GET: /<controller>/
         public IActionResult Index()
@@ -30,17 +33,19 @@ namespace WebUI.Areas.Admin.Controllers
             return View();
         }
 
-        [HttpPost]
+        //[HttpPost]
         public async Task<IActionResult> DatatableAsync()
         {
-            var searchLang = Request.Form["query[language]"].FirstOrDefault();
-            var currentPage = Request.Form["pagination[page]"].FirstOrDefault();
-            var length = Request.Form["pagination[perpage]"].FirstOrDefault();
-            var sortColumn = Request.Form["sort[field]"].FirstOrDefault();
-            var sortColumnDirection = Request.Form["sort[sort]"].FirstOrDefault();
-            var searchValue = Request.Form["query[generalSearch]"].FirstOrDefault();
+            var searchLang = "";//Request.Form["search[language]"].FirstOrDefault();
+            var start = Request.Query["start"].FirstOrDefault();
+            var length = Request.Query["length"].FirstOrDefault();
+            var sortColumnIndex = Request.Query["order[0][column]"].FirstOrDefault();
+            var sortColumn = Request.Query[$"columns[{sortColumnIndex}][name]"].FirstOrDefault();
+            var sortColumnDirection = Request.Query["order[0][dir]"].FirstOrDefault();
+            var searchValue = Request.Query["search[value]"].FirstOrDefault();
             int pageSize = string.IsNullOrEmpty(length) ? 10 : Convert.ToInt32(length);
-            int page = string.IsNullOrEmpty(currentPage) ? 1 : Convert.ToInt32(currentPage);
+            int skip = string.IsNullOrEmpty(start) ? 0 : Convert.ToInt32(start);
+
             var lang = string.IsNullOrEmpty(searchLang) ? RouteData.Values["lang"].ToString() : searchLang;
 
             var query = new SearchRoomTypesQuery
@@ -49,7 +54,7 @@ namespace WebUI.Areas.Admin.Controllers
                 LangCode = lang,
                 PageSize = pageSize,
                 SearchValue = searchValue,
-                Page = page,
+                Page = skip / pageSize + 1,
                 SortColumn = sortColumn,
                 SortColumnDirection = sortColumnDirection
             };
@@ -60,18 +65,39 @@ namespace WebUI.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View();
+            var model = new CreateRoomTypeCommand
+            {
+                Translations = _supportedLanguages.Languages.Select(x => new RoomTypeTranslationVM { LangCode = x.Culture, Name = "" }).ToList()
+            };
+            return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync(CreateRoomTypeViewModel model)
+        public async Task<IActionResult> CreateAsync(CreateRoomTypeCommand command)
         {
-            var command = new CreateRoomTypeCommand
+            var resp = await Mediator.Send(command);
+            return RedirectToAction(nameof(Index), "RoomTypes", new { Area = "Admin" });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(string id)
+        {
+            var roomType = await Mediator.Send(new FindByRoomTypeIdQuery
             {
-                Image = model.Image,
-                Name = model.Name,
-                LangCode = RouteData.Values["lang"].ToString()
+                Id = id
+            });
+            var model = new UpdateRoomTypeCommand
+            {
+                Id = roomType.Id,
+                Icon = roomType.Icon,
+                Translations = roomType.Translations
             };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(UpdateRoomTypeCommand command)
+        {
             var resp = await Mediator.Send(command);
             return RedirectToAction(nameof(Index), "RoomTypes", new { Area = "Admin" });
         }
@@ -82,69 +108,31 @@ namespace WebUI.Areas.Admin.Controllers
             var roomType = await Mediator.Send(new FindByRoomTypeIdQuery
             {
                 Id = id,
-                LangCode = langCode
             });
-            var model = new EditRoomTypeTranslationViewModel
+            var model = new AddOrUpdateRoomTypeTranslationCommand
             {
                 Id = id,
                 LangCode = langCode,
-                Name = roomType.Name,
-
+                Name = roomType.Translations?.FirstOrDefault(x => x.LangCode == langCode)?.Name
             };
             return View(model);
         }
 
         [HttpPost("{lang}/[area]/[controller]/[action]/{langCode}/{id}")]
-        public async Task<IActionResult> EditTranslation(EditRoomTypeTranslationViewModel model)
+        public async Task<IActionResult> EditTranslation(AddOrUpdateRoomTypeTranslationCommand command)
         {
-            var command = new AddOrUpdateRoomTypeTranslationCommand
-            {
-                Id = model.Id,
-                Name = model.Name,
-                LangCode = model.LangCode
-            };
+
             var resp = await Mediator.Send(command);
 
             return RedirectToAction(nameof(Index), "RoomTypes", new { Area = "Admin" });
         }
 
-        public async Task<IActionResult> UpdateImage([FromRoute] string id)
-        {
-            var roomType = await Mediator.Send(new FindByRoomTypeIdQuery
-            {
-                Id = id,
-                LangCode = RouteData.Values["lang"].ToString()
-            });
-            var model = new EditRoomTypeImageViewModel
-            {
-                Id = id,
-                Image = roomType.Image,
-            };
-            return View(model);
-        }
         [HttpPost]
-        public async Task<IActionResult> UpdateImage(EditRoomTypeImageViewModel model)
+        public async Task<IActionResult> Delete([FromBody] DeleteRoomTypesCommand command)
         {
-            var command = new UpdateRoomTypeImageCommand
-            {
-                Id = model.Id,
-                Image = model.Image
-            };
-            var resp = await Mediator.Send(command);
-
-            return RedirectToAction(nameof(Index), "RoomTypes", new { Area = "Admin" });
-        }
-        [HttpPost]
-        public async Task<IActionResult> Delete(string id)
-        {
-            var command = new DeleteRoomTypeCommand
-            {
-                Id = id,
-            };
             var resp = await Mediator.Send(command);
 
             return resp ? Ok() : BadRequest(new { message = _localizer["ErrorMessage"].Value });
         }
-
     }
 }

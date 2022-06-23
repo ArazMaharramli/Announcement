@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Application.Common.Mappings;
 using AutoMapper;
@@ -10,12 +11,15 @@ namespace Application.DTOS
     {
         public string Id { get; set; }
         public string Icon { get; set; }
-        public string Name { get; set; }
+
+        public DateTime UpdatedAt { get; set; }
+
+        public List<RequirementTranslationDto> Translations { get; set; }
 
         public void Mapping(Profile profile)
         {
             profile.CreateMap<Requirement, RequirementDto>()
-                .ForMember(x => x.Name, opt => opt.MapFrom(y => y.Translations.FirstOrDefault().Name));
+                .ForMember(x => x.Translations, opt => opt.MapFrom(y => y.Translations));
         }
     }
 }

@@ -5,7 +5,7 @@ using Application.CQRS.Amenities.Commands.Create;
 using Application.CQRS.Amenities.Commands.Delete;
 using Application.CQRS.Amenities.Commands.AddOrUpdateAmenitieTranslation;
 using Application.CQRS.Amenities.Queries.FindById;
-using Application.CQRS.Amenities.Queries.SearchAmenities;
+using Application.CQRS.Amenities.Queries.Search;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using WebUI.Controllers;
@@ -67,7 +67,7 @@ namespace WebUI.Areas.Admin.Controllers
         {
             var model = new CreateAmenitieCommand
             {
-                Translations = _supportedLanguages.Languages.Select(x => new AmenitieNameTranslationVM { LangCode = x.Culture, Name = "" }).ToList()
+                Translations = _supportedLanguages.Languages.Select(x => new AmenitieTranslationVM { LangCode = x.Culture, Name = "" }).ToList()
             };
             return View(model);
         }

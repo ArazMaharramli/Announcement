@@ -73,12 +73,13 @@
     <Folder Include="Areas\Admin\Views\Shared\" />
     <Folder Include="Areas\Admin\Views\Amenities\" />
     <Folder Include="wwwroot\adminfiles\" />
-    <Folder Include="Areas\Admin\ViewModels\Amenities\" />
     <Folder Include="Areas\Admin\ViewModels\Translations\" />
     <Folder Include="Areas\Admin\Views\Translations\" />
     <Folder Include="Areas\Admin\ViewModels\RoomTypes\" />
     <Folder Include="Views\Rooms\" />
     <Folder Include="Models\ViewModels\Rooms\" />
+    <Folder Include="Areas\Admin\Views\Requirements\" />
+    <Folder Include="Areas\Admin\Views\RoomTypes\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Services\" />
@@ -102,7 +103,6 @@
     <None Remove="Areas\Auth\Views\Shared\" />
     <None Remove="Areas\Admin\Views\Shared\" />
     <None Remove="Areas\Admin\Views\Amenities\" />
-    <None Remove="Areas\Admin\ViewModels\Amenities\" />
     <None Remove="Localization.SqlLocalizer" />
     <None Remove="Microsoft.EntityFrameworkCore.Design" />
     <None Remove="Areas\Admin\ViewModels\Translations\" />
@@ -111,6 +111,8 @@
     <None Remove="Areas\Admin\Views\Amenities %28copy%29\" />
     <None Remove="Views\Rooms\" />
     <None Remove="Models\ViewModels\Rooms\" />
+    <None Remove="Areas\Admin\Views\Requirements\" />
+    <None Remove="Areas\Admin\Views\RoomTypes\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Application\Application.csproj">

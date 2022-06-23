@@ -1,9 +1,11 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.DTOS;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,7 +31,12 @@ namespace Application.CQRS.Amenities.Queries.FindById
                 var amenitie = await _dbContext.Amenities
                     .Include(x => x.Translations)
                     .ProjectTo<AmenitieDto>(_mapper.ConfigurationProvider)
-                    .FirstOrDefaultAsync(x => x.Id == request.Id);
+                    .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+
+                if (amenitie is null)
+                {
+                    throw new NotFoundException(nameof(Amenitie), request.Id);
+                }
 
                 return amenitie;
             }

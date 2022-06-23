@@ -1,16 +1,16 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Application.CQRS.Requirements.Commands.CreateRequirement;
-using Application.CQRS.Requirements.Commands.UpdateRequirementIcon;
-using Application.CQRS.Requirements.Commands.DeleteRequirement;
-using Application.CQRS.Requirements.Commands.AddOrUpdateRequirementTranslation;
-using Application.CQRS.Requirements.Queries.FindByRequirementId;
-using Application.CQRS.Requirements.Queries.SearchRequirements;
+using Application.CQRS.Requirements.Commands.Create;
+using Application.CQRS.Requirements.Commands.Delete;
+using Application.CQRS.Requirements.Commands.AddOrUpdateTranslation;
+using Application.CQRS.Requirements.Queries.FindById;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
-using WebUI.Areas.Admin.ViewModels.Requirements;
 using WebUI.Controllers;
+using WebUI.Models.ConfigModels;
+using Application.CQRS.Requirements.Commands.Update;
+using Application.CQRS.Requirements.Queries.Search;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,9 +20,12 @@ namespace WebUI.Areas.Admin.Controllers
     public class RequirementsController : BaseController
     {
         private readonly IStringLocalizer<RequirementsController> _localizer;
-        public RequirementsController(IStringLocalizer<RequirementsController> localizer)
+        private readonly SupportedLanguages _supportedLanguages;
+
+        public RequirementsController(IStringLocalizer<RequirementsController> localizer, SupportedLanguages supportedLanguages)
         {
             _localizer = localizer;
+            _supportedLanguages = supportedLanguages;
         }
         // GET: /<controller>/
         public IActionResult Index()
@@ -30,17 +33,19 @@ namespace WebUI.Areas.Admin.Controllers
             return View();
         }
 
-        [HttpPost]
+        //[HttpPost]
         public async Task<IActionResult> DatatableAsync()
         {
-            var searchLang = Request.Form["query[language]"].FirstOrDefault();
-            var currentPage = Request.Form["pagination[page]"].FirstOrDefault();
-            var length = Request.Form["pagination[perpage]"].FirstOrDefault();
-            var sortColumn = Request.Form["sort[field]"].FirstOrDefault();
-            var sortColumnDirection = Request.Form["sort[sort]"].FirstOrDefault();
-            var searchValue = Request.Form["query[generalSearch]"].FirstOrDefault();
+            var searchLang = "";//Request.Form["search[language]"].FirstOrDefault();
+            var start = Request.Query["start"].FirstOrDefault();
+            var length = Request.Query["length"].FirstOrDefault();
+            var sortColumnIndex = Request.Query["order[0][column]"].FirstOrDefault();
+            var sortColumn = Request.Query[$"columns[{sortColumnIndex}][name]"].FirstOrDefault();
+            var sortColumnDirection = Request.Query["order[0][dir]"].FirstOrDefault();
+            var searchValue = Request.Query["search[value]"].FirstOrDefault();
             int pageSize = string.IsNullOrEmpty(length) ? 10 : Convert.ToInt32(length);
-            int page = string.IsNullOrEmpty(currentPage) ? 1 : Convert.ToInt32(currentPage);
+            int skip = string.IsNullOrEmpty(start) ? 0 : Convert.ToInt32(start);
+
             var lang = string.IsNullOrEmpty(searchLang) ? RouteData.Values["lang"].ToString() : searchLang;
 
             var query = new SearchRequirementsQuery
@@ -49,7 +54,7 @@ namespace WebUI.Areas.Admin.Controllers
                 LangCode = lang,
                 PageSize = pageSize,
                 SearchValue = searchValue,
-                Page = page,
+                Page = skip / pageSize + 1,
                 SortColumn = sortColumn,
                 SortColumnDirection = sortColumnDirection
             };
@@ -60,47 +65,39 @@ namespace WebUI.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CreateAsync(CreateRequirementViewModel model)
-        {
-            var command = new CreateRequirementCommand
+            var model = new CreateRequirementCommand
             {
-                Icon = model.Icon,
-                Name = model.Name,
-                LangCode = RouteData.Values["lang"].ToString()
-            };
-            var resp = await Mediator.Send(command);
-            return RedirectToAction(nameof(Index), "Requirements", new { Area = "Admin" });
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> EditIcon(string id)
-        {
-            var requirement = await Mediator.Send(new FindByRequirementIdQuery
-            {
-                Id = id,
-                LangCode = RouteData.Values["lang"].ToString()
-            });
-            var model = new EditRequirementIconViewModel
-            {
-                Id = requirement.Id,
-                Icon = requirement.Icon,
-                Name = requirement.Name,
+                Translations = _supportedLanguages.Languages.Select(x => new RequirementTranslationVM { LangCode = x.Culture, Name = "" }).ToList()
             };
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditIconAsync(EditRequirementIconViewModel model)
+        public async Task<IActionResult> CreateAsync(CreateRequirementCommand command)
         {
-            var command = new UpdateRequirementIconCommand
+            var resp = await Mediator.Send(command);
+            return RedirectToAction(nameof(Index), "Requirements", new { Area = "Admin" });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(string id)
+        {
+            var requirement = await Mediator.Send(new FindByRequirementIdQuery
             {
-                Id = model.Id,
-                Icon = model.Icon,
+                Id = id
+            });
+            var model = new UpdateRequirementCommand
+            {
+                Id = requirement.Id,
+                Icon = requirement.Icon,
+                Translations = requirement.Translations
             };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(UpdateRequirementCommand command)
+        {
             var resp = await Mediator.Send(command);
             return RedirectToAction(nameof(Index), "Requirements", new { Area = "Admin" });
         }
@@ -111,38 +108,28 @@ namespace WebUI.Areas.Admin.Controllers
             var requirement = await Mediator.Send(new FindByRequirementIdQuery
             {
                 Id = id,
-                LangCode = langCode
             });
-            var model = new EditRequirementTranslationViewModel
+            var model = new AddOrUpdateRequirementTranslationCommand
             {
                 Id = id,
                 LangCode = langCode,
-                Name = requirement.Name
+                Name = requirement.Translations?.FirstOrDefault(x => x.LangCode == langCode)?.Name
             };
             return View(model);
         }
 
         [HttpPost("{lang}/[area]/[controller]/[action]/{langCode}/{id}")]
-        public async Task<IActionResult> EditTranslation(EditRequirementTranslationViewModel model)
+        public async Task<IActionResult> EditTranslation(AddOrUpdateRequirementTranslationCommand command)
         {
-            var command = new AddOrUpdateRequirementTranslationCommand
-            {
-                Id = model.Id,
-                Name = model.Name,
-                LangCode = model.LangCode
-            };
+
             var resp = await Mediator.Send(command);
 
             return RedirectToAction(nameof(Index), "Requirements", new { Area = "Admin" });
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete([FromBody] DeleteRequirementsCommand command)
         {
-            var command = new DeleteRequirementCommand
-            {
-                Id = id,
-            };
             var resp = await Mediator.Send(command);
 
             return resp ? Ok() : BadRequest(new { message = _localizer["ErrorMessage"].Value });
