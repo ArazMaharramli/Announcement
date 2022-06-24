@@ -30,7 +30,6 @@ namespace Application.CQRS.Categories.Queries.FindById
             {
                 var category = await _dbContext.Categories
                     .Include(x => x.Translations)
-                    .ProjectTo<CategoryDto>(_mapper.ConfigurationProvider)
                     .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
                 if (category is null)
@@ -38,7 +37,7 @@ namespace Application.CQRS.Categories.Queries.FindById
                     throw new NotFoundException(nameof(Category), request.Id);
                 }
 
-                return category;
+                return _mapper.Map<CategoryDto>(category);
             }
         }
     }

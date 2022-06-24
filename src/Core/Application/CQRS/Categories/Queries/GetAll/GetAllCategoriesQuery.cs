@@ -28,7 +28,6 @@ namespace Application.CQRS.Categories.Queries.GetAll
             public Task<List<CategoryDto>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
             {
                 return _dbContext.Categories
-                    .Where(x => !x.Deleted)
                     .ProjectTo<CategoryDto>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
             }

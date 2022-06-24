@@ -13,5 +13,10 @@ namespace Domain.Entities
 
         public string CategoryId { get; set; }
         public Category Category { get; set; }
+
+        public CategoryTranslation()
+        {
+            Meta = new Meta();
+        }
     }
 }

@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
-using Application.DTOS;
+using Application.CQRS.Categories.Queries.Search;
 using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +15,7 @@ namespace Application.CQRS.Categories.Commands.Update
     {
         public string Id { get; set; }
         public string Icon { get; set; }
-        public List<CategoryTranslationDto> Translations { get; set; }
+        public List<CategoryTranslationVM> Translations { get; set; }
 
         public class Handler : IRequestHandler<UpdateCategoryCommand, Unit>
         {
@@ -38,12 +38,18 @@ namespace Application.CQRS.Categories.Commands.Update
                 }
 
                 category.Icon = request.Icon;
-                category.Translations?.Clear();
+                category.Translations.Clear();
                 category.Translations = request.Translations.Select(x =>
                   new CategoryTranslation
                   {
                       Name = x.Name,
-                      LangCode = x.LangCode
+                      LangCode = x.LangCode,
+                      Meta = new Domain.Common.Meta
+                      {
+                          Title = x.MetaTitle,
+                          Keywords = x.MetaKeywords,
+                          Description = x.MetaDescription
+                      }
                   }).ToList();
 
                 _dbContext.Categories.Update(category);

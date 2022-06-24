@@ -25,7 +25,7 @@ namespace Application.CQRS.Categories.Queries.Search
                 .ForMember(x => x.Name, opt => opt.MapFrom(
                                                 y => y.Translations
                                                         .FirstOrDefault(z => z.LangCode == lang && z.Deleted == deleted).Name ?? "---"))
-                .ForMember(x => x.Translations, opt => opt.MapFrom(y => y.Translations));
+                .ForMember(x => x.Translations, opt => opt.MapFrom(y => y.Translations.Where(x => !x.Deleted)));
         }
     }
 }

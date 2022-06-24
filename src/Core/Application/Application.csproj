@@ -45,6 +45,7 @@
 		<None Remove="CQRS\Categories\" />
 		<None Remove="CQRS\Categories\Commands\" />
 		<None Remove="CQRS\Categories\Queries\" />
+		<None Remove="CQRS\Categories\Queries\FindTranslation\" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.2" />
@@ -78,5 +79,6 @@
 	  <Folder Include="CQRS\Categories\" />
 	  <Folder Include="CQRS\Categories\Commands\" />
 	  <Folder Include="CQRS\Categories\Queries\" />
+	  <Folder Include="CQRS\Categories\Queries\FindTranslation\" />
 	</ItemGroup>
 </Project>

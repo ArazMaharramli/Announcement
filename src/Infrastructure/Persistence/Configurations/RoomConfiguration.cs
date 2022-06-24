@@ -12,21 +12,11 @@ namespace Persistence.Configurations
 
             builder.HasIndex(x => x.Slug).IsUnique();
 
-            builder.OwnsOne(x => x.Meta, m =>
-            {
-                m.Property(x => x.Title).IsRequired();
-            });
+            builder.OwnsOne(x => x.Meta).WithOwner();
 
-            builder.OwnsOne(x => x.Address, a =>
-            {
-                a.Property(b => b.Location).IsRequired();
-            });
+            builder.OwnsOne(x => x.Address).WithOwner();
 
-            builder.OwnsOne(x => x.Contact, c =>
-            {
-                c.Property(x => x.Name).IsRequired();
-                c.Property(x => x.Phone).IsRequired();
-            });
+            builder.OwnsOne(x => x.Contact).WithOwner();
 
             builder.OwnsMany(x => x.Medias, m =>
             {

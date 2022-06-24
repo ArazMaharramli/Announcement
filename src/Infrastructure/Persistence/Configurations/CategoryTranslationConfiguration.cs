@@ -11,12 +11,10 @@ namespace Persistence.Configurations
             builder.HasIndex(x => x.Slug).IsUnique();
             builder.Property(x => x.Name).IsRequired();
 
-            builder.OwnsOne(x => x.Meta, m =>
-            {
-                m.Property(x => x.Title).IsRequired();
-            });
+            builder.OwnsOne(x => x.Meta).WithOwner();
 
             base.Configure(builder);
         }
     }
+
 }

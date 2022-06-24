@@ -21,6 +21,22 @@
                 <input asp-for="Name" class="form-control" />
                 <span class="form-text text-danger" asp-validation-for="Name"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="MetaTitle"></label>
+                <input asp-for="MetaTitle" class="form-control" />
+                <span class="form-text text-danger" asp-validation-for="MetaTitle"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MetaKeywords"></label>
+                <input asp-for="MetaKeywords" class="form-control" />
+                <span class="form-text text-danger" asp-validation-for="MetaKeywords"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MetaDescription"></label>
+                <input asp-for="MetaDescription" class="form-control" />
+                <span class="form-text text-danger" asp-validation-for="MetaDescription"></span>
+            </div>
+
             <input type="hidden" asp-for="Id" />
             <input type="hidden" asp-for="LangCode"></input>
         </div>

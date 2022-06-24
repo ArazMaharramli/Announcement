@@ -9,6 +9,7 @@
     var translations = Json.Serialize(Model.Translations).ToString();
     translations = translations.Replace("name", "Name");
     translations = translations.Replace("langCode", "LangCode");
+    translations = translations.Replace("meta", "Meta");
 }
 
 @section Scripts{
@@ -120,7 +121,6 @@
                 <div data-repeater-list="Translations">
                     <div data-repeater-item>
                         <div class="form-group row mb-5">
-
                             <div class="col-md-3">
                                 <label class="form-label">@Localizer["Language"]</label>
                                 <input class="form-control" name="LangCode" readonly type="text" />
@@ -129,12 +129,22 @@
                                 <label class="form-label">@Localizer["Name"]</label>
                                 <input class="form-control" name="Name" type="text" placeholder="@(Localizer["Enter Translation"])" />
                             </div>
-                            @*<div class="col-md-2">
-                                    <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-3 mt-md-9">
-                                        <i class="la la-trash-o fs-3"></i>Clear
-                                    </a>
-                                </div>*@
+                            <div class="col-md-3">
+                                <label class="form-label">@Localizer["MetaTitle"]</label>
+                                <input class="form-control" name="MetaTitle" type="text" placeholder="@(Localizer["Enter Translation"])" />
+                            </div>
                         </div>
+                        <div class="form-group">
+                            <label class="form-label">@Localizer["MetaKeywords"]</label>
+                            <input class="form-control" name="MetaKeywords" type="text" placeholder="@(Localizer["Enter Translation"])" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">@Localizer["MetaDescription"]</label>
+                            <input class="form-control" name="MetaDescription" type="text" placeholder="@(Localizer["Enter Translation"])" />
+                        </div>
+                        <br />
+                        <hr />
+                        <br />
                     </div>
                 </div>
                 <!--end::Form group-->

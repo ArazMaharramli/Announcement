@@ -15,6 +15,10 @@ namespace Application.CQRS.Categories.Commands.AddOrUpdateTranslation
         public string LangCode { get; set; }
         public string Name { get; set; }
 
+        public string MetaTitle { get; set; }
+        public string MetaKeywords { get; set; }
+        public string MetaDescription { get; set; }
+
         public class Handler : IRequestHandler<AddOrUpdateCategoryTranslationCommand, bool>
         {
             private readonly IDbContext _dbContext;
@@ -42,6 +46,10 @@ namespace Application.CQRS.Categories.Commands.AddOrUpdateTranslation
                 if (translation is not null)
                 {
                     translation.Name = request.Name;
+                    translation.Meta.Title = request.MetaTitle;
+                    translation.Meta.Keywords = request.MetaKeywords;
+                    translation.Meta.Description = request.MetaDescription;
+
                 }
                 else
                 {

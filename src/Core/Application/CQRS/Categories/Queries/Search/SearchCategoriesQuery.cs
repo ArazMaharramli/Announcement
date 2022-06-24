@@ -41,7 +41,7 @@ namespace Application.CQRS.Categories.Queries.Search
 
 
                 var list = _dbContext.Categories
-                    .Include(x => x.Translations)
+                    .Include(x => x.Translations.Where(y => !y.Deleted))
                     .IgnoreQueryFilters()
                     .Where(x => x.Deleted == request.Deleted)
                     .ProjectTo<CategoryVm>(_mapper.ConfigurationProvider, new { lang = request.LangCode, deleted = request.Deleted });

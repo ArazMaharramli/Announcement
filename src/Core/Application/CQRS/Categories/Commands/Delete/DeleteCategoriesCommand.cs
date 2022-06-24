@@ -22,7 +22,10 @@ namespace Application.CQRS.Categories.Commands.Delete
 
             public async Task<bool> Handle(DeleteCategoriesCommand request, CancellationToken cancellationToken)
             {
-                var categories = await _dbContext.Categories.Where(x => request.Ids.Contains(x.Id)).ToListAsync(cancellationToken);
+                var categories = await _dbContext.Categories
+                    .Where(x => request.Ids.Contains(x.Id))
+                    .ToListAsync(cancellationToken);
+
                 _dbContext.Categories.RemoveRange(categories);
 
                 return await _dbContext.SaveChangesAsync(cancellationToken) > 0;

@@ -11,6 +11,7 @@ using WebUI.Controllers;
 using WebUI.Models.ConfigModels;
 using Application.CQRS.Categories.Commands.Update;
 using Application.CQRS.Categories.Queries.Search;
+using Application.CQRS.Categories.Queries.FindTranslation;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -67,7 +68,14 @@ namespace WebUI.Areas.Admin.Controllers
         {
             var model = new CreateCategoryCommand
             {
-                Translations = _supportedLanguages.Languages.Select(x => new CategoryTranslationVM { LangCode = x.Culture, Name = "" }).ToList()
+                Translations = _supportedLanguages.Languages
+                .Select(x =>
+                new CategoryTranslationVM
+                {
+                    LangCode = x.Culture,
+                    Name = ""
+                })
+                .ToList()
             };
             return View(model);
         }
@@ -90,7 +98,14 @@ namespace WebUI.Areas.Admin.Controllers
             {
                 Id = category.Id,
                 Icon = category.Icon,
-                Translations = category.Translations
+                Translations = category.Translations.Select(x => new CategoryTranslationVM
+                {
+                    LangCode = x.LangCode,
+                    Name = x.Name,
+                    MetaTitle = x.Meta.Title,
+                    MetaKeywords = x.Meta.Keywords,
+                    MetaDescription = x.Meta.Description
+                }).ToList()
             };
             return View(model);
         }
@@ -103,17 +118,21 @@ namespace WebUI.Areas.Admin.Controllers
         }
 
         [HttpGet("{lang}/[area]/[controller]/[action]/{langCode}/{id}")]
-        public async Task<IActionResult> EditTranslation([FromRoute] string langCode, [FromRoute] string id)
+        public async Task<IActionResult> EditTranslation([FromRoute] string lang, [FromRoute] string langCode, [FromRoute] string id)
         {
-            var category = await Mediator.Send(new FindByCategoryIdQuery
+            var category = await Mediator.Send(new FindCategoryTranslationQuery
             {
                 Id = id,
+                LangCode = lang
             });
             var model = new AddOrUpdateCategoryTranslationCommand
             {
                 Id = id,
                 LangCode = langCode,
-                Name = category.Translations?.FirstOrDefault(x => x.LangCode == langCode)?.Name
+                Name = category.Name,
+                MetaTitle = category.Meta.Title,
+                MetaKeywords = category.Meta.Keywords,
+                MetaDescription = category.Meta.Description
             };
             return View(model);
         }

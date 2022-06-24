@@ -1,5 +1,6 @@
 ﻿using Application.Common.Mappings;
 using AutoMapper;
+using Domain.Common;
 using Domain.Entities;
 
 namespace Application.DTOS
@@ -10,9 +11,12 @@ namespace Application.DTOS
         public string LangCode { get; set; }
         public string Name { get; set; }
 
+        public Meta Meta { get; set; }
+
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<CategoryTranslation, CategoryTranslationDto>();
+            profile.CreateMap<CategoryTranslation, CategoryTranslationDto>()
+                .ForMember(x => x.Meta, opt => opt.UseDestinationValue());
         }
     }
 }

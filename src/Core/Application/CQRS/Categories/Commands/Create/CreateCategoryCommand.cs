@@ -34,7 +34,13 @@ namespace Application.CQRS.Categories.Commands.Create
                         .Select(x => new CategoryTranslation
                         {
                             Name = x.Name,
-                            LangCode = x.LangCode
+                            LangCode = x.LangCode,
+                            Meta = new Domain.Common.Meta
+                            {
+                                Title = x.MetaTitle,
+                                Keywords = x.MetaKeywords,
+                                Description = x.MetaDescription,
+                            }
                         })
                         .ToList()
                 };
