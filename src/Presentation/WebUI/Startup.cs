@@ -81,6 +81,7 @@ namespace WebUI
 
             services.AddHttpContextAccessor();
             services.AddTransient<ICurrentUserService, CurrentUserService>();
+            services.AddTransient<ICurrentLanguageService, CurrentLanguageService>();
 
             services.AddHealthChecks()
                .AddDbContextCheck<ApplicationDbContext>()

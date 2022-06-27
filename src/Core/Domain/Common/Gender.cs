@@ -4,6 +4,7 @@
     {
         Male,
         Female,
-        Both
+        Both,
+        NotDefined
     }
 }

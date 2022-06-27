@@ -1,6 +1,5 @@
 ﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
-@model WebUI.Models.ViewModels.Rooms.CreateRoomViewModel
-
+@model Application.CQRS.Rooms.Commands.Create.CreateRoomCommand
 @{
     ViewData["Title"] = Localizer["Create Room"];
     ViewData["Description"] = "";
@@ -250,9 +249,9 @@
                     <h4 class="mb-10 font-weight-bold text-dark">Setup Your Current Location</h4>
                     <!--begin::Input-->
                     <div class="form-group">
-                        <label asp-for="AddressLine"></label>
-                        <input id="addressinput" asp-for="AddressLine" class="form-control" />
-                        <span class="form-text text-muted" asp-validation-for="AddressLine"></span>
+                        <label asp-for="Address"></label>
+                        <input id="addressinput" asp-for="Address" class="form-control" />
+                        <span class="form-text text-muted" asp-validation-for="Address"></span>
                     </div>
                     <!--end::Input-->
                     <div id="map" style="height:500px"></div>
@@ -330,8 +329,8 @@
 
                     </div>
                     <!--end: Wizard Step 4-->
-                    <input asp-for="Longtitude" id="longtitudeInput" type="hidden" />
-                    <input asp-for="Latitude" id="latitudeInput" type="hidden" />
+                    <input asp-for="Lng" id="longtitudeInput" type="hidden" />
+                    <input asp-for="Lat" id="latitudeInput" type="hidden" />
                     <!--begin: Wizard Actions-->
                     <div class="d-flex justify-content-between border-top mt-5 pt-10">
                         <div class="mr-2">

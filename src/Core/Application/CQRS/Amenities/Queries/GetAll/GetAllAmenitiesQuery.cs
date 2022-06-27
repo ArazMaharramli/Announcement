@@ -28,7 +28,6 @@ namespace Application.CQRS.Amenities.Queries.GetAll
             public Task<List<AmenitieDto>> Handle(GetAllAmenitiesQuery request, CancellationToken cancellationToken)
             {
                 return _dbContext.Amenities
-                    .Where(x => !x.Deleted)
                     .ProjectTo<AmenitieDto>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
             }

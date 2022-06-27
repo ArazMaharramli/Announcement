@@ -17,5 +17,10 @@ namespace Common.Extentions
             _remove.ForEach(s => value = value?.Replace(s, string.Empty));
             return value.ToUpper();
         }
+
+        public static string ToUrlSlug(this string str)
+        {
+            return str;
+        }
     }
 }

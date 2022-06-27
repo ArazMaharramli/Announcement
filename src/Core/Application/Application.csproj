@@ -46,6 +46,10 @@
 		<None Remove="CQRS\Categories\Commands\" />
 		<None Remove="CQRS\Categories\Queries\" />
 		<None Remove="CQRS\Categories\Queries\FindTranslation\" />
+		<None Remove="CQRS\Rooms\" />
+		<None Remove="CQRS\Rooms\Commands\" />
+		<None Remove="CQRS\Rooms\Queries\" />
+		<None Remove="CQRS\Rooms\Commands\Create\" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.2" />
@@ -80,5 +84,9 @@
 	  <Folder Include="CQRS\Categories\Commands\" />
 	  <Folder Include="CQRS\Categories\Queries\" />
 	  <Folder Include="CQRS\Categories\Queries\FindTranslation\" />
+	  <Folder Include="CQRS\Rooms\" />
+	  <Folder Include="CQRS\Rooms\Commands\" />
+	  <Folder Include="CQRS\Rooms\Queries\" />
+	  <Folder Include="CQRS\Rooms\Commands\Create\" />
 	</ItemGroup>
 </Project>

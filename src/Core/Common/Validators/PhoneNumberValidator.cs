@@ -5,7 +5,7 @@ namespace Common.Validators
 {
     public static class PhoneNumberValidator
     {
-        public static bool Validate(string phoneNumber)
+        public static bool ValidatePhoneNumber(this string phoneNumber)
         {
             try
             {

@@ -17,6 +17,7 @@ namespace Application.CQRS.Categories.Queries.FindTranslation
     {
         public string Id { get; set; }
         public string LangCode { get; set; }
+
         public class Handler : IRequestHandler<FindCategoryTranslationQuery, CategoryDetailVM>
         {
             private readonly IDbContext _dbContext;
@@ -34,7 +35,7 @@ namespace Application.CQRS.Categories.Queries.FindTranslation
                     .Include(x => x.Category)
                     .AsNoTracking()
                     .ProjectTo<CategoryDetailVM>(_mapper.ConfigurationProvider)
-                    .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+                    .FirstOrDefaultAsync(x => x.Id == request.Id || x.Lang == request.LangCode, cancellationToken);
 
                 if (categoryTranslation is null)
                 {
@@ -51,6 +52,7 @@ namespace Application.CQRS.Categories.Queries.FindTranslation
         public string Id { get; set; }
         public string Icon { get; set; }
         public string Name { get; set; }
+        public string Lang { get; set; }
 
         public Meta Meta { get; set; }
 
@@ -59,6 +61,7 @@ namespace Application.CQRS.Categories.Queries.FindTranslation
             profile.CreateMap<CategoryTranslation, CategoryDetailVM>()
                 .ForMember(x => x.Meta, opt => opt.UseDestinationValue())
                 .ForMember(x => x.Id, opt => opt.MapFrom(y => y.Category.Id))
+                .ForMember(x => x.Lang, opt => opt.MapFrom(y => y.LangCode))
                 .ForMember(x => x.Icon, opt => opt.MapFrom(y => y.Category.Icon));
         }
     }
