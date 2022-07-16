@@ -13,14 +13,211 @@
 @section Scripts{
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD1uU_tT63977_KyXVILofNxnKlLdA32go&libraries=places&callback=initMap&v=weekly" async></script>
 
-    <script async>@*console.log(loc);*@@*const input = document.getElementById("pac-input");*@@*console.log(mapsMouseEvent);*@</script>
+    <script async>
+        let infoWindow, marker, autocomplete;
+        function setMarker(location, setcenter = true) {
+            if (setcenter) {
+                map.setCenter(location);
+            }
+            if (marker != null) {
+                marker.setPosition(location);
+                $('#longtitudeInput').val(location.lng);
+                $('#latitudeInput').val(location.lat);
+            }
+        }
+       async function getUserLocation() {
+           var marked = false;
+           if (navigator.geolocation) {
+               navigator.geolocation.getCurrentPosition(
+                   (position) => {
+                       pos = {
+                           lat: position.coords.latitude,
+                           lng: position.coords.longitude,
+                       };
+                       setMarker(pos);
+                       marked = true;
+                   },
+                   (err) => {
+                   }
+               );
+           }
+           if(!marked) {
+               var loc = await $.ajax({
+                   url: "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyCdVSHqtbLoxPRa5o35dyisKmSfHHgM0UI",
+                   type: 'POST'
+               });
+               @*console.log(loc);*@
+               setMarker(loc.location);
+           }
+        }
+        function initSearchBox() {
+            var input = document.getElementById("addressinput");
+            // Create the search box and link it to the UI element.
+            @*const input = document.getElementById("pac-input");*@
+            const searchBox = new google.maps.places.SearchBox(input);
+            map.controls.push(input);
+            // Bias the SearchBox results towards current map's viewport.
+            map.addListener("bounds_changed", () => {
+                searchBox.setBounds(map.getBounds());
+            });
+            // Listen for the event fired when the user selects a prediction and retrieve
+            // more details for that place.
+            searchBox.addListener("places_changed", () => {
+                const places = searchBox.getPlaces();
+                if (places.length == 0) {
+                    return;
+                }
+                // For each place, get the icon, name and location.
+                const bounds = new google.maps.LatLngBounds();
+                places.forEach((place) => {
+                    if (!place.geometry || !place.geometry.location) {
+                        console.log("Returned place contains no geometry");
+                        return;
+                    }
+                    setMarker(place.geometry.location)
+                    console.log(place);
+                    if (place.geometry.viewport) {
+                        // Only geocodes have viewport.
+                        bounds.union(place.geometry.viewport);
+                    } else {
+                        bounds.extend(place.geometry.location);
+                    }
+                });
+                map.fitBounds(bounds);
+            });
+        }
+        function fillInAddress(){
+            const place = autocomplete.getPlace();
+            console.log(place);
+        }
+        function initMap() {
+            var loc = { lat: 40, lng: 49 }
+            getUserLocation();
+            // The map, centered at user location
+            map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 15,
+                center: loc,
+                gestureHandling: "greedy",
+                zoomControl: false,
+            });
+            map.addListener("click", (mapsMouseEvent) => {
+                setMarker(mapsMouseEvent.latLng, false);
+                @*console.log(mapsMouseEvent);*@
+            });
+            marker = new google.maps.Marker({
+                position: loc,
+                map: map,
+            });
+            initSearchBox();
+        }
+    </script>
+    <script async>// Class definition
+        "use strict";
+        // Class definition
+        var KTWizard3 = function () {
+            // Base elements
+            var _wizardEl;
+            var _formEl;
+            var _wizardObj;
+            // Private functions
+            var _initWizard = function () {
+                // Initialize form wizard
+                _wizardObj = new KTWizard(_wizardEl, {
+                    startStep: 1, // initial active step number
+                    clickableSteps: true  // allow step clicking
+                });
+                // Validation before going to next page
+                _wizardObj.on('change', function (wizard) {
+                    if (wizard.getStep() > wizard.getNewStep()) {
+                        return; // Skip if stepped back
+                    }
+                    wizard.goTo(wizard.getNewStep());
+                    KTUtil.scrollTop();
+                    return false;  // Do not change wizard step, further action will be handled by he validator
+                });
+                // Changed event
+                _wizardObj.on('changed', function (wizard) {
+                    KTUtil.scrollTop();
+                });
+                // Submit event
+                _wizardObj.on('submit', function (wizard) {
+                    _formEl.submit(); // submit form
+                });
+            }
+            return {
+                // public functions
+                init: function () {
+                    _wizardEl = KTUtil.getById('kt_wizard_v3');
+                    _formEl = KTUtil.getById('kt_form');
+                    _initWizard();
+                }
+            };
+        }();
+        jQuery(document).ready(function () {
+            KTWizard3.init();
+        });</script>
 
-    <script defer>$.ajax({
+
+    <script async>$('#CategoryId').select2({
+            placeholder: "Select a value",
+        });
+        $.ajax({
+            url: "/rooms/categories",
+            type: 'GET',
+            success: function (res) {
+                res.forEach(function (data, index, arr) {
+                    var newOption = new Option(data.name, data.id, false, false);
+                    $("#CategoryId").append(newOption);
+                });
+                $("#CategoryId").trigger('change');
+            }
+        });
+
+        function template(strings, ...keys) {
+            return (function (...values) {
+                let dict = values[values.length - 1] || {};
+                let result = [strings[0]];
+                keys.forEach(function (key, i) {
+                    let value = Number.isInteger(key) ? values[key] : dict[key];
+                    result.push(value, strings[i + 1]);
+                });
+                return result.join('');
+            });
+        }
+
+        var amenitieOption = template` <div class="col-lg-4">
+                                                        <label class="option">
+                                                          <span class="option-control">
+                                                              <span class="checkbox checkbox-outline checkbox-success">
+                                                                  <input type="checkbox" name="${'inputName'}" value="${'id'}" checked="checked" />
+                                                                  <span></span>
+                                                              </span>
+                                                          </span>
+                                                          <span class="option-label">
+                                                              <span class="option-head">
+                                                                  <span class="option-title">
+                                                      ${'title'}
+                                                                  </span>
+                                                              </span>
+                                                              <span class="option-body">
+                                                 ${'decription'}
+                                                              </span>
+                                                          </span>
+                                                      </label >
+                                                  </div >`;
+
+        $.ajax({
             url: "/rooms/amenities",
             type: 'GET',
             success: function (res) {
                 res.forEach(function (data, index, arr) {
-                    var newOption = new Option(data.text, data.id, false, false);
+                    var newOption = amenitieOption({
+                        inputName: "AmenitieIds",
+                        id: data.id,
+                        title: data.name,
+                        decription: ''
+                    });
+                    console.log(newOption)
                     $("#Amenities").append(newOption);
                 });
                 $("#Amenities").trigger('change');
@@ -28,14 +225,20 @@
         });
 
         $.ajax({
-            url: "/rooms/categories",
+            url: "/rooms/requirements",
             type: 'GET',
             success: function (res) {
                 res.forEach(function (data, index, arr) {
-                    var newOption = new Option(data.text, data.id, false, false);
-                    $("#CategoryId").append(newOption);
+                    var newOption = amenitieOption({
+                        inputName: "RequirementIds",
+                        id: data.id,
+                        title: data.name,
+                        decription: ''
+                    });
+                    console.log(newOption)
+                    $("#Requirements").append(newOption);
                 });
-                $("#CategoryId").trigger('change');
+                $("#Requirements").trigger('change');
             }
         });</script>
 }
@@ -126,8 +329,9 @@
                     <!--end::Input-->
                     <!--begin::Input-->
                     <div class="form-group">
-                        <label asp-for="CategoryId"></label>
-                        <select asp-for="CategoryId" class="form-control"></select>
+                        <label asp-for="CategoryId"></label><br />
+                        <select asp-for="CategoryId" class="form-control select2"></select>
+                        <span class="form-text text-muted" asp-validation-for="CategoryId"></span>
                     </div>
                     <!--end::Input-->
                 </div>
@@ -136,86 +340,43 @@
                 <div class="pb-5" data-wizard-type="step-content">
                     <h4 class="mb-10 font-weight-bold text-dark">Select your Services</h4>
 
-                    <div class="row">
+                    <div class="row" id="Amenities">
 
-                        <div class="col-lg-4">
-                            <label class="option">
-                                <span class="option-control">
-                                    <span class="checkbox checkbox-outline checkbox-success">
-                                        <input type="checkbox" name="m_option_1" value="1" checked="checked" />
-                                        <span></span>
-                                    </span>
-                                </span>
-                                <span class="option-label">
-                                    <span class="option-head">
-                                        <span class="option-title">
-                                            Standard Delivery
-                                        </span>
-                                    </span>
-                                    <span class="option-body">
-                                        Estimated 14-20 Day Shipping
-                                        (Duties and taxes may be due
-                                        upon delivery)
-                                    </span>
-                                </span>
-                            </label>
-                        </div>
+
 
                     </div>
-                    <!--end: Wizard Step 3-->
-                    <!--begin: Wizard Step 4-->
-                    <div class="pb-5" data-wizard-type="step-content">
-                        <h4 class="mb-10 font-weight-bold text-dark">Setup Your Delivery Location</h4>
-                        <div class="my-5">
-                            <!--begin::Input-->
-                            <div class="form-group">
-                                <label>Address Line 1</label>
-                                <input type="text" class="form-control" name="locaddress1" placeholder="Address Line 1" value="Address Line 1" />
-                                <span class="form-text text-muted">Please enter your Address.</span>
-                            </div>
-                            <!--end::Input-->
-                            <!--begin::Input-->
-                        </div>
-
-                    </div>
-                    <!--end: Wizard Step 4-->
-                    <input asp-for="Lng" id="longtitudeInput" type="hidden" />
-                    <input asp-for="Lat" id="latitudeInput" type="hidden" />
-                    <!--begin: Wizard Actions-->
-                    <div class="d-flex justify-content-between border-top mt-5 pt-10">
-                        <div class="mr-2">
-                            <button type="button" class="btn btn-light-primary font-weight-bolder text-uppercase px-9 py-4" data-wizard-type="action-prev">Previous</button>
-                        </div>
-                        <div>
-                            <button type="button" class="btn btn-success font-weight-bolder text-uppercase px-9 py-4" data-wizard-type="action-submit">Submit</button>
-                            <button type="button" class="btn btn-primary font-weight-bolder text-uppercase px-9 py-4" data-wizard-type="action-next">Next</button>
-                        </div>
-                    </div>
-                    <!--end: Wizard Actions-->
                 </div>
+                <!--end: Wizard Step 3-->
+                <!--begin: Wizard Step 4-->
+                <div class="pb-5" data-wizard-type="step-content">
+                    <h4 class="mb-10 font-weight-bold text-dark">Setup Your Delivery Location</h4>
+                    <div class="my-5">
+                        <div class="row" id="Requirements">
+
+
+
+                        </div>
+                        <!--begin::Input-->
+                    </div>
+
+                </div>
+                <!--end: Wizard Step 4-->
+                <input asp-for="Lng" id="longtitudeInput" type="hidden" />
+                <input asp-for="Lat" id="latitudeInput" type="hidden" />
+                <!--begin: Wizard Actions-->
+                <div class="d-flex justify-content-between border-top mt-5 pt-10">
+                    <div class="mr-2">
+                        <button type="button" class="btn btn-light-primary font-weight-bolder text-uppercase px-9 py-4" data-wizard-type="action-prev">Previous</button>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-success font-weight-bolder text-uppercase px-9 py-4" data-wizard-type="action-submit">Submit</button>
+                        <button type="button" class="btn btn-primary font-weight-bolder text-uppercase px-9 py-4" data-wizard-type="action-next">Next</button>
+                    </div>
+                </div>
+                <!--end: Wizard Actions-->
             </form>
             <!--end: Wizard Form-->
         </div>
     </div>
     <!--end: Wizard Body-->
 </div>
-<!--end: Wizard-->
-@*<div class="row">
-        <div class="col-lg-6">
-            <label class="option">
-                <span class="option-control">
-                    <span class="radio">
-                        <input type="radio" name="m_option_1" value="1" checked="checked" />
-                        <span></span>
-                    </span>
-                </span>
-                <span class="option-label">
-                    <span class="option-head">
-                        <span class="option-title">Standard Delivery</span>
-                        <span class="option-focus">Free</span>
-                    </span>
-                    <span class="option-body">Estimated 14-20 Day Shipping (Duties and taxes may be due upon delivery)</span>
-                </span>
-            </label>
-        </div>
-    </div>*@

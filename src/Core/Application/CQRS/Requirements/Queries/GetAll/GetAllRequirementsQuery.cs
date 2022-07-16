@@ -18,10 +18,11 @@ namespace Application.CQRS.Requirements.Queries.GetAll
             private readonly IMapper _mapper;
             private readonly ICurrentLanguageService _currentLanguageService;
 
-            public Handler(IDbContext dbContext, IMapper mapper)
+            public Handler(IDbContext dbContext, IMapper mapper, ICurrentLanguageService currentLanguageService)
             {
                 _dbContext = dbContext;
                 _mapper = mapper;
+                _currentLanguageService = currentLanguageService;
             }
 
             public Task<List<RequirementDetailsVM>> Handle(GetAllRequirementsQuery request, CancellationToken cancellationToken)
