@@ -12,24 +12,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.CQRS.RoomTypes.Queries.GetAll
 {
-    public class GetAllRoomTypesQuery : IRequest<List<RoomTypeDto>>
+    public class GetAllRoomTypesQuery : IRequest<List<RoomTypeDetailsVM>>
     {
-        public class Handler : IRequestHandler<GetAllRoomTypesQuery, List<RoomTypeDto>>
+        public class Handler : IRequestHandler<GetAllRoomTypesQuery, List<RoomTypeDetailsVM>>
         {
             private readonly IDbContext _dbContext;
             private readonly IMapper _mapper;
+            private readonly ICurrentLanguageService _currentLanguageService;
 
-            public Handler(IDbContext dbContext, IMapper mapper)
+            public Handler(IDbContext dbContext, IMapper mapper, ICurrentLanguageService currentLanguageService)
             {
                 _dbContext = dbContext;
                 _mapper = mapper;
+                _currentLanguageService = currentLanguageService;
             }
 
-            public Task<List<RoomTypeDto>> Handle(GetAllRoomTypesQuery request, CancellationToken cancellationToken)
+            public Task<List<RoomTypeDetailsVM>> Handle(GetAllRoomTypesQuery request, CancellationToken cancellationToken)
             {
                 return _dbContext.RoomTypes
-                    .Where(x => !x.Deleted)
-                    .ProjectTo<RoomTypeDto>(_mapper.ConfigurationProvider)
+                    .Include(x => x.Translations.Where(z => z.LangCode == _currentLanguageService.LangCode))
+                    .ProjectTo<RoomTypeDetailsVM>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
             }
         }

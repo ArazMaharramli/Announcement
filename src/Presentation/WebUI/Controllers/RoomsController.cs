@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
+using Application.CQRS.Amenities.Queries.GetAll;
+using Application.CQRS.Categories.Queries.GetAll;
+using Application.CQRS.Requirements.Queries.GetAll;
 using Application.CQRS.Rooms.Commands.Create;
-using Microsoft.AspNetCore.Localization;
+using Application.CQRS.RoomTypes.Queries.GetAll;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WebUI.Controllers
 {
@@ -21,11 +19,6 @@ namespace WebUI.Controllers
 
         public IActionResult Create()
         {
-            var rqf = Request.HttpContext.Features.Get<IRequestCultureFeature>();
-            // Culture contains the information of the requested culture
-            var culture = rqf.RequestCulture.Culture;
-            var lang = culture.Name;
-
             return View();
         }
 
@@ -34,6 +27,29 @@ namespace WebUI.Controllers
         {
             var res = await Mediator.Send(command, cancellationToken);
             return RedirectToAction("Index", "Home");
+        }
+
+        public async Task<IActionResult> Amenities(CancellationToken cancellationToken)
+        {
+            var resp = await Mediator.Send(new GetAllAmenitiesQuery(), cancellationToken);
+            return Ok(resp);
+        }
+
+        public async Task<IActionResult> Requirements(CancellationToken cancellationToken)
+        {
+            var resp = await Mediator.Send(new GetAllRequirementsQuery(), cancellationToken);
+            return Ok(resp);
+        }
+
+        public async Task<IActionResult> RoomTypes(CancellationToken cancellationToken)
+        {
+            var resp = await Mediator.Send(new GetAllRoomTypesQuery(), cancellationToken);
+            return Ok(resp);
+        }
+        public async Task<IActionResult> Categories(CancellationToken cancellationToken)
+        {
+            var resp = await Mediator.Send(new GetAllCategoriesQuery(), cancellationToken);
+            return Ok(resp);
         }
     }
 }

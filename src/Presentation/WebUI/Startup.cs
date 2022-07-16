@@ -88,6 +88,8 @@ namespace WebUI
                .AddDbContextCheck<MainDbContext>();
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+            services.AddResponseCompression();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -105,6 +107,7 @@ namespace WebUI
             }
             app.UseCustomExceptionHandler();
             app.UseHttpsRedirection();
+            app.UseResponseCompression();
             app.UseStaticFiles();
 
             app.UseHealthChecks("/healthchecks");

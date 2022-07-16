@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,23 +11,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.CQRS.Categories.Queries.GetAll
 {
-    public class GetAllCategoriesQuery : IRequest<List<CategoryDto>>
+    public class GetAllCategoriesQuery : IRequest<List<CategoryDetailsVM>>
     {
-        public class Handler : IRequestHandler<GetAllCategoriesQuery, List<CategoryDto>>
+        public class Handler : IRequestHandler<GetAllCategoriesQuery, List<CategoryDetailsVM>>
         {
             private readonly IDbContext _dbContext;
             private readonly IMapper _mapper;
+            private readonly ICurrentLanguageService _currentLanguageService;
 
-            public Handler(IDbContext dbContext, IMapper mapper)
+            public Handler(IDbContext dbContext, IMapper mapper, ICurrentLanguageService currentLanguageService)
             {
                 _dbContext = dbContext;
                 _mapper = mapper;
+                _currentLanguageService = currentLanguageService;
             }
 
-            public Task<List<CategoryDto>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
+            public Task<List<CategoryDetailsVM>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
             {
                 return _dbContext.Categories
-                    .ProjectTo<CategoryDto>(_mapper.ConfigurationProvider)
+                    .Include(x => x.Translations.Where(z => z.LangCode == _currentLanguageService.LangCode))
+                    .ProjectTo<CategoryDetailsVM>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
             }
         }
