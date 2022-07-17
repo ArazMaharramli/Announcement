@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
-using Application.DTOS;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
@@ -30,8 +27,8 @@ namespace Application.CQRS.RoomTypes.Queries.GetAll
             public Task<List<RoomTypeDetailsVM>> Handle(GetAllRoomTypesQuery request, CancellationToken cancellationToken)
             {
                 return _dbContext.RoomTypes
-                    .Include(x => x.Translations.Where(z => z.LangCode == _currentLanguageService.LangCode))
-                    .ProjectTo<RoomTypeDetailsVM>(_mapper.ConfigurationProvider)
+                    .Include(x => x.Translations)
+                    .ProjectTo<RoomTypeDetailsVM>(_mapper.ConfigurationProvider, new { langCode = _currentLanguageService.LangCode })
                     .ToListAsync(cancellationToken);
             }
         }

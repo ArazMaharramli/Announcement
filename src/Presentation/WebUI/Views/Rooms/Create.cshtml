@@ -185,33 +185,33 @@
             });
         }
 
-        var amenitieOption = template` <div class="col-lg-4">
-                                                        <label class="option">
-                                                          <span class="option-control">
-                                                              <span class="checkbox checkbox-outline checkbox-success">
-                                                                  <input type="checkbox" name="${'inputName'}" value="${'id'}" checked="checked" />
-                                                                  <span></span>
-                                                              </span>
-                                                          </span>
-                                                          <span class="option-label">
-                                                              <span class="option-head">
-                                                                  <span class="option-title">
-                                                      ${'title'}
+        var amenitieAndRequirementOption = template` <div class="col-lg-4">
+                                                            <label class="option">
+                                                              <span class="option-control">
+                                                                  <span class="checkbox checkbox-outline checkbox-success">
+                                                                      <input type="checkbox" name="${'inputName'}" value="${'id'}" checked="checked" />
+                                                                      <span></span>
                                                                   </span>
                                                               </span>
-                                                              <span class="option-body">
-                                                 ${'decription'}
+                                                              <span class="option-label">
+                                                                  <span class="option-head">
+                                                                      <span class="option-title">
+                                                          ${'title'}
+                                                                      </span>
+                                                                  </span>
+                                                                  <span class="option-body">
+                                                     ${'decription'}
+                                                                  </span>
                                                               </span>
-                                                          </span>
-                                                      </label >
-                                                  </div >`;
+                                                          </label >
+                                                      </div >`;
 
         $.ajax({
             url: "/rooms/amenities",
             type: 'GET',
             success: function (res) {
                 res.forEach(function (data, index, arr) {
-                    var newOption = amenitieOption({
+                    var newOption = amenitieAndRequirementOption({
                         inputName: "AmenitieIds",
                         id: data.id,
                         title: data.name,
@@ -229,7 +229,7 @@
             type: 'GET',
             success: function (res) {
                 res.forEach(function (data, index, arr) {
-                    var newOption = amenitieOption({
+                    var newOption = amenitieAndRequirementOption({
                         inputName: "RequirementIds",
                         id: data.id,
                         title: data.name,

@@ -13,10 +13,11 @@ namespace Application.CQRS.Categories.Queries.GetAll
 
         public void Mapping(Profile profile)
         {
+            string langCode = "";
             profile.CreateMap<Category, CategoryDetailsVM>()
                 .ForMember(x => x.Id, opt => opt.MapFrom(y => y.Id))
                 .ForMember(x => x.Icon, opt => opt.MapFrom(y => y.Icon))
-                .ForMember(x => x.Name, opt => opt.MapFrom(y => y.Translations.Select(x => x.Name).FirstOrDefault()));
+                .ForMember(x => x.Name, opt => opt.MapFrom(y => y.Translations.FirstOrDefault(x => x.LangCode == langCode).Name));
         }
     }
 }

@@ -28,8 +28,8 @@ namespace Application.CQRS.Requirements.Queries.GetAll
             public Task<List<RequirementDetailsVM>> Handle(GetAllRequirementsQuery request, CancellationToken cancellationToken)
             {
                 return _dbContext.Requirements
-                    .Include(x => x.Translations.Where(z => z.LangCode == _currentLanguageService.LangCode))
-                    .ProjectTo<RequirementDetailsVM>(_mapper.ConfigurationProvider)
+                    .Include(x => x.Translations)
+                    .ProjectTo<RequirementDetailsVM>(_mapper.ConfigurationProvider, new { langCode = _currentLanguageService.LangCode })
                     .ToListAsync(cancellationToken);
             }
         }
