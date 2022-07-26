@@ -37,6 +37,7 @@
     <Content Remove="Areas\Admin\Views\Amenities %28copy%29\EditIcon.cshtml" />
     <Content Remove="Areas\Admin\Views\Amenities %28copy%29\EditTranslation.cshtml" />
     <Content Remove="Areas\Admin\Views\Amenities %28copy%29\Index.cshtml" />
+    <Content Remove="wwwroot\uploads\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\assets\" />
@@ -80,6 +81,7 @@
     <Folder Include="Areas\Admin\Views\Requirements\" />
     <Folder Include="Areas\Admin\Views\RoomTypes\" />
     <Folder Include="Areas\Admin\Views\Categories\" />
+    <Folder Include="wwwroot\uploads\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Services\" />
