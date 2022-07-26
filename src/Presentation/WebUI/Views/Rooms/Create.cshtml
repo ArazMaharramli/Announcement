@@ -8,6 +8,8 @@
 
 @section Styles{
     <link href="assets/css/pages/wizard/wizard-3.css" rel="stylesheet" type="text/css" />
+    <link href="assets/plugins/custom/uppy/uppy.bundle.css" rel="stylesheet" type="text/css" />
+
 }
 
 @section Scripts{
@@ -157,7 +159,6 @@
             KTWizard3.init();
         });</script>
 
-
     <script async>$('#CategoryId').select2({
             placeholder: "Select a value",
         });
@@ -186,25 +187,25 @@
         }
 
         var amenitieAndRequirementOption = template` <div class="col-lg-4">
-                                                            <label class="option">
-                                                              <span class="option-control">
-                                                                  <span class="checkbox checkbox-outline checkbox-success">
-                                                                      <input type="checkbox" name="${'inputName'}" value="${'id'}" checked="checked" />
-                                                                      <span></span>
-                                                                  </span>
-                                                              </span>
-                                                              <span class="option-label">
-                                                                  <span class="option-head">
-                                                                      <span class="option-title">
-                                                          ${'title'}
-                                                                      </span>
-                                                                  </span>
-                                                                  <span class="option-body">
-                                                     ${'decription'}
-                                                                  </span>
-                                                              </span>
-                                                          </label >
-                                                      </div >`;
+                                                                                                                                                            <label class="option">
+                                                                                                                                                              <span class="option-control">
+                                                                                                                                                                  <span class="checkbox checkbox-outline checkbox-success">
+                                                                                                                                                                      <input type="checkbox" name="${'inputName'}" value="${'id'}" checked="checked" />
+                                                                                                                                                                      <span></span>
+                                                                                                                                                                  </span>
+                                                                                                                                                              </span>
+                                                                                                                                                              <span class="option-label">
+                                                                                                                                                                  <span class="option-head">
+                                                                                                                                                                      <span class="option-title">
+                                                                                                                                                          ${'title'}
+                                                                                                                                                                      </span>
+                                                                                                                                                                  </span>
+                                                                                                                                                                  <span class="option-body">
+                                                                                                                                                     ${'decription'}
+                                                                                                                                                                  </span>
+                                                                                                                                                              </span>
+                                                                                                                                                          </label >
+                                                                                                                                                      </div >`;
 
         $.ajax({
             url: "/rooms/amenities",
@@ -217,7 +218,7 @@
                         title: data.name,
                         decription: ''
                     });
-                    console.log(newOption)
+
                     $("#Amenities").append(newOption);
                 });
                 $("#Amenities").trigger('change');
@@ -235,11 +236,91 @@
                         title: data.name,
                         decription: ''
                     });
-                    console.log(newOption)
+
                     $("#Requirements").append(newOption);
                 });
                 $("#Requirements").trigger('change');
             }
+        });</script>
+
+    <script src="assets/plugins/custom/uppy/uppy.bundle.js"></script>
+    <script>var mediaUrls = [];
+        const Tus = Uppy.XHRUpload;
+        const ProgressBar = Uppy.ProgressBar;
+        const StatusBar = Uppy.StatusBar;
+        const FileInput = Uppy.FileInput;
+        const Informer = Uppy.Informer;
+
+        var id = '#kt_uppy_3';
+
+        var uppyDrag = Uppy.Core({
+            autoProceed: true,
+            restrictions: {
+                maxFileSize: 2000000, // 1mb
+                maxNumberOfFiles: 10,
+                minNumberOfFiles: 1,
+                allowedFileTypes: ['image/*', 'video/*']
+            }
+        });
+
+        uppyDrag.use(Uppy.DragDrop, { target: id + ' .uppy-drag' });
+        uppyDrag.use(ProgressBar, {
+            target: id + ' .uppy-progress',
+            hideUploadButton: false,
+            hideAfterFinish: false
+        });
+
+        uppyDrag.use(Informer, { target: id + ' .uppy-informer' });
+        uppyDrag.use(Tus, {
+            endpoint: '/files/upload',
+        });
+
+        uppyDrag.on('complete', function (file) {
+            var imagePreview = "";
+            $.each(file.successful, function (index, value) {
+                var imageType = /image/;
+                var thumbnail = "";
+                if (imageType.test(value.type)) {
+                    thumbnail = '<div class="uppy-thumbnail"><img src="' + value.uploadURL + '"/></div>';
+                    mediaUrls.push(value.uploadURL);
+                    console.log(mediaUrls);
+                }
+                var sizeLabel = "bytes";
+                var filesize = value.size;
+                if (filesize > 1024) {
+                    filesize = filesize / 1024;
+                    sizeLabel = "kb";
+                    if (filesize > 1024) {
+                        filesize = filesize / 1024;
+                        sizeLabel = "MB";
+                    }
+                }
+                imagePreview += '<div class="uppy-thumbnail-container" data-id="' + value.id + '">' + thumbnail + ' <span class="uppy-thumbnail-label">' + value.name + ' (' + Math.round(filesize, 2) + ' ' + sizeLabel + ')</span><span data-id="' + value.id + '" class="uppy-remove-thumbnail"><i class="flaticon2-cancel-music"></i></span></div>';
+            });
+
+            $(id + ' .uppy-thumbnails').append(imagePreview);
+        });
+
+        $(document).on('click', id + ' .uppy-thumbnails .uppy-remove-thumbnail', function () {
+            var imageId = $(this).attr('data-id');
+            var container = $(id + ' .uppy-thumbnail-container[data-id="' + imageId + '"');
+            var imgUrl = '';
+            var img = container.find("img"), // select images inside .container
+                len = img.length; // check if they exist
+            if (len > 0) {
+                // images found, get id
+                imgUrl = img.first().attr("src"); // get id of first image
+            } else {
+                // images not found
+            }
+
+            uppyDrag.removeFile(imageId);
+            container.remove();
+            console.log(imgUrl);
+            mediaUrls = mediaUrls.filter(function (ele) {
+                return ele != imgUrl;
+            });
+            console.log(mediaUrls);
         });</script>
 }
 
@@ -352,13 +433,17 @@
                     <h4 class="mb-10 font-weight-bold text-dark">Setup Your Delivery Location</h4>
                     <div class="my-5">
                         <div class="row" id="Requirements">
-
-
-
                         </div>
-                        <!--begin::Input-->
                     </div>
-
+                    <div class="uppy" id="kt_uppy_3">
+                        <div class="uppy-drag"></div>
+                        <div class="uppy-informer"></div>
+                        <div class="uppy-progress"></div>
+                        <div class="uppy-thumbnails"></div>
+                    </div>
+                    <div id="medias">
+                        <input type="hidden" name="MediaUrls[]" />
+                    </div>
                 </div>
                 <!--end: Wizard Step 4-->
                 <input asp-for="Lng" id="longtitudeInput" type="hidden" />
