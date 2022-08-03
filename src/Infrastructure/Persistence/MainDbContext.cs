@@ -41,8 +41,6 @@ namespace Persistence
         public DbSet<Requirement> Requirements { get; set; }
         public DbSet<RequirementTranslation> RequirementTranslations { get; set; }
         public DbSet<Room> Rooms { get; set; }
-        public DbSet<RoomType> RoomTypes { get; set; }
-        public DbSet<RoomTypeTranslation> RoomTypeTranslations { get; set; }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken)
         {

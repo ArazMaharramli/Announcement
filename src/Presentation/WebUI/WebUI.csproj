@@ -79,7 +79,6 @@
     <Folder Include="Views\Rooms\" />
     <Folder Include="Models\ViewModels\Rooms\" />
     <Folder Include="Areas\Admin\Views\Requirements\" />
-    <Folder Include="Areas\Admin\Views\RoomTypes\" />
     <Folder Include="Areas\Admin\Views\Categories\" />
     <Folder Include="wwwroot\uploads\" />
   </ItemGroup>
@@ -114,7 +113,6 @@
     <None Remove="Views\Rooms\" />
     <None Remove="Models\ViewModels\Rooms\" />
     <None Remove="Areas\Admin\Views\Requirements\" />
-    <None Remove="Areas\Admin\Views\RoomTypes\" />
     <None Remove="Areas\Admin\Views\Categories\" />
   </ItemGroup>
   <ItemGroup>

@@ -27,9 +27,6 @@ namespace Domain.Entities
         public string CategoryId { get; set; }
         public Category Category { get; set; }
 
-        public string RoomTypeId { get; set; }
-        public RoomType RoomType { get; set; }
-
         public ICollection<Amenitie> Amenities { get; set; }
         public ICollection<Requirement> Requirements { get; set; }
         public ICollection<Media> Medias { get; set; }

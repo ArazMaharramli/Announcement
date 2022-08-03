@@ -15,7 +15,6 @@ namespace Application.CQRS.Rooms.Commands.Create
             RuleFor(x => x.Address).NotEmpty();
 
             RuleFor(x => x.CategoryId).NotEmpty();
-            RuleFor(x => x.RoomTypeId).NotEmpty();
             RuleFor(x => x.AmenitieIds).NotEmpty();
             RuleFor(x => x.RequirementIds).NotEmpty();
             RuleFor(x => x.MediaUrls).NotEmpty();

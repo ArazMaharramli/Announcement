@@ -26,7 +26,6 @@ namespace Application.CQRS.Rooms.Commands.Create
         public double Lat { get; set; }
 
         public string CategoryId { get; set; }
-        public string RoomTypeId { get; set; }
 
         public List<string> AmenitieIds { get; set; }
         public List<string> RequirementIds { get; set; }
@@ -84,7 +83,6 @@ namespace Application.CQRS.Rooms.Commands.Create
                         Title = request.Name,
                     },
 
-                    RoomTypeId = request.RoomTypeId,
                     CategoryId = request.CategoryId,
 
                     Amenities = amenities,

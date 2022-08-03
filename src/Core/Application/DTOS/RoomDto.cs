@@ -28,8 +28,6 @@ namespace Application.DTOS
 
         public CategoryDto Category { get; set; }
 
-        public RoomTypeDto RoomType { get; set; }
-
         public List<AmenitieDto> Amenities { get; set; }
         public List<RequirementDto> Requirements { get; set; }
         public List<Media> Medias { get; set; }

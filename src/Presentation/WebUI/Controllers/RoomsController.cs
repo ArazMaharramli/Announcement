@@ -4,14 +4,12 @@ using Application.CQRS.Amenities.Queries.GetAll;
 using Application.CQRS.Categories.Queries.GetAll;
 using Application.CQRS.Requirements.Queries.GetAll;
 using Application.CQRS.Rooms.Commands.Create;
-using Application.CQRS.RoomTypes.Queries.GetAll;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebUI.Controllers
 {
     public class RoomsController : BaseController
     {
-        // GET: /<controller>/
         public IActionResult Index()
         {
             return View();
@@ -41,11 +39,6 @@ namespace WebUI.Controllers
             return Ok(resp);
         }
 
-        public async Task<IActionResult> RoomTypes(CancellationToken cancellationToken)
-        {
-            var resp = await Mediator.Send(new GetAllRoomTypesQuery(), cancellationToken);
-            return Ok(resp);
-        }
         public async Task<IActionResult> Categories(CancellationToken cancellationToken)
         {
             var resp = await Mediator.Send(new GetAllCategoriesQuery(), cancellationToken);

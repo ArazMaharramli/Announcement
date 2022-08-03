@@ -18,8 +18,6 @@ namespace Application.Common.Interfaces
         DbSet<RequirementTranslation> RequirementTranslations { get; set; }
         DbSet<Room> Rooms { get; set; }
         DbSet<Setting> Settings { get; set; }
-        DbSet<RoomType> RoomTypes { get; set; }
-        DbSet<RoomTypeTranslation> RoomTypeTranslations { get; set; }
 
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
