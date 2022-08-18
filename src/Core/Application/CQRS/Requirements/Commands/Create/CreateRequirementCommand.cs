@@ -40,7 +40,7 @@ namespace Application.CQRS.Requirements.Commands.Create
                 };
 
                 _dbContext.Requirements.Add(requirement);
-                await _dbContext.SaveChangesAsync(cancellationToken);
+                await _dbContext.SaveEntitiesAsync(cancellationToken);
 
                 return Unit.Value;
             }

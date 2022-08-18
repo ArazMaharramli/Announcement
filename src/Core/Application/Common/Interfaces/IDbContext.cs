@@ -1,8 +1,10 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Application.Common.Interfaces
 {
@@ -19,7 +21,13 @@ namespace Application.Common.Interfaces
         DbSet<Room> Rooms { get; set; }
         DbSet<Setting> Settings { get; set; }
 
+        public bool HasActiveTransaction { get; }
 
-        Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+        Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken);
+
+        public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken);
+
+        public Task CommitTransactionAsync(IDbContextTransaction transaction, CancellationToken cancellationToken);
+
     }
 }

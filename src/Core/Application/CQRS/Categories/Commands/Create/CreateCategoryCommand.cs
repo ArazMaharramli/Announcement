@@ -46,7 +46,7 @@ namespace Application.CQRS.Categories.Commands.Create
                 };
 
                 _dbContext.Categories.Add(category);
-                await _dbContext.SaveChangesAsync(cancellationToken);
+                await _dbContext.SaveEntitiesAsync(cancellationToken);
 
                 return Unit.Value;
             }

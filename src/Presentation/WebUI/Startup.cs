@@ -21,6 +21,10 @@ using Localization.SqlLocalizer.DbStringLocalizer;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using WebUI.Middlewares;
+using FluentValidation.AspNetCore;
+using FluentValidation;
+using Microsoft.AspNetCore.ResponseCompression;
+using System.IO.Compression;
 
 namespace WebUI
 {
@@ -79,6 +83,8 @@ namespace WebUI
             .AddRazorRuntimeCompilation()
             .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
 
+            services.AddValidatorsFromAssemblyContaining<IDbContext>();
+
             services.AddHttpContextAccessor();
             services.AddTransient<ICurrentUserService, CurrentUserService>();
             services.AddTransient<ICurrentLanguageService, CurrentLanguageService>();
@@ -89,7 +95,15 @@ namespace WebUI
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
-            services.AddResponseCompression();
+            services.Configure<GzipCompressionProviderOptions>(options =>
+            {
+                options.Level = CompressionLevel.SmallestSize;
+            });
+            services.AddResponseCompression(opt =>
+            {
+                opt.EnableForHttps = true;
+                opt.Providers.Add<GzipCompressionProvider>();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -15,6 +15,7 @@ namespace Application.CQRS.Rooms.Commands.Create
     {
         public string ContactName { get; set; }
         public string ContactPhone { get; set; }
+        public string ContactEmail { get; set; }
 
         public string Name { get; set; }
         public string Description { get; set; }
@@ -35,11 +36,13 @@ namespace Application.CQRS.Rooms.Commands.Create
         {
             private readonly IDbContext _dbContext;
             private readonly IMediator _mediator;
+            private readonly ICurrentLanguageService _currentLanguageService;
 
-            public Handler(IDbContext dbContext, IMediator mediator)
+            public Handler(IDbContext dbContext, IMediator mediator, ICurrentLanguageService currentLanguageService)
             {
                 _dbContext = dbContext;
                 _mediator = mediator;
+                _currentLanguageService = currentLanguageService;
             }
 
             public async Task<Unit> Handle(CreateRoomCommand request, CancellationToken cancellationToken)
@@ -52,48 +55,33 @@ namespace Application.CQRS.Rooms.Commands.Create
                     .Where(x => request.RequirementIds.Contains(x.Id))
                     .ToListAsync(cancellationToken);
 
-                var room = new Room
-                {
-                    Name = request.Name,
-                    Slug = request.Name.ToUrlSlug(),
+                var category = await _dbContext.CategoryTranslations
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(z => z.LangCode == _currentLanguageService.LangCode && z.CategoryId == request.CategoryId, cancellationToken);
 
-                    Description = request.Description,
-                    Price = request.Price,
+                var slug = request.Name.ToUrlSlug();
+                var slugCount = await _dbContext.Rooms.CountAsync(x => x.Slug.Contains(slug), cancellationToken);
+                slug += $"-{(slugCount > 0 ? slugCount : "")}";
 
-                    Address = new Domain.Common.Address
-                    {
-                        AddressLine = request.Address,
-                        Location = new NetTopologySuite.Geometries.Point(request.Lng, request.Lat)
-                    },
-                    Contact = new Domain.Common.Contact
-                    {
-                        Phone = request.ContactPhone,
-                        Name = request.ContactName,
-                    },
-
-                    Medias = request.MediaUrls.Select(x => new Media
-                    {
-                        Url = x,
-                        AltTag = $"{request.Name} - image",
-                    }).ToList(),
-
-                    Meta = new Domain.Common.Meta
-                    {
-                        Description = request.Description,
-                        Title = request.Name,
-                    },
-
-                    CategoryId = request.CategoryId,
-
-                    Amenities = amenities,
-                    Requirements = requirements,
-
-                    Status = Domain.Common.RoomStatus.PendingConfirmation
-                };
+                var room = new Room(
+                    name: request.Name.Trim(),
+                    slug: slug,
+                    description: request.Description.Trim(),
+                    price: request.Price,
+                    address: request.Address.Trim(),
+                    lng: request.Lng,
+                    lat: request.Lat,
+                    contactPhone: request.ContactPhone.Trim(),
+                    contactEmail: request.ContactEmail.Trim(),
+                    contactName: request.ContactName.Trim(),
+                    categoryId: request.CategoryId,
+                    amenities: amenities,
+                    requirements: requirements,
+                    mediaUrls: request.MediaUrls,
+                    metaKeywords: category.Meta.Keywords);
 
                 _dbContext.Rooms.Add(room);
-                await _dbContext.SaveChangesAsync(cancellationToken);
-                await _mediator.Publish(new RoomCreated { Room = room }, cancellationToken);
+                await _dbContext.SaveEntitiesAsync(cancellationToken);
                 return Unit.Value;
             }
         }

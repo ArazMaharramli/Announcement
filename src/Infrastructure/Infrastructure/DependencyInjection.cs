@@ -1,10 +1,12 @@
 ﻿using Application.Common.Interfaces;
 using Application.Common.Models.ConfigModels;
 using Common;
+using Hangfire;
 using Infrastructure.Common;
 using Infrastructure.Identity;
 using Infrastructure.Identity.Entities;
 using Infrastructure.Identity.Services;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -39,8 +41,25 @@ namespace Infrastructure
             services.Configure<StaticUrls>(configuration.GetSection("StaticUrls"));
 
 
+            services.AddHangfire(
+               conf => conf
+                   .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                   .UseSimpleAssemblyNameTypeSerializer()
+                   .UseDefaultTypeSerializer()
+                   .UseSqlServerStorage(configuration.GetConnectionString("HangFireDb"))
+           );
+
+            services.AddHangfireServer();
+            services.AddTransient<ITaskScheduler, TaskScheduler>();
+
             return services;
 
+        }
+
+
+        public static void UseInfrastructure(this IApplicationBuilder app)
+        {
+            app.UseHangfireDashboard();
         }
     }
 }

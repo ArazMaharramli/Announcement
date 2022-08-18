@@ -25,7 +25,7 @@ namespace Application.CQRS.Requirements.Commands.Delete
                 var requirements = await _dbContext.Requirements.Where(x => request.Ids.Contains(x.Id)).ToListAsync(cancellationToken);
                 _dbContext.Requirements.RemoveRange(requirements);
 
-                return await _dbContext.SaveChangesAsync(cancellationToken) > 0;
+                return await _dbContext.SaveEntitiesAsync(cancellationToken);
             }
         }
     }

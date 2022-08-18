@@ -56,7 +56,7 @@ namespace Application.CQRS.Amenities.Commands.AddOrUpdateAmenitieTranslation
 
 
                 _dbContext.Amenities.Update(amenitie);
-                return await _dbContext.SaveChangesAsync(cancellationToken) > 0;
+                return await _dbContext.SaveEntitiesAsync(cancellationToken);
             }
         }
     }

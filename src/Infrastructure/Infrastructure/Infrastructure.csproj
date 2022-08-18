@@ -18,15 +18,19 @@
 		<None Remove="Microsoft.Extensions.Options.ConfigurationExtensions" />
 		<None Remove="Microsoft.Office.Interop.Excel" />
 		<None Remove="EPPlus" />
+		<None Remove="Hangfire.AspNetCore" />
+		<None Remove="Hangfire.SqlServer" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.2" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.8" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.8" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
-		<PackageReference Include="MailKit" Version="3.1.1" />
+		<PackageReference Include="MailKit" Version="3.3.0" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
-		<PackageReference Include="EPPlus" Version="5.8.6" />
+		<PackageReference Include="EPPlus" Version="6.0.6" />
+		<PackageReference Include="Hangfire.AspNetCore" Version="1.7.30" />
+		<PackageReference Include="Hangfire.SqlServer" Version="1.7.30" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\..\Core\Application\Application.csproj" />

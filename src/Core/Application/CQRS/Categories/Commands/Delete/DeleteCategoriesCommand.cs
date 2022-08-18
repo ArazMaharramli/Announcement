@@ -28,7 +28,7 @@ namespace Application.CQRS.Categories.Commands.Delete
 
                 _dbContext.Categories.RemoveRange(categories);
 
-                return await _dbContext.SaveChangesAsync(cancellationToken) > 0;
+                return await _dbContext.SaveEntitiesAsync(cancellationToken);
             }
         }
     }

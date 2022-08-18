@@ -47,7 +47,7 @@ namespace Application.CQRS.Amenities.Commands.Update
                   }).ToList();
 
                 _dbContext.Amenities.Update(amenitie);
-                await _dbContext.SaveChangesAsync(cancellationToken);
+                await _dbContext.SaveEntitiesAsync(cancellationToken);
 
                 return Unit.Value;
             }

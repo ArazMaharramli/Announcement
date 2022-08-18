@@ -15,8 +15,8 @@ namespace Persistence
                     configuration.GetConnectionString("MainDb"),
                     x =>
                     {
-                        x.UseNetTopologySuite();
                         x.MigrationsAssembly(typeof(MainDbContext).Assembly.FullName);
+                        x.UseNetTopologySuite();
                     }).LogTo(Console.WriteLine),
                     ServiceLifetime.Scoped);
 

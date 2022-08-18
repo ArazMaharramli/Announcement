@@ -56,7 +56,7 @@ namespace Application.CQRS.Requirements.Commands.AddOrUpdateTranslation
 
 
                 _dbContext.Requirements.Update(requirement);
-                return await _dbContext.SaveChangesAsync(cancellationToken) > 0;
+                return await _dbContext.SaveEntitiesAsync(cancellationToken);
             }
         }
     }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Query;
 
 namespace Persistence.Extentions
 {
-    public static class ExtentionMethods
+    public static class ModelBuilderExtentions
     {
         public static void ApplyGlobalQueryFilter<T>(this ModelBuilder modelBuilder, Expression<Func<T, bool>> expression)
         {

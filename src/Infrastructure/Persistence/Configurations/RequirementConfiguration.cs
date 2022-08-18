@@ -1,15 +1,17 @@
 ﻿using Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Persistence.Configurations.Base;
 
 namespace Persistence.Configurations
 {
-    public class RequirementConfiguration : IEntityTypeConfiguration<Requirement>
+    public class RequirementConfiguration : EntityConfiguration<Requirement>
     {
-        public void Configure(EntityTypeBuilder<Requirement> builder)
+        public override void Configure(EntityTypeBuilder<Requirement> builder)
         {
             builder.HasMany(x => x.Translations)
                 .WithOne(x => x.Requirement);
+
+            base.Configure(builder);
         }
     }
 }

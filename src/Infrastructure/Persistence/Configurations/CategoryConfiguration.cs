@@ -1,15 +1,17 @@
 ﻿using Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Persistence.Configurations.Base;
 
 namespace Persistence.Configurations
 {
-    public class CategoryConfiguration : IEntityTypeConfiguration<Category>
+    public class CategoryConfiguration : EntityConfiguration<Category>
     {
-        public void Configure(EntityTypeBuilder<Category> builder)
+        public override void Configure(EntityTypeBuilder<Category> builder)
         {
             builder.HasMany(x => x.Translations)
                 .WithOne(x => x.Category);
+
+            base.Configure(builder);
         }
     }
 }

@@ -15,6 +15,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.1.3" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="wwwroot\assets\" />
@@ -38,6 +39,7 @@
     <Content Remove="Areas\Admin\Views\Amenities %28copy%29\EditTranslation.cshtml" />
     <Content Remove="Areas\Admin\Views\Amenities %28copy%29\Index.cshtml" />
     <Content Remove="wwwroot\uploads\" />
+    <Content Remove="wwwroot\assets\js\pages\rooms\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\assets\" />
@@ -81,6 +83,7 @@
     <Folder Include="Areas\Admin\Views\Requirements\" />
     <Folder Include="Areas\Admin\Views\Categories\" />
     <Folder Include="wwwroot\uploads\" />
+    <Folder Include="wwwroot\assets\js\pages\rooms\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Services\" />
@@ -114,6 +117,7 @@
     <None Remove="Models\ViewModels\Rooms\" />
     <None Remove="Areas\Admin\Views\Requirements\" />
     <None Remove="Areas\Admin\Views\Categories\" />
+    <None Remove="FluentValidation.AspNetCore" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Application\Application.csproj">

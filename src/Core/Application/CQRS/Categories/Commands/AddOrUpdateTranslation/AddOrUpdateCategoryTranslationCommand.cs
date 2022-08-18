@@ -62,7 +62,7 @@ namespace Application.CQRS.Categories.Commands.AddOrUpdateTranslation
 
 
                 _dbContext.Categories.Update(category);
-                return await _dbContext.SaveChangesAsync(cancellationToken) > 0;
+                return await _dbContext.SaveEntitiesAsync(cancellationToken);
             }
         }
     }

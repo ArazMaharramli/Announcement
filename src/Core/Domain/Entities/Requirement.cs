@@ -4,9 +4,8 @@ using Domain.Common;
 
 namespace Domain.Entities
 {
-    public class Requirement : AuditableEntity
+    public class Requirement : Entity
     {
-        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Icon { get; set; }
 
         public ICollection<Room> Rooms { get; set; }

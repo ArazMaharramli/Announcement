@@ -25,7 +25,7 @@ namespace Application.CQRS.Amenities.Commands.Delete
                 var amenities = await _dbContext.Amenities.Where(x => request.Ids.Contains(x.Id)).ToListAsync(cancellationToken);
                 _dbContext.Amenities.RemoveRange(amenities);
 
-                return await _dbContext.SaveChangesAsync(cancellationToken) > 0;
+                return await _dbContext.SaveEntitiesAsync(cancellationToken);
             }
         }
     }

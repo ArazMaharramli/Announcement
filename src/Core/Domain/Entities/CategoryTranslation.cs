@@ -5,7 +5,6 @@ namespace Domain.Entities
 {
     public class CategoryTranslation : Translation
     {
-        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Slug { get; set; }
         public string Name { get; set; }
 

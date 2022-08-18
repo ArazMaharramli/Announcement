@@ -10,238 +10,28 @@
     <link href="assets/css/pages/wizard/wizard-3.css" rel="stylesheet" type="text/css" />
     <link href="assets/plugins/custom/uppy/uppy.bundle.css" rel="stylesheet" type="text/css" />
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    <style>
+        .iti {
+            display: block;
+        }
+
+        .iti--separate-dial-code .iti__selected-flag {
+            border-top-left-radius: 0.85rem;
+            border-bottom-left-radius: 0.85rem;
+            background-color: transparent;
+        }
+
+        iti__country-list {
+            position: initial;
+        }
+    </style>
 }
 
 @section Scripts{
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD1uU_tT63977_KyXVILofNxnKlLdA32go&libraries=places&callback=initMap&v=weekly" async></script>
 
-    <script async>
-        let infoWindow, marker, autocomplete;
-        function setMarker(location, setcenter = true) {
-            if (setcenter) {
-                map.setCenter(location);
-            }
-            if (marker != null) {
-                marker.setPosition(location);
-                $('#longtitudeInput').val(location.lng);
-                $('#latitudeInput').val(location.lat);
-            }
-        }
-
-        async function getUserLocationFromGPS() {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    pos = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude,
-                    };
-                    setMarker(pos);
-                    console.log(position);
-                },
-                (err) => {
-                }
-            );
-        }
-        async function getUserLocation() {
-
-               var loc = await $.ajax({
-                   url: "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyCdVSHqtbLoxPRa5o35dyisKmSfHHgM0UI",
-                   type: 'POST'
-               });
-               @*console.log(loc);*@
-               setMarker(loc.location);
-
-        }
-        function initSearchBox() {
-            var input = document.getElementById("addressinput");
-            // Create the search box and link it to the UI element.
-            @*const input = document.getElementById("pac-input");*@
-            const searchBox = new google.maps.places.SearchBox(input);
-            map.controls.push(input);
-            // Bias the SearchBox results towards current map's viewport.
-            map.addListener("bounds_changed", () => {
-                searchBox.setBounds(map.getBounds());
-            });
-            // Listen for the event fired when the user selects a prediction and retrieve
-            // more details for that place.
-            searchBox.addListener("places_changed", () => {
-                const places = searchBox.getPlaces();
-                if (places.length == 0) {
-                    return;
-                }
-                // For each place, get the icon, name and location.
-                const bounds = new google.maps.LatLngBounds();
-                places.forEach((place) => {
-                    if (!place.geometry || !place.geometry.location) {
-                        console.log("Returned place contains no geometry");
-                        return;
-                    }
-                    setMarker(place.geometry.location)
-                    console.log(place);
-                    if (place.geometry.viewport) {
-                        // Only geocodes have viewport.
-                        bounds.union(place.geometry.viewport);
-                    } else {
-                        bounds.extend(place.geometry.location);
-                    }
-                });
-                map.fitBounds(bounds);
-            });
-        }
-        function fillInAddress(){
-            const place = autocomplete.getPlace();
-            console.log(place);
-        }
-        function initMap() {
-            var loc = { lat: 40, lng: 49 }
-            getUserLocation();
-            // The map, centered at user location
-            map = new google.maps.Map(document.getElementById("map"), {
-                zoom: 15,
-                center: loc,
-                gestureHandling: "greedy",
-                zoomControl: false,
-            });
-            map.addListener("click", (mapsMouseEvent) => {
-                setMarker(mapsMouseEvent.latLng, false);
-                @*console.log(mapsMouseEvent);*@
-            });
-            marker = new google.maps.Marker({
-                position: loc,
-                map: map,
-            });
-            initSearchBox();
-        }
-    </script>
-    <script async>// Class definition
-        "use strict";
-        // Class definition
-        var KTWizard3 = function () {
-            // Base elements
-            var _wizardEl;
-            var _formEl;
-            var _wizardObj;
-            // Private functions
-            var _initWizard = function () {
-                // Initialize form wizard
-                _wizardObj = new KTWizard(_wizardEl, {
-                    startStep: 1, // initial active step number
-                    clickableSteps: true  // allow step clicking
-                });
-                // Validation before going to next page
-                _wizardObj.on('change', function (wizard) {
-                    if (wizard.getStep() > wizard.getNewStep()) {
-                        return; // Skip if stepped back
-                    }
-                    wizard.goTo(wizard.getNewStep());
-                    KTUtil.scrollTop();
-                    return false;  // Do not change wizard step, further action will be handled by he validator
-                });
-                // Changed event
-                _wizardObj.on('changed', function (wizard) {
-                    KTUtil.scrollTop();
-                });
-                // Submit event
-                _wizardObj.on('submit', function (wizard) {
-                    _formEl.submit(); // submit form
-                });
-            }
-            return {
-                // public functions
-                init: function () {
-                    _wizardEl = KTUtil.getById('kt_wizard_v3');
-                    _formEl = KTUtil.getById('kt_form');
-                    _initWizard();
-                }
-            };
-        }();
-        jQuery(document).ready(function () {
-            KTWizard3.init();
-        });</script>
-
-    <script async>$('#CategoryId').select2({
-            placeholder: "Select a value",
-        });
-        $.ajax({
-            url: "/rooms/categories",
-            type: 'GET',
-            success: function (res) {
-                res.forEach(function (data, index, arr) {
-                    var newOption = new Option(data.name, data.id, false, false);
-                    $("#CategoryId").append(newOption);
-                });
-                $("#CategoryId").trigger('change');
-            }
-        });
-
-        function template(strings, ...keys) {
-            return (function (...values) {
-                let dict = values[values.length - 1] || {};
-                let result = [strings[0]];
-                keys.forEach(function (key, i) {
-                    let value = Number.isInteger(key) ? values[key] : dict[key];
-                    result.push(value, strings[i + 1]);
-                });
-                return result.join('');
-            });
-        }
-
-        var amenitieAndRequirementOption = template` <div class="col-lg-4">
-                                                                                                                                                                                                                                                    <label class="option">
-                                                                                                                                                                                                                                                      <span class="option-control">
-                                                                                                                                                                                                                                                          <span class="checkbox checkbox-outline checkbox-success">
-                                                                                                                                                                                                                                                              <input type="checkbox" name="${'inputName'}" value="${'id'}" checked="checked" />
-                                                                                                                                                                                                                                                              <span></span>
-                                                                                                                                                                                                                                                          </span>
-                                                                                                                                                                                                                                                      </span>
-                                                                                                                                                                                                                                                      <span class="option-label">
-                                                                                                                                                                                                                                                          <span class="option-head">
-                                                                                                                                                                                                                                                              <span class="option-title">
-                                                                                                                                                                                                                                                  ${'title'}
-                                                                                                                                                                                                                                                              </span>
-                                                                                                                                                                                                                                                          </span>
-                                                                                                                                                                                                                                                          <span class="option-body">
-                                                                                                                                                                                                                                             ${'decription'}
-                                                                                                                                                                                                                                                          </span>
-                                                                                                                                                                                                                                                      </span>
-                                                                                                                                                                                                                                                  </label >
-                                                                                                                                                                                                                                              </div >`;
-
-        $.ajax({
-            url: "/rooms/amenities",
-            type: 'GET',
-            success: function (res) {
-                res.forEach(function (data, index, arr) {
-                    var newOption = amenitieAndRequirementOption({
-                        inputName: "AmenitieIds",
-                        id: data.id,
-                        title: data.name,
-                        decription: ''
-                    });
-
-                    $("#Amenities").append(newOption);
-                });
-                $("#Amenities").trigger('change');
-            }
-        });
-
-        $.ajax({
-            url: "/rooms/requirements",
-            type: 'GET',
-            success: function (res) {
-                res.forEach(function (data, index, arr) {
-                    var newOption = amenitieAndRequirementOption({
-                        inputName: "RequirementIds",
-                        id: data.id,
-                        title: data.name,
-                        decription: ''
-                    });
-
-                    $("#Requirements").append(newOption);
-                });
-                $("#Requirements").trigger('change');
-            }
-        });</script>
+    <script src="assets/js/pages/rooms/create.js" defer></script>
 
     <script src="assets/plugins/custom/uppy/uppy.bundle.js"></script>
     <script>var mediaUrls = [];
@@ -283,7 +73,6 @@
                 if (imageType.test(value.type)) {
                     thumbnail = '<div class="uppy-thumbnail"><img src="' + value.uploadURL + '"/></div>';
                     mediaUrls.push(value.uploadURL);
-                    console.log(mediaUrls);
                 }
                 var sizeLabel = "bytes";
                 var filesize = value.size;
@@ -299,6 +88,7 @@
             });
 
             $(id + ' .uppy-thumbnails').append(imagePreview);
+            generateMediaUrlInputs();
         });
 
         $(document).on('click', id + ' .uppy-thumbnails .uppy-remove-thumbnail', function () {
@@ -316,11 +106,39 @@
 
             uppyDrag.removeFile(imageId);
             container.remove();
-            console.log(imgUrl);
             mediaUrls = mediaUrls.filter(function (ele) {
                 return ele != imgUrl;
             });
+            generateMediaUrlInputs();
+        });
+
+        function generateMediaUrlInputs() {
+            var mediaurlinputsStr = "";
             console.log(mediaUrls);
+            mediaUrls.forEach(function (elem) {
+                mediaurlinputsStr += `<input type="checkbox" hidden name="MediaUrls" value="${elem}" checked="checked" />`;
+            });
+            $('#medias').html(mediaurlinputsStr);
+        }</script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD1uU_tT63977_KyXVILofNxnKlLdA32go&libraries=places&callback=initMap&v=weekly" defer></script>
+    <script src="assets/js/pages/rooms/googlemap.js"></script>
+
+    <script>const phoneInputField = document.querySelector("#phone");
+        const phoneInput = window.intlTelInput(phoneInputField, {
+            separateDialCode: true,
+            allowDropdown: true,
+            initialCountry: "az",
+            utilsScript:
+                "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+        });
+        $('#phone').on('keyup', function () {
+            if (phoneInput.isValidNumber()) {
+                $('#ContactPhone').val(phoneInput.getNumber());
+                document.querySelector('[data-valmsg-for="ContactPhone"]').innerHTML = "";
+            } else {
+                document.querySelector('[data-valmsg-for="ContactPhone"]').innerHTML = "Enter valid phone";
+            }
         });</script>
 }
 
@@ -334,17 +152,17 @@
             <div class="wizard-step" data-wizard-type="step" data-wizard-state="current">
                 <div class="wizard-label">
                     <h3 class="wizard-title">
-                        <span>1.</span>Setup Location
+                        <span>1.</span>Contact Details
                     </h3>
                     <div class="wizard-bar"></div>
                 </div>
             </div>
             <!--end::Wizard Step 1 Nav-->
             <!--begin::Wizard Step 2 Nav-->
-            <div class="wizard-step" data-wizard-type="step">
+            <div class="wizard-step" data-wizard-type="step" data-wizard-state="current">
                 <div class="wizard-label">
                     <h3 class="wizard-title">
-                        <span>2.</span>Enter Details
+                        <span>2.</span>Setup Location
                     </h3>
                     <div class="wizard-bar"></div>
                 </div>
@@ -354,7 +172,7 @@
             <div class="wizard-step" data-wizard-type="step">
                 <div class="wizard-label">
                     <h3 class="wizard-title">
-                        <span>3.</span>Select Services
+                        <span>3.</span>Enter Details
                     </h3>
                     <div class="wizard-bar"></div>
                 </div>
@@ -364,12 +182,22 @@
             <div class="wizard-step" data-wizard-type="step">
                 <div class="wizard-label">
                     <h3 class="wizard-title">
-                        <span>4.</span>Delivery Address
+                        <span>4.</span>Select Services
                     </h3>
                     <div class="wizard-bar"></div>
                 </div>
             </div>
             <!--end::Wizard Step 4 Nav-->
+            <!--begin::Wizard Step 5 Nav-->
+            <div class="wizard-step" data-wizard-type="step">
+                <div class="wizard-label">
+                    <h3 class="wizard-title">
+                        <span>5.</span>Delivery Address
+                    </h3>
+                    <div class="wizard-bar"></div>
+                </div>
+            </div>
+            <!--end::Wizard Step 5 Nav-->
         </div>
     </div>
     <!--end: Wizard Nav-->
@@ -380,6 +208,34 @@
             <form class="form" id="kt_form" method="post">
                 <!--begin: Wizard Step 1-->
                 <div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
+                    <h4 class="mb-10 font-weight-bold text-dark">Enter Contact Details</h4>
+                    <!--begin::Input-->
+                    <div class="form-group">
+                        <label asp-for="ContactName"></label>
+                        <input asp-for="ContactName" class="form-control" />
+                        <span class="form-text text-muted" asp-validation-for="ContactName"></span>
+                    </div>
+                    <!--end::Input-->
+                    <!--begin::Input-->
+                    <div class="form-group">
+                        <label asp-for="ContactPhone"></label>
+                        <input id="phone" class="form-control" />
+                        <input hidden asp-for="ContactPhone" />
+                        <span class="form-text text-muted" asp-validation-for="ContactPhone"></span>
+                    </div>
+                    <!--end::Input-->
+                    <!--begin::Input-->
+                    <div class="form-group">
+                        <label asp-for="ContactEmail"></label>
+                        <input asp-for="ContactEmail" class="form-control" />
+                        <span class="form-text text-muted" asp-validation-for="ContactEmail"></span>
+                    </div>
+                    <!--end::Input-->
+
+                </div>
+                <!--end: Wizard Step 1-->
+                <!--begin: Wizard Step 2-->
+                <div class="pb-5" data-wizard-type="step-content">
                     <h4 class="mb-10 font-weight-bold text-dark">Setup Your Current Location</h4>
                     <!--begin::Input-->
                     <div class="form-group">
@@ -405,14 +261,14 @@
                     <!--end::Input-->
                     <div id="map" style="height:500px"></div>
                 </div>
-                <!--end: Wizard Step 1-->
-                <!--begin: Wizard Step 2-->
+                <!--end: Wizard Step 2-->
+                <!--begin: Wizard Step 3-->
                 <div class="pb-5" data-wizard-type="step-content">
                     <h4 class="mb-10 font-weight-bold text-dark">Enter the Details of room</h4>
                     <!--begin::Input-->
                     <div class="form-group">
                         <label asp-for="Name"></label>
-                        <textarea asp-for="Name" class="form-control"></textarea>
+                        <input asp-for="Name" class="form-control" />
                         <span class="form-text text-muted" asp-validation-for="Name"></span>
                     </div>
                     <!--end::Input-->
@@ -425,25 +281,27 @@
                     <!--end::Input-->
                     <!--begin::Input-->
                     <div class="form-group">
+                        <label asp-for="Price"></label>
+                        <input asp-for="Price" class="form-control" />
+                        <span class="form-text text-muted" asp-validation-for="Price"></span>
+                    </div>
+                    <!--end::Input-->
+                    <!--begin::Input-->
+                    <div class="form-group">
                         <label asp-for="CategoryId"></label><br />
                         <select asp-for="CategoryId" class="form-control select2"></select>
                         <span class="form-text text-muted" asp-validation-for="CategoryId"></span>
                     </div>
                     <!--end::Input-->
                 </div>
-                <!--end: Wizard Step 2-->
-                <!--begin: Wizard Step 3-->
-                <div class="pb-5" data-wizard-type="step-content">
-                    <h4 class="mb-10 font-weight-bold text-dark">Select your Services</h4>
-
-                    <div class="row" id="Amenities">
-
-
-
-                    </div>
-                </div>
                 <!--end: Wizard Step 3-->
                 <!--begin: Wizard Step 4-->
+                <div class="pb-5" data-wizard-type="step-content">
+                    <h4 class="mb-10 font-weight-bold text-dark">Select your Services</h4>
+                    <div class="row" id="Amenities"></div>
+                </div>
+                <!--end: Wizard Step 4-->
+                <!--begin: Wizard Step 5-->
                 <div class="pb-5" data-wizard-type="step-content">
                     <h4 class="mb-10 font-weight-bold text-dark">Setup Your Delivery Location</h4>
                     <div class="my-5">
@@ -457,10 +315,10 @@
                         <div class="uppy-thumbnails"></div>
                     </div>
                     <div id="medias">
-                        <input type="hidden" name="MediaUrls[]" />
                     </div>
+
                 </div>
-                <!--end: Wizard Step 4-->
+                <!--end: Wizard Step 5-->
                 <input asp-for="Lng" id="longtitudeInput" type="hidden" />
                 <input asp-for="Lat" id="latitudeInput" type="hidden" />
                 <!--begin: Wizard Actions-->
@@ -469,7 +327,7 @@
                         <button type="button" class="btn btn-light-primary font-weight-bolder text-uppercase px-9 py-4" data-wizard-type="action-prev">Previous</button>
                     </div>
                     <div>
-                        <button type="button" class="btn btn-success font-weight-bolder text-uppercase px-9 py-4" data-wizard-type="action-submit">Submit</button>
+                        <button type="submit" class="btn btn-success font-weight-bolder text-uppercase px-9 py-4" data-wizard-type="action-submit">Submit</button>
                         <button type="button" class="btn btn-primary font-weight-bolder text-uppercase px-9 py-4" data-wizard-type="action-next">Next</button>
                     </div>
                 </div>

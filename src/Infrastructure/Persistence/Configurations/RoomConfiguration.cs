@@ -1,12 +1,12 @@
 ﻿using Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Persistence.Configurations.Base;
 
 namespace Persistence.Configurations
 {
-    public class RoomConfiguration : IEntityTypeConfiguration<Room>
+    public class RoomConfiguration : EntityConfiguration<Room>
     {
-        public void Configure(EntityTypeBuilder<Room> builder)
+        public override void Configure(EntityTypeBuilder<Room> builder)
         {
             builder.Property(x => x.Name).IsRequired();
 
@@ -33,6 +33,8 @@ namespace Persistence.Configurations
 
             builder.HasMany(x => x.Requirements)
                 .WithMany(x => x.Rooms);
+
+            base.Configure(builder);
         }
     }
 }

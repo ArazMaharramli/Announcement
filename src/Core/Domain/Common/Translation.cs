@@ -1,6 +1,6 @@
 ﻿namespace Domain.Common
 {
-    public class Translation : AuditableEntity
+    public class Translation : Entity
     {
         public string LangCode { get; set; }
     }

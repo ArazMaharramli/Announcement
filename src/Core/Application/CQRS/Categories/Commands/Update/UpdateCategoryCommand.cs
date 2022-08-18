@@ -53,7 +53,7 @@ namespace Application.CQRS.Categories.Commands.Update
                   }).ToList();
 
                 _dbContext.Categories.Update(category);
-                await _dbContext.SaveChangesAsync(cancellationToken);
+                await _dbContext.SaveEntitiesAsync(cancellationToken);
 
                 return Unit.Value;
             }

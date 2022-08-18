@@ -26,7 +26,7 @@ namespace Application.CQRS.Settings.Commands.UpdateSetting
                 var setting = await _dbContext.Settings.FirstOrDefaultAsync(x => x.Key == request.Key);
                 setting.Value = request.Value;
                 _dbContext.Settings.Update(setting);
-                return await _dbContext.SaveChangesAsync(cancellationToken) > 0;
+                return await _dbContext.SaveEntitiesAsync(cancellationToken);
             }
         }
     }

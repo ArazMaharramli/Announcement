@@ -40,7 +40,7 @@ namespace Application.CQRS.Amenities.Commands.Create
                 };
 
                 _dbContext.Amenities.Add(amenitie);
-                await _dbContext.SaveChangesAsync(cancellationToken);
+                await _dbContext.SaveEntitiesAsync(cancellationToken);
 
                 return Unit.Value;
             }
