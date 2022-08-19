@@ -50,6 +50,9 @@
 		<None Remove="CQRS\Rooms\Commands\Create\" />
 		<None Remove="CQRS\Rooms\Events\RoomCreated\" />
 		<None Remove="CQRS\Owners\" />
+		<None Remove="CQRS\Owners\IntegrationEvents\" />
+		<None Remove="CQRS\Owners\IntegrationEvents\Events\" />
+		<None Remove="CQRS\Owners\IntegrationEvents\Handlers\" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.2" />
@@ -87,5 +90,8 @@
 	  <Folder Include="CQRS\Rooms\Commands\Create\" />
 	  <Folder Include="CQRS\Rooms\DomainEventHandlers\RoomCreated\" />
 	  <Folder Include="CQRS\Owners\" />
+	  <Folder Include="CQRS\Owners\IntegrationEvents\" />
+	  <Folder Include="CQRS\Owners\IntegrationEvents\Events\" />
+	  <Folder Include="CQRS\Owners\IntegrationEvents\Handlers\" />
 	</ItemGroup>
 </Project>

@@ -9,6 +9,8 @@ namespace Application.CQRS.Rooms.Commands.Create
         {
             RuleFor(x => x.ContactName).NotEmpty();
             RuleFor(x => x.ContactPhone).NotEmpty().Must(x => x.ValidatePhoneNumber());
+            RuleFor(x => x.ContactEmail).EmailAddress();
+
             RuleFor(x => x.Name).NotEmpty();
             RuleFor(x => x.Price).NotEmpty().GreaterThan(0);
 

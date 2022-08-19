@@ -52,6 +52,7 @@ namespace Infrastructure
             services.AddHangfireServer();
             services.AddTransient<ITaskScheduler, TaskScheduler>();
 
+            services.AddScoped<IEventBusService, EventBusService>();
             return services;
 
         }

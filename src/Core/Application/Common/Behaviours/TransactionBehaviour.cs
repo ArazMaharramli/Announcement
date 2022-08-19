@@ -12,15 +12,16 @@ namespace Application.Common.Behaviours
     {
         private readonly ILogger<TransactionBehaviour<TRequest, TResponse>> _logger;
         private readonly IDbContext _dbContext;
-        //private readonly IOrderingIntegrationEventService _orderingIntegrationEventService;
+        private readonly IEventBusService _eventBusService;
 
         public TransactionBehaviour(
-            IDbContext dbContext, //IOrderingIntegrationEventService orderingIntegrationEventService,
-            ILogger<TransactionBehaviour<TRequest, TResponse>> logger)
+            IDbContext dbContext,
+            ILogger<TransactionBehaviour<TRequest, TResponse>> logger,
+            IEventBusService eventBusService)
         {
             _dbContext = dbContext ?? throw new ArgumentException(nameof(IDbContext));
-            //_orderingIntegrationEventService = orderingIntegrationEventService ?? throw new ArgumentException(nameof(orderingIntegrationEventService));
             _logger = logger ?? throw new ArgumentException(nameof(ILogger));
+            _eventBusService = eventBusService;
         }
 
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
@@ -53,10 +54,8 @@ namespace Application.Common.Behaviours
 
                     transactionId = transaction.TransactionId;
 
-
-                    //await _orderingIntegrationEventService.PublishEventsThroughEventBusAsync(transactionId);
                 });
-
+                await _eventBusService.PublishAsync();
                 return response;
             }
             catch (Exception ex)
