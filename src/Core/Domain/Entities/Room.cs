@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Domain.Common;
 using Domain.Events;
-using MediatR;
 
 namespace Domain.Entities
 {
@@ -26,6 +25,9 @@ namespace Domain.Entities
 
         public string CategoryId { get; set; }
         public Category Category { get; set; }
+
+        public string OwnerId { get; set; }
+        public Owner Owner { get; set; }
 
         public ICollection<Amenitie> Amenities { get; set; }
         public ICollection<Requirement> Requirements { get; set; }
@@ -53,7 +55,7 @@ namespace Domain.Entities
             string metaKeywords,
             string categoryId,
             List<Amenitie> amenities,
-            List<Requirement> requirements)
+            List<Requirement> requirements) : this()
         {
             Name = name;
             Slug = slug;

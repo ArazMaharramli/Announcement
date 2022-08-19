@@ -19,6 +19,7 @@ namespace Application.Common.Interfaces
         DbSet<Requirement> Requirements { get; set; }
         DbSet<RequirementTranslation> RequirementTranslations { get; set; }
         DbSet<Room> Rooms { get; set; }
+        DbSet<Owner> Owners { get; set; }
         DbSet<Setting> Settings { get; set; }
 
         public bool HasActiveTransaction { get; }

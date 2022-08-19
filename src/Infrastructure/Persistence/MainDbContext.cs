@@ -49,7 +49,7 @@ namespace Persistence
         public DbSet<Requirement> Requirements { get; set; }
         public DbSet<RequirementTranslation> RequirementTranslations { get; set; }
         public DbSet<Room> Rooms { get; set; }
-
+        public DbSet<Owner> Owners { get; set; }
 
 
         public bool HasActiveTransaction => _currentTransaction != null;
@@ -76,20 +76,18 @@ namespace Persistence
         {
             foreach (var entry in ChangeTracker.Entries<Entity>())
             {
+                entry.Entity.UpdatedAt = _dateTimeService.Now;
                 switch (entry.State)
                 {
                     case EntityState.Added:
                         entry.Entity.CreatedBy = _currentUserService.UserId;
                         entry.Entity.CreatedAt = _dateTimeService.Now;
-                        entry.Entity.UpdatedAt = _dateTimeService.Now;
                         break;
                     case EntityState.Modified:
                         entry.Entity.UpdatedBy = _currentUserService.UserId;
-                        entry.Entity.UpdatedAt = _dateTimeService.Now;
                         break;
                     case EntityState.Deleted:
                         entry.Entity.UpdatedBy = _currentUserService.UserId;
-                        entry.Entity.UpdatedAt = _dateTimeService.Now;
                         entry.Entity.Deleted = true;
                         entry.State = EntityState.Modified;
                         break;

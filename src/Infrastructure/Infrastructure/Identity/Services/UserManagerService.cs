@@ -48,7 +48,19 @@ namespace Infrastructure.Identity.Services
 
             return (result.ToApplicationResult(), user.Id);
         }
+        public async Task<Result> CreateUserAsync(string userName, string phoneNumber, string email, string id = null)
+        {
+            var user = new ApplicationUser
+            {
+                Id = string.IsNullOrWhiteSpace(id) ? Guid.NewGuid().ToString() : id,
+                UserName = userName,
+                Email = userName,
+            };
 
+            var result = await _userManager.CreateAsync(user);
+
+            return (result.ToApplicationResult());
+        }
         public async Task<Result> DeleteUserAsync(string userId)
         {
             var user = _userManager.Users.SingleOrDefault(u => u.Id == userId);

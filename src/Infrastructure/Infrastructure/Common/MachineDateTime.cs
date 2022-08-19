@@ -5,8 +5,8 @@ namespace Infrastructure.Common
 {
     public class MachineDateTime : IDateTimeService
     {
-        public DateTime Now => DateTime.Now;
+        public DateTime Now => DateTime.UtcNow;
 
-        public int CurrentYear => DateTime.Now.Year;
+        public int CurrentYear => DateTime.UtcNow.Year;
     }
 }

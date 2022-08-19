@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ namespace Application.Common.Interfaces
     public interface IUserManager
     {
         Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password);
+        Task<Result> CreateUserAsync(string userName, string phoneNumber, string email, string id = null);
 
         Task<Result> DeleteUserAsync(string userId);
         Task<IList<Claim>> GetUserClaimsAsync(string userId);
