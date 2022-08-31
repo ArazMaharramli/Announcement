@@ -6,6 +6,7 @@ using Domain.Events;
 using Microsoft.EntityFrameworkCore;
 using Domain.Entities;
 using System;
+using Application.CQRS.Owners.IntegrationEvents.Events;
 
 namespace Application.CQRS.Rooms.DomainEventHandlers.RoomCreated
 {
@@ -13,11 +14,13 @@ namespace Application.CQRS.Rooms.DomainEventHandlers.RoomCreated
     {
         private readonly IDbContext _dbContext;
         private readonly ICurrentUserService _currentUserService;
+        private readonly IEventBusService _eventBusService;
 
-        public CreateOrAssignOwnerWhenRoomCreatedDomainEventHandler(IDbContext dbContext, ICurrentUserService currentUserService)
+        public CreateOrAssignOwnerWhenRoomCreatedDomainEventHandler(IDbContext dbContext, ICurrentUserService currentUserService, IEventBusService eventBusService)
         {
             _dbContext = dbContext;
             _currentUserService = currentUserService;
+            _eventBusService = eventBusService;
         }
 
         public async Task Handle(RoomCreatedDomainEvent request, CancellationToken cancellationToken)
@@ -30,15 +33,22 @@ namespace Application.CQRS.Rooms.DomainEventHandlers.RoomCreated
             }
 
             var owner = await _dbContext.Owners.FirstOrDefaultAsync(x => x.Email == room.Contact.Email, cancellationToken);
+            var ownerExisted = owner is not null;
             if (owner is null)
             {
                 var userId = Guid.NewGuid().ToString();
                 owner = new Owner(userId, room.Contact.Name, room.Contact.Email, room.Contact.Phone);
+                _dbContext.Owners.Add(owner);
             }
 
             owner.AddRoom(room);
-            _dbContext.Owners.Add(owner);
+            if (ownerExisted)
+            {
+                _dbContext.Owners.Update(owner);
+            }
+
             await _dbContext.SaveEntitiesAsync(cancellationToken);
+            _eventBusService.AddEvent(new OwnerUserCreatedIntegrationEvent(owner));
         }
     }
 }

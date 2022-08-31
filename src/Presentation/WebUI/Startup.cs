@@ -83,6 +83,9 @@ namespace WebUI
             .AddRazorRuntimeCompilation()
             .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
 
+            services.AddFluentValidationAutoValidation()
+                .AddFluentValidationClientsideAdapters();
+
             services.AddValidatorsFromAssemblyContaining<IDbContext>();
 
             services.AddHttpContextAccessor();

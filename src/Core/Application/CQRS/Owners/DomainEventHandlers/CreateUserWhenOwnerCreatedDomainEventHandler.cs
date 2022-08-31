@@ -28,7 +28,7 @@ namespace Application.CQRS.Owners.DomainEventHandlers
             {
                 throw new InvalidOperationException(string.Join(';', result.Errors));
             }
-            _eventBusService.AddEvent(new OwnerUserCreatedIntegrationEvent(owner.Id));
+            _eventBusService.AddEvent(new OwnerUserCreatedIntegrationEvent(owner));
         }
     }
 }

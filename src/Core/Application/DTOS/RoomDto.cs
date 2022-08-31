@@ -18,7 +18,6 @@ namespace Application.DTOS
         public string Description { get; set; }
 
         public int Price { get; set; }
-        public Gender Gender { get; set; }
 
         public Address Address { get; set; }
 
@@ -39,4 +38,3 @@ namespace Application.DTOS
         }
     }
 }
-

@@ -67,7 +67,7 @@ namespace Persistence
 
             // After executing this line all the changes (from the Command Handler and Domain Event Handlers) 
             // performed through the DbContext will be committed
-            var result = await base.SaveChangesAsync(cancellationToken);
+            var result = await this.SaveChangesAsync(cancellationToken);
 
             return true;
         }
@@ -111,7 +111,7 @@ namespace Persistence
 
             try
             {
-                await SaveChangesAsync(cancellationToken);
+                await this.SaveChangesAsync(cancellationToken);
                 await transaction.CommitAsync();
             }
             catch

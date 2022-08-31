@@ -84,6 +84,7 @@
     <Folder Include="Areas\Admin\Views\Categories\" />
     <Folder Include="wwwroot\uploads\" />
     <Folder Include="wwwroot\assets\js\pages\rooms\" />
+    <Folder Include="Areas\Admin\Views\Rooms\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Services\" />
@@ -118,6 +119,7 @@
     <None Remove="Areas\Admin\Views\Requirements\" />
     <None Remove="Areas\Admin\Views\Categories\" />
     <None Remove="FluentValidation.AspNetCore" />
+    <None Remove="Areas\Admin\Views\Rooms\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Application\Application.csproj">

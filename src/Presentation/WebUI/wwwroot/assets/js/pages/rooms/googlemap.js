@@ -8,6 +8,7 @@ function initMap() {
         center: loc,
         gestureHandling: "greedy",
         zoomControl: false,
+
     });
     map.addListener("click", (mapsMouseEvent) => {
         setMarker(mapsMouseEvent.latLng, false);

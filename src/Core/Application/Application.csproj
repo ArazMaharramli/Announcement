@@ -53,6 +53,10 @@
 		<None Remove="CQRS\Owners\IntegrationEvents\" />
 		<None Remove="CQRS\Owners\IntegrationEvents\Events\" />
 		<None Remove="CQRS\Owners\IntegrationEvents\Handlers\" />
+		<None Remove="CQRS\Rooms\IntegrationEvents\Handlers\" />
+		<None Remove="CQRS\Rooms\IntegrationEvents\Events\" />
+		<None Remove="CQRS\Rooms\Queries\Search\" />
+		<None Remove="CQRS\Rooms\Commands\Delete\" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.2" />
@@ -93,5 +97,9 @@
 	  <Folder Include="CQRS\Owners\IntegrationEvents\" />
 	  <Folder Include="CQRS\Owners\IntegrationEvents\Events\" />
 	  <Folder Include="CQRS\Owners\IntegrationEvents\Handlers\" />
+	  <Folder Include="CQRS\Rooms\IntegrationEvents\Handlers\" />
+	  <Folder Include="CQRS\Rooms\IntegrationEvents\Events\" />
+	  <Folder Include="CQRS\Rooms\Queries\Search\" />
+	  <Folder Include="CQRS\Rooms\Commands\Delete\" />
 	</ItemGroup>
 </Project>

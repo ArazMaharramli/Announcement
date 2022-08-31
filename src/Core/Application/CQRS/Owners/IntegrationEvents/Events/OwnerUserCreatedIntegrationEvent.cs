@@ -1,16 +1,17 @@
 ﻿using System;
 using Application.Common.Models;
+using Domain.Entities;
 using MediatR;
 
 namespace Application.CQRS.Owners.IntegrationEvents.Events
 {
     public class OwnerUserCreatedIntegrationEvent : IntegrationEvent, INotification
     {
-        public string UserId { get; set; }
+        public Owner Owner { get; set; }
 
-        public OwnerUserCreatedIntegrationEvent(string userId)
+        public OwnerUserCreatedIntegrationEvent(Owner owner)
         {
-            UserId = userId;
+            Owner = owner;
         }
     }
 }

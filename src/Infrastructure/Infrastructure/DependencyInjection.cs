@@ -26,6 +26,12 @@ namespace Infrastructure
 
 
             services.Configure<SmtpOptions>(configuration.GetSection("SmtpOptions"));
+
+            EmailTemplates emailTemplates = new EmailTemplates();
+
+            configuration.Bind("EmailTemplates", emailTemplates);
+            services.AddScoped<EmailTemplates>(opt => emailTemplates);
+
             services.AddTransient<IEmailService, EmailService>();
 
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -34,11 +40,18 @@ namespace Infrastructure
             services.AddIdentity<ApplicationUser, ApplicationRole>(opt =>
             {
                 opt.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultPhoneProvider;
+                opt.Tokens.ChangeEmailTokenProvider = TokenOptions.DefaultPhoneProvider;
+                opt.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultPhoneProvider;
+
             })
                .AddEntityFrameworkStores<ApplicationDbContext>()
                .AddDefaultTokenProviders();
 
-            services.Configure<StaticUrls>(configuration.GetSection("StaticUrls"));
+
+            StaticUrls staticUrls = new StaticUrls();
+
+            configuration.Bind("StaticUrls", staticUrls);
+            services.AddScoped<StaticUrls>(opt => staticUrls);
 
 
             services.AddHangfire(

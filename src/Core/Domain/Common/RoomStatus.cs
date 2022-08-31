@@ -4,6 +4,7 @@
     {
         PendingConfirmation,
         Active,
-        Declined
+        Declined,
+        Archieved
     }
 }
