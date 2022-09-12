@@ -12,6 +12,8 @@ using WebUI.Models.ConfigModels;
 using Application.CQRS.Categories.Commands.Update;
 using Application.CQRS.Categories.Queries.Search;
 using Application.CQRS.Categories.Queries.FindTranslation;
+using Application.CQRS.Categories.Queries.GetAll;
+using System.Threading;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -35,7 +37,7 @@ namespace WebUI.Areas.Admin.Controllers
         }
 
         //[HttpPost]
-        public async Task<IActionResult> DatatableAsync()
+        public async Task<IActionResult> DatatableAsync(CancellationToken cancellationToken)
         {
             var searchLang = "";//Request.Form["search[language]"].FirstOrDefault();
             var start = Request.Query["start"].FirstOrDefault();
@@ -59,7 +61,7 @@ namespace WebUI.Areas.Admin.Controllers
                 SortColumn = sortColumn,
                 SortColumnDirection = sortColumnDirection
             };
-            var resp = await Mediator.Send(query);
+            var resp = await Mediator.Send(query, cancellationToken);
             return Ok(resp);
         }
 
@@ -81,19 +83,19 @@ namespace WebUI.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync(CreateCategoryCommand command)
+        public async Task<IActionResult> CreateAsync(CreateCategoryCommand command, CancellationToken cancellationToken)
         {
-            var resp = await Mediator.Send(command);
+            var resp = await Mediator.Send(command, cancellationToken);
             return RedirectToAction(nameof(Index), "Categories", new { Area = "Admin" });
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(string id, CancellationToken cancellationToken)
         {
             var category = await Mediator.Send(new FindByCategoryIdQuery
             {
                 Id = id
-            });
+            }, cancellationToken);
             var model = new UpdateCategoryCommand
             {
                 Id = category.Id,
@@ -111,20 +113,20 @@ namespace WebUI.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(UpdateCategoryCommand command)
+        public async Task<IActionResult> Edit(UpdateCategoryCommand command, CancellationToken cancellationToken)
         {
-            var resp = await Mediator.Send(command);
+            var resp = await Mediator.Send(command, cancellationToken);
             return RedirectToAction(nameof(Index), "Categories", new { Area = "Admin" });
         }
 
         [HttpGet("{lang}/[area]/[controller]/[action]/{langCode}/{id}")]
-        public async Task<IActionResult> EditTranslation([FromRoute] string lang, [FromRoute] string langCode, [FromRoute] string id)
+        public async Task<IActionResult> EditTranslation([FromRoute] string lang, [FromRoute] string langCode, [FromRoute] string id, CancellationToken cancellationToken)
         {
             var category = await Mediator.Send(new FindCategoryTranslationQuery
             {
                 Id = id,
                 LangCode = lang
-            });
+            }, cancellationToken);
             var model = new AddOrUpdateCategoryTranslationCommand
             {
                 Id = id,
@@ -138,20 +140,26 @@ namespace WebUI.Areas.Admin.Controllers
         }
 
         [HttpPost("{lang}/[area]/[controller]/[action]/{langCode}/{id}")]
-        public async Task<IActionResult> EditTranslation(AddOrUpdateCategoryTranslationCommand command)
+        public async Task<IActionResult> EditTranslation(AddOrUpdateCategoryTranslationCommand command, CancellationToken cancellationToken)
         {
 
-            var resp = await Mediator.Send(command);
+            var resp = await Mediator.Send(command, cancellationToken);
 
             return RedirectToAction(nameof(Index), "Categories", new { Area = "Admin" });
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete([FromBody] DeleteCategoriesCommand command)
+        public async Task<IActionResult> Delete([FromBody] DeleteCategoriesCommand command, CancellationToken cancellationToken)
         {
-            var resp = await Mediator.Send(command);
+            var resp = await Mediator.Send(command, cancellationToken);
 
             return resp ? Ok() : BadRequest(new { message = _localizer["ErrorMessage"].Value });
+        }
+
+        public async Task<IActionResult> All(CancellationToken cancellationToken)
+        {
+            var resp = await Mediator.Send(new GetAllCategoriesQuery(), cancellationToken);
+            return Ok(resp);
         }
     }
 }

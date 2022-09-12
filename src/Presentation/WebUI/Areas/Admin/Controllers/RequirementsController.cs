@@ -11,6 +11,10 @@ using WebUI.Controllers;
 using WebUI.Models.ConfigModels;
 using Application.CQRS.Requirements.Commands.Update;
 using Application.CQRS.Requirements.Queries.Search;
+using Application.CQRS.Categories.Queries.GetAll;
+using MediatR;
+using System.Threading;
+using Application.CQRS.Requirements.Queries.GetAll;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -134,5 +138,12 @@ namespace WebUI.Areas.Admin.Controllers
 
             return resp ? Ok() : BadRequest(new { message = _localizer["ErrorMessage"].Value });
         }
+
+        public async Task<IActionResult> All(CancellationToken cancellationToken)
+        {
+            var resp = await Mediator.Send(new GetAllRequirementsQuery(), cancellationToken);
+            return Ok(resp);
+        }
     }
+
 }

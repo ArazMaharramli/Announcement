@@ -1,0 +1,455 @@
+﻿@model Application.CQRS.Rooms.Commands.Update.UpdateRoomCommand
+
+@inject WebUI.Models.ConfigModels.SupportedLanguages SupportedLanguages
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
+@{
+    var mediasJson = Json.Serialize(Model.Medias).ToString();
+    mediasJson = mediasJson.Replace("url", "Url");
+    mediasJson = mediasJson.Replace("altTag", "AltTag");
+}
+
+@section Styles{
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    <style>
+        .iti {
+            display: block;
+        }
+
+        .iti--separate-dial-code .iti__selected-flag {
+            border-top-left-radius: 0.85rem;
+            border-bottom-left-radius: 0.85rem;
+            background-color: transparent;
+        }
+
+        iti__country-list {
+            position: initial;
+        }
+    </style>
+}
+
+@section Scripts{
+    <script src="assets/plugins/custom/formrepeater/formrepeater.bundle.js"></script>
+
+    <script async>
+        var selectedamenities = [@Html.Raw(string.Join(',',Model.AmenitieIds.Select(x=>$"\"{x}\"").ToArray()))];
+        var selectedrequirements = [@Html.Raw(string.Join(',',Model.RequirementIds.Select(x=>$"\"{x}\"").ToArray()))];
+
+        $.ajax({
+            url: "/admin/categories/all",
+            type: 'GET',
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                res.forEach((elem) => {
+                    var newOption = new Option(elem.name, elem.id, false, elem.id=='@Model.CategoryId');
+                    $('#CategoryId').append(newOption).trigger('change');
+                })
+            }
+});
+
+        $.ajax({
+            url: "/admin/amenities/all",
+            type: 'GET',
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                res.forEach((elem) => {
+                    var newOption = new Option(elem.name, elem.id, false, selectedamenities.includes(elem.id));
+                    $('#AmenitieIds').append(newOption).trigger('change');
+                })
+            }
+        });
+
+        $.ajax({
+            url: "/admin/requirements/all",
+            type: 'GET',
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                res.forEach((elem) => {
+                    var newOption = new Option(elem.name, elem.id, false, selectedrequirements.includes(elem.id));
+                    $('#RequirementIds').append(newOption).trigger('change');
+                })
+            }
+        });
+    </script>
+    <script>
+        $('#savebtn').on('click', function () {
+           var saveBtn = $(this);
+           saveBtn.attr("data-kt-indicator", "on");
+
+           var data = new FormData(document.getElementById('roomupdateform'));
+            console.log('referer', document.referrer);
+           $.ajax({
+               url: "/admin/rooms/edit",
+                type: 'POST',
+                data: data,
+                processData: false,
+                contentType: false,
+               success: function (res) {
+                   saveBtn.removeAttr("data-kt-indicator");
+                    Swal.fire({
+                        text: "@Localizer["Updates successfully saved!"]",
+                        icon: "success",
+                        buttonsStyling: false,
+                        confirmButtonText: "@Localizer["Ok, Go Back!"]",
+                        showCancelButton: true,
+                        customClass: {
+                            confirmButton: "btn fw-bold btn-primary",
+                            cancelButton: "btn fw-bold btn-success",
+                        }
+                    }).then((res) => {
+                        console.log('response',res);
+                        if (res.isConfirmed) {
+                            window.location = document.referrer;
+                        }
+                    });
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    saveBtn.removeAttr("data-kt-indicator");
+                    Swal.fire({
+                        text: "@Localizer["Something went wrong"]",
+                        icon: "error",
+                        buttonsStyling: false,
+                        confirmButtonText: "@Localizer["Ok!"]",
+                        customClass: {
+                            confirmButton: "btn fw-bold btn-primary",
+                        }
+                    });
+                }
+            });
+        });
+
+        $('#declinebtn').on('click', function () {
+            var declineBtn = $('#declinebtn');
+
+            Swal.fire({
+                icon: "warning",
+                title: "@Localizer["Are you sure to decline?"]",
+                showCancelButton: true,
+                buttonsStyling: false,
+                showLoaderOnConfirm: true,
+                confirmButtonText: "@Localizer["Yes, decline"]",
+                cancelButtonText:"@Localizer["No, Cancel."]",
+                input: 'textarea',
+                inputAttributes: {
+                    autocapitalize: 'off'
+                },
+                allowOutsideClick: () => !Swal.isLoading(),
+                customClass: {
+                    confirmButton: "btn fw-bold btn-primary",
+                    cancelButton: "btn fw-bold btn-danger",
+                },
+            }).then((res) => {
+                if (res.isConfirmed) {
+                    declineBtn.attr("data-kt-indicator", "on");
+
+                    var notes = Swal.getInput().value;
+                    $.ajax({
+                       url: "/admin/rooms/decline",
+                        type: 'POST',
+                       data: JSON.stringify({
+                           "Id" : '@Model.Id',
+                           "Notes" : notes
+                       }),
+                        processData: false,
+                        contentType:'application/json',
+                        success: function (res) {
+                           declineBtn.removeAttr("data-kt-indicator");
+                            Swal.fire({
+                                text: "@Localizer["Declined!"]",
+                                icon: "success",
+                                buttonsStyling: false,
+                                confirmButtonText: "@Localizer["Ok, Go Back!"]",
+                                showCancelButton: true,
+                                customClass: {
+                                    confirmButton: "btn fw-bold btn-primary",
+                                    cancelButton: "btn fw-bold btn-success",
+                                }
+                            }).then((res) => {
+                                console.log('response',res);
+                                if (res.isConfirmed) {
+                                    window.location = document.referrer;
+                                }
+                            });
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                           declineBtn.removeAttr("data-kt-indicator");
+                            Swal.fire({
+                                text: "@Localizer["Something went wrong"]",
+                                icon: "error",
+                                buttonsStyling: false,
+                                confirmButtonText: "@Localizer["Ok!"]",
+                                customClass: {
+                                    confirmButton: "btn fw-bold btn-primary",
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+
+        });
+
+        $('#publishbtn').on('click', function () {
+            var publishbtn = $(this);
+            publishbtn.attr("data-kt-indicator", "on");
+
+                    var data = new FormData();
+                   data.append("Id", '@Model.Id');
+                   $.ajax({
+                       url: "/admin/rooms/publish",
+                        type: 'POST',
+                        data: data,
+                        processData: false,
+                        contentType: false,
+                       success: function (res) {
+                           publishbtn.removeAttr("data-kt-indicator");
+                            Swal.fire({
+                                text: "@Localizer["Published!"]",
+                                icon: "success",
+                                buttonsStyling: false,
+                                confirmButtonText: "@Localizer["Ok, Go Back!"]",
+                                showCancelButton: true,
+                                customClass: {
+                                    confirmButton: "btn fw-bold btn-primary",
+                                    cancelButton: "btn fw-bold btn-success",
+                                }
+                            }).then((res) => {
+                                console.log('response',res);
+                                if (res.isConfirmed) {
+                                    window.location = document.referrer;
+                                }
+                            });
+                        },
+                       error: function (xhr, ajaxOptions, thrownError) {
+                           publishbtn.removeAttr("data-kt-indicator");
+                            Swal.fire({
+                                text: "@Localizer["Something went wrong"]",
+                                icon: "error",
+                                buttonsStyling: false,
+                                confirmButtonText: "@Localizer["Ok!"]",
+                                customClass: {
+                                    confirmButton: "btn fw-bold btn-primary",
+                                }
+                            });
+                        }
+                    });
+        });
+    </script>
+
+    <script>const phoneInputField = document.querySelector("#phone");
+        const phoneInput = window.intlTelInput(phoneInputField, {
+            separateDialCode: true,
+            allowDropdown: true,
+            initialCountry: "az",
+            utilsScript:
+                "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+        });
+        $('#phone').on('keyup', function () {
+            if (phoneInput.isValidNumber()) {
+                $('#ContactPhone').val(phoneInput.getNumber());
+                document.querySelector('[data-valmsg-for="ContactPhone"]').innerHTML = "";
+            } else {
+                document.querySelector('[data-valmsg-for="ContactPhone"]').innerHTML = "Enter valid phone";
+            }
+        });</script>
+
+    <script>
+        var json = JSON.parse('@Html.Raw(mediasJson)');
+        console.log(json);
+
+        $('#mediasRepeaterList').repeater({
+            // (Optional)
+            // "show" is called just after an item is added.  The item is hidden
+            // at this point.  If a show callback is not given the item will
+            // have $(this).show() called on it.
+            show: function () {
+                var imgUrl = $(this).find('[data-media-url]').val();
+                console.log(imgUrl);
+                $(this).find('img').attr('src',imgUrl)
+                $(this).slideDown();
+            },
+            // (Optional)
+            // "hide" is called when a user clicks on a data-repeater-delete
+            // element.  The item is still visible.  "hide" is passed a function
+            // as its first argument which will properly remove the item.
+            // "hide" allows for a confirmation step, to send a delete request
+            // to the server, etc.  If a hide callback is not given the item
+            // will be deleted.
+            hide: function (deleteElement) {
+                @*if (confirm('Are you sure you want to delete this element?')) {
+                    $(this).slideUp(deleteElement);
+                }*@
+            }
+        })
+            .setList(json);</script>
+}
+<!--begin::Form-->
+<form class="form" id="roomupdateform" method="post">
+    <div class="card card-custom">
+        <div class="card-header">
+            <h3 class="card-title font-size-h1 text-dark font-weight-bolder mr-3 mb-0">
+                @Localizer["Title"]
+            </h3>
+        </div>
+
+        <div class="card-body">
+            <!--Begin:: Tab Nav Bar-->
+            <ul class="nav nav-tabs mb-5 fs-6 nav-stretch">
+                <li class="nav-item">
+                    <a class="nav-link " data-bs-toggle="tab" href="#kt_tab_pane_details">@Localizer["Room Details"]</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#kt_tab_pane_medias">@Localizer["Medias"]</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#kt_tab_pane_seo">@Localizer["SEO"]</a>
+                </li>
+            </ul>
+            <!--End:: Tab Nav Bar-->
+            <!--Begin:: Tab: Details-->
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade" id="kt_tab_pane_details" role="tabpanel">
+                    <div class="form-floating mb-7">
+                        <input class="form-control" asp-for="Name" />
+                        <label asp-for="Name"></label>
+                    </div>
+                    <div class="form-floating mb-7">
+                        <input class="form-control" asp-for="Slug" />
+                        <label asp-for="Slug"></label>
+                    </div>
+                    <div class="form-floating mb-7">
+                        <textarea class="form-control" asp-for="Description"></textarea>
+                        <label asp-for="Description"></label>
+                    </div>
+                    <div class="form-floating mb-7">
+                        <input class="form-control" asp-for="Price" />
+                        <label asp-for="Price"></label>
+                    </div>
+                    <div class="form-group mb-7">
+                        <label asp-for="CategoryId"></label>
+                        <select class="form-select" asp-for="CategoryId" data-control="select2"></select>
+                    </div>
+                    <div class="form-group mb-7">
+                        <label asp-for="AmenitieIds"></label>
+                        <select class="form-select" asp-for="AmenitieIds" data-control="select2"></select>
+                    </div>
+                    <div class="form-group mb-7">
+                        <label asp-for="RequirementIds"></label>
+                        <select class="form-select" asp-for="RequirementIds" data-control="select2"></select>
+                    </div>
+                    <!--begin::separator-->
+                    <div class="separator separator-content border-dark my-15"><span class="w-250px fw-bold">@Localizer["Address Details"]</span></div>
+                    <!--end::separator-->
+                    <div class="form-floating mb-7">
+                        <input class="form-control" asp-for="Address.AddressLine" />
+                        <label asp-for="Address.AddressLine"></label>
+                    </div>
+                    <!--begin::separator-->
+                    <div class="separator separator-content border-dark my-15"><span class="w-250px fw-bold">@Localizer["Contact Details"]</span></div>
+                    <!--end::separator-->
+                    <div class="form-floating mb-7">
+                        <input class="form-control" asp-for="Contact.Name" />
+                        <label asp-for="Contact.Name"></label>
+                    </div>
+                    <div class="form-floating mb-7">
+                        <input class="form-control" asp-for="Contact.Email" />
+                        <label asp-for="Contact.Email"></label>
+                    </div>
+                    <div class="form-group form-floating mb-7">
+                        <input id="phone" class="form-control" value="@Model.Contact.Phone" />
+                        <input hidden asp-for="Contact.Phone" id="ContactPhone" />
+                        <span class="form-text text-muted" asp-validation-for="Contact.Phone"></span>
+                    </div>
+                </div>
+                <!--End:: Tab: Details-->
+                <!--Begin:: Tab: Medias-->
+                <div class="tab-pane fade show active" id="kt_tab_pane_medias" role="tabpanel">
+                    <div id="mediasRepeaterList">
+
+                        <div class="row" data-repeater-list="Medias">
+
+                            <div class="col-lg-4" data-repeater-item>
+                                @*<div class="form-group row mb-5">*@
+                                <!--begin::Item-->
+                                <div class="card overlay overflow-hidden">
+                                    <div class="card-body p-0">
+                                        <div class="overlay-wrapper">
+                                            <img src="" alt="" class="w-100 rounded" />
+                                            <input type="text" hidden data-media-url name="Url" />
+                                        </div>
+                                        <div class="overlay-layer bg-dark bg-opacity-25">
+                                            <a href="javascript:;" data-repeater-delete class="btn btn-light-danger btn-shadow">
+                                                <i class="la la-trash-o fs-3"></i>Delete
+                                            </a>
+                                            @*<a href="#" class="btn btn-light-primary btn-shadow ms-2">Edit</a>*@
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--end::Item-->
+                                <div class="form-floating mb-7">
+                                    <input type="text" name="AltTag" class="form-control" />
+                                    <label>AltTag</label>
+                                </div>
+                                @*</div>*@
+                            </div>
+                            <!--end::Carousel-->
+                        </div>
+                    </div>
+                </div>
+                <!--End:: Tab: Medias-->
+                <!--Begin:: Tab: SEO-->
+                <div class="tab-pane fade" id="kt_tab_pane_seo" role="tabpanel">
+                    <div class="form-floating mb-7">
+                        <input asp-for="Meta.Title" class="form-control" />
+                        <label asp-for="Meta.Title"></label>
+                        <span class="form-text text-muted" asp-validation-for="Meta.Title"></span>
+                    </div>
+                    <div class="form-floating mb-7">
+                        <input asp-for="Meta.Keywords" class="form-control" />
+                        <label asp-for="Meta.Keywords"></label>
+                        <span class="form-text text-muted" asp-validation-for="Meta.Keywords"></span>
+                    </div>
+                    <div class="form-floating mb-7">
+                        <input asp-for="Meta.Description" class="form-control" />
+                        <label asp-for="Meta.Description"></label>
+                        <span class="form-text text-muted" asp-validation-for="Meta.Description"></span>
+                    </div>
+                </div>
+                <!--End:: TAb: SEO-->
+            </div>
+
+        </div>
+        <input type="hidden" asp-for="Id" class="form-control form-control-solid" />
+        <div class="card-footer">
+            <button type="button" id="publishbtn" class="btn btn-primary mr-2">
+                <span class="indicator-label">
+                    @Localizer["Publish"]
+                </span>
+                <span class="indicator-progress">
+                    @Localizer["Please wait"]... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                </span>
+            </button>
+            <button type="button" id="declinebtn" class="btn btn-danger mr-2">
+                <span class="indicator-label">
+                    @Localizer["Decline"]
+                </span>
+                <span class="indicator-progress">
+                    @Localizer["Please wait"]... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                </span>
+            </button>
+            <button type="button" id="savebtn" class="btn btn-secondary">
+                <span class="indicator-label">
+                    @Localizer["Save"]
+                </span>
+                <span class="indicator-progress">
+                    @Localizer["Please wait"]... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                </span>
+            </button>
+        </div>
+    </div>
+</form>
+<!--end::Form-->

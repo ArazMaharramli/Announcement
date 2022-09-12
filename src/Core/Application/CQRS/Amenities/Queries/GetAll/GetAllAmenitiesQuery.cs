@@ -29,8 +29,8 @@ namespace Application.CQRS.Amenities.Queries.GetAll
             public Task<List<AmenitieDetailsVM>> Handle(GetAllAmenitiesQuery request, CancellationToken cancellationToken)
             {
                 return _dbContext.Amenities
-                    .Include(x => x.Translations)
-                    .ProjectTo<AmenitieDetailsVM>(_mapper.ConfigurationProvider, new { langCode = _currentLanguageService.LangCode })
+                    .Include(x => x.Translations.Where(x => x.LangCode == _currentLanguageService.LangCode))
+                    .ProjectTo<AmenitieDetailsVM>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
             }
         }

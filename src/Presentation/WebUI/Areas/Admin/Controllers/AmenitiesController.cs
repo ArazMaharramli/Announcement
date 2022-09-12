@@ -11,6 +11,8 @@ using Microsoft.Extensions.Localization;
 using WebUI.Controllers;
 using WebUI.Models.ConfigModels;
 using Application.CQRS.Amenities.Commands.Update;
+using System.Threading;
+using Application.CQRS.Amenities.Queries.GetAll;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -133,6 +135,12 @@ namespace WebUI.Areas.Admin.Controllers
             var resp = await Mediator.Send(command);
 
             return resp ? Ok() : BadRequest(new { message = _localizer["ErrorMessage"].Value });
+        }
+
+        public async Task<IActionResult> All(CancellationToken cancellationToken)
+        {
+            var resp = await Mediator.Send(new GetAllAmenitiesQuery(), cancellationToken);
+            return Ok(resp);
         }
     }
 }

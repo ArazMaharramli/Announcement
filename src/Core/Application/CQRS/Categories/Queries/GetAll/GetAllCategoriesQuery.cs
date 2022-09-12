@@ -29,8 +29,8 @@ namespace Application.CQRS.Categories.Queries.GetAll
             public Task<List<CategoryDetailsVM>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
             {
                 return _dbContext.Categories
-                    .Include(x => x.Translations)
-                    .ProjectTo<CategoryDetailsVM>(_mapper.ConfigurationProvider, new { langCode = _currentLanguageService.LangCode })
+                    .Include(x => x.Translations.Where(x => x.LangCode == _currentLanguageService.LangCode))
+                    .ProjectTo<CategoryDetailsVM>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
             }
         }

@@ -24,4 +24,3 @@ namespace Application.CQRS.Rooms.Queries.Search
         }
     }
 }
-

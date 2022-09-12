@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using Application.CQRS.Rooms.Commands.Decline;
 using Application.CQRS.Rooms.Commands.Delete;
+using Application.CQRS.Rooms.Commands.Publish;
+using Application.CQRS.Rooms.Commands.Update;
+using Application.CQRS.Rooms.Queries.FindById;
 using Application.CQRS.Rooms.Queries.Search;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
@@ -15,9 +20,9 @@ namespace WebUI.Areas.Admin.Controllers
     [Area("Admin")]
     public class RoomsController : BaseController
     {
-        private readonly IStringLocalizer<AmenitiesController> _localizer;
+        private readonly IStringLocalizer<RoomsController> _localizer;
 
-        public RoomsController(IStringLocalizer<AmenitiesController> localizer)
+        public RoomsController(IStringLocalizer<RoomsController> localizer)
         {
             _localizer = localizer;
         }
@@ -53,9 +58,52 @@ namespace WebUI.Areas.Admin.Controllers
             ViewBag.Deleted = deleted;
             return View();
         }
-
+        // GET: /<controller>/
+        public async Task<IActionResult> EditAsync(string id, CancellationToken cancellationToken)
+        {
+            var room = await Mediator.Send(new FindByRoomIdQuery { Id = id }, cancellationToken); ;
+            var model = new UpdateRoomCommand
+            {
+                Name = room.Name,
+                Address = room.Address,
+                AmenitieIds = room.Amenities.Select(x => x.Id).ToList(),
+                RequirementIds = room.Requirements.Select(x => x.Id).ToList(),
+                CategoryId = room.CategoryId,
+                Contact = room.Contact,
+                Description = room.Description,
+                Id = room.Id,
+                Medias = room.Medias,
+                Meta = room.Meta,
+                Price = room.Price,
+                Slug = room.Slug,
+                Status = room.Status
+            };
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditAsync(UpdateRoomCommand command, CancellationToken cancellationToken)
+        {
+            await Mediator.Send(command, cancellationToken);
+            return Ok();
+        }
         [HttpPost]
         public async Task<IActionResult> Delete([FromBody] DeleteRoomsCommand command)
+        {
+            var resp = await Mediator.Send(command);
+
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Publish([FromBody] PublishRoomCommand command)
+        {
+            var resp = await Mediator.Send(command);
+
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Decline([FromBody] DeclineRoomCommand command)
         {
             var resp = await Mediator.Send(command);
 

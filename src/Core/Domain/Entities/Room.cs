@@ -83,7 +83,7 @@ namespace Domain.Entities
 
             Meta = new Meta
             {
-                Title = Name,
+                Title = name,
                 Description = Description,
                 Keywords = metaKeywords
             };
@@ -97,12 +97,33 @@ namespace Domain.Entities
 
             AddRoomCreatedDomainEvent();
         }
+        public void Publish()
+        {
+            _setStatus(RoomStatus.Active);
+        }
 
+        public void Decline(string note)
+        {
+            AdminNotes = note.Trim();
+            _setStatus(RoomStatus.Declined);
+        }
+
+        public void Archieve()
+        {
+            _setStatus(RoomStatus.Archieved);
+        }
+
+        private void _setStatus(RoomStatus status)
+        {
+            Status = status;
+        }
         private void AddRoomCreatedDomainEvent()
         {
             var roomCreatedDomainEvent = new RoomCreatedDomainEvent(this);
 
             this.AddDomainEvent(roomCreatedDomainEvent);
         }
+
+
     }
 }
