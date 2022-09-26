@@ -8,6 +8,7 @@ using Application.Common.Interfaces;
 using Application.CQRS.Amenities.Queries.GetAll;
 using Application.CQRS.Requirements.Queries.GetAll;
 using Application.CQRS.Rooms.IntegrationEvents.Events;
+using Common.Extentions;
 using Domain.Common;
 using Domain.Entities;
 using MediatR;
@@ -19,7 +20,7 @@ namespace Application.CQRS.Rooms.Commands.Update
     {
         public string Id { get; set; }
 
-        public string Name { get; set; }
+        public string Title { get; set; }
         public string Slug { get; set; }
         public Meta Meta { get; set; }
 
@@ -64,7 +65,7 @@ namespace Application.CQRS.Rooms.Commands.Update
                 var requirements = await _dbContext.Requirements.Where(x => request.RequirementIds.Contains(x.Id)).ToListAsync(cancellationToken);
                 var amenities = await _dbContext.Amenities.Where(x => request.AmenitieIds.Contains(x.Id)).ToListAsync(cancellationToken);
 
-                room.Name = request.Name;
+                room.Title = request.Title.Trim();
                 room.Slug = request.Slug;
                 room.Meta = request.Meta;
                 room.Address = request.Address;

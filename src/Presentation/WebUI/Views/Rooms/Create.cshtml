@@ -30,6 +30,9 @@
 }
 
 @section Scripts{
+    <script src="~/assets/js/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/assets/js/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
 
     <script src="assets/js/pages/rooms/create.js" defer></script>
 
@@ -150,52 +153,22 @@
         <div class="wizard-steps px-8 py-8 px-lg-15 py-lg-3">
             <!--begin::Wizard Step 1 Nav-->
             <div class="wizard-step" data-wizard-type="step" data-wizard-state="current">
-                <div class="wizard-label">
-                    <h3 class="wizard-title">
-                        <span>1.</span>Contact Details
-                    </h3>
-                    <div class="wizard-bar"></div>
-                </div>
             </div>
             <!--end::Wizard Step 1 Nav-->
             <!--begin::Wizard Step 2 Nav-->
             <div class="wizard-step" data-wizard-type="step" data-wizard-state="current">
-                <div class="wizard-label">
-                    <h3 class="wizard-title">
-                        <span>2.</span>Setup Location
-                    </h3>
-                    <div class="wizard-bar"></div>
-                </div>
             </div>
             <!--end::Wizard Step 2 Nav-->
             <!--begin::Wizard Step 3 Nav-->
             <div class="wizard-step" data-wizard-type="step">
-                <div class="wizard-label">
-                    <h3 class="wizard-title">
-                        <span>3.</span>Enter Details
-                    </h3>
-                    <div class="wizard-bar"></div>
-                </div>
             </div>
             <!--end::Wizard Step 3 Nav-->
             <!--begin::Wizard Step 4 Nav-->
             <div class="wizard-step" data-wizard-type="step">
-                <div class="wizard-label">
-                    <h3 class="wizard-title">
-                        <span>4.</span>Select Services
-                    </h3>
-                    <div class="wizard-bar"></div>
-                </div>
             </div>
             <!--end::Wizard Step 4 Nav-->
             <!--begin::Wizard Step 5 Nav-->
             <div class="wizard-step" data-wizard-type="step">
-                <div class="wizard-label">
-                    <h3 class="wizard-title">
-                        <span>5.</span>Delivery Address
-                    </h3>
-                    <div class="wizard-bar"></div>
-                </div>
             </div>
             <!--end::Wizard Step 5 Nav-->
         </div>
@@ -327,7 +300,7 @@
                         <button type="button" class="btn btn-light-primary font-weight-bolder text-uppercase px-9 py-4" data-wizard-type="action-prev">Previous</button>
                     </div>
                     <div>
-                        <button type="submit" class="btn btn-success font-weight-bolder text-uppercase px-9 py-4" data-wizard-type="action-submit">Submit</button>
+                        <button type="submit" class="btn btn-success font-weight-bolder text-uppercase px-9 py-4">Submit</button>
                         <button type="button" class="btn btn-primary font-weight-bolder text-uppercase px-9 py-4" data-wizard-type="action-next">Next</button>
                     </div>
                 </div>

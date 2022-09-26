@@ -1,9 +1,11 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Application.CQRS.Amenities.Queries.GetAll;
 using Application.CQRS.Categories.Queries.GetAll;
 using Application.CQRS.Requirements.Queries.GetAll;
 using Application.CQRS.Rooms.Commands.Create;
+using Application.CQRS.Rooms.Queries.GetActiveRooms;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebUI.Controllers
@@ -25,6 +27,13 @@ namespace WebUI.Controllers
         {
             var res = await Mediator.Send(command, cancellationToken);
             return RedirectToAction("Index", "Home");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> All(string query, string categoryId, DateTime? startFrom, CancellationToken cancellationToken)
+        {
+            var resp = await Mediator.Send(new GetActiveRoomsQuery { CategoryId = categoryId, StartFrom = startFrom, Query = query }, cancellationToken);
+            return Ok(resp);
         }
 
         public async Task<IActionResult> Amenities(CancellationToken cancellationToken)

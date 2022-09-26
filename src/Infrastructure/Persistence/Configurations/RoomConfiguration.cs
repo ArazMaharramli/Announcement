@@ -8,7 +8,7 @@ namespace Persistence.Configurations
     {
         public override void Configure(EntityTypeBuilder<Room> builder)
         {
-            builder.Property(x => x.Name).IsRequired();
+            builder.Property(x => x.Title).IsRequired();
 
             builder.HasIndex(x => x.Slug).IsUnique();
 

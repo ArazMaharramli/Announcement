@@ -263,6 +263,7 @@
         var json = JSON.parse('@Html.Raw(mediasJson)');
 
         var $repeater = $('#mediasRepeaterList').repeater({
+            initEmpty: true,
             // (Optional)
             // "show" is called just after an item is added.  The item is hidden
             // at this point.  If a show callback is not given the item will
@@ -298,36 +299,33 @@
                 });
             }
         });
+        if (json.length) {
             $repeater.setList(json);
-
+        }
         $('#mediafileinput').on('change', function () {
-
             var files = $('#mediafileinput').prop('files');
 
             for (var i = 0; i != files.length; i++) {
                 let formData = new FormData();
                 formData.append("files", files[i]);
+
                 $.ajax({
                     url: "/files/upload",
                     data: formData,
+                    async:false,
                     processData: false,
                     contentType: false,
                     type: "POST",
                     success: function (res) {
-                        var items = $repeater.repeaterVal();
-                        console.log(items.Medias);
                         var mediaItem = {
                             "Url": res.url,
-                            "AltTag": '@Model.Name - image'
+                            "AltTag": '@Model.Title - image'
                         };
-
-                        items.Medias.push(mediaItem);
-                        console.log(items.Medias);
-                        $repeater.setList(items.Medias);
+                        $repeater.addItem(mediaItem);
                     }
                 });
             }
-});
+        });
 
     </script>
 }
@@ -358,12 +356,8 @@
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade" id="kt_tab_pane_details" role="tabpanel">
                     <div class="form-floating mb-7">
-                        <input class="form-control" asp-for="Name" />
-                        <label asp-for="Name"></label>
-                    </div>
-                    <div class="form-floating mb-7">
-                        <input class="form-control" asp-for="Slug" />
-                        <label asp-for="Slug"></label>
+                        <input class="form-control" asp-for="Title" />
+                        <label asp-for="Title"></label>
                     </div>
                     <div class="form-floating mb-7">
                         <textarea class="form-control" asp-for="Description"></textarea>
@@ -467,6 +461,10 @@
                         <input asp-for="Meta.Description" class="form-control" />
                         <label asp-for="Meta.Description"></label>
                         <span class="form-text text-muted" asp-validation-for="Meta.Description"></span>
+                    </div>
+                    <div class="form-floating mb-7">
+                        <input class="form-control" asp-for="Slug" />
+                        <label asp-for="Slug"></label>
                     </div>
                 </div>
                 <!--End:: TAb: SEO-->

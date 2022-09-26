@@ -81,10 +81,17 @@ namespace WebUI
 
             services.AddControllersWithViews()
             .AddRazorRuntimeCompilation()
-            .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
+            .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+            .AddFluentValidation(opt =>
+            {
+                opt.RegisterValidatorsFromAssembly(typeof(IDbContext).Assembly);
+                opt.DisableDataAnnotationsValidation = true;
+                opt.ConfigureClientsideValidation();
 
-            services.AddFluentValidationAutoValidation()
-                .AddFluentValidationClientsideAdapters();
+            });
+
+            //services.AddFluentValidationAutoValidation()
+            //    .AddFluentValidationClientsideAdapters();
 
             services.AddValidatorsFromAssemblyContaining<IDbContext>();
 

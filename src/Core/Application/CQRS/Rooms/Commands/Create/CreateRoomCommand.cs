@@ -64,7 +64,7 @@ namespace Application.CQRS.Rooms.Commands.Create
                 slug += $"-{(slugCount > 0 ? slugCount : "")}";
 
                 var room = new Room(
-                    name: request.Name.Trim(),
+                    title: request.Name.Trim(),
                     slug: slug,
                     description: request.Description.Trim(),
                     price: request.Price,

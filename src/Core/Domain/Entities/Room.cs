@@ -8,7 +8,7 @@ namespace Domain.Entities
 {
     public class Room : Entity
     {
-        public string Name { get; set; }
+        public string Title { get; set; }
         public string Slug { get; set; }
         public Meta Meta { get; set; }
 
@@ -41,7 +41,7 @@ namespace Domain.Entities
         }
 
         public Room(
-            string name,
+            string title,
             string slug,
             string description,
             int price,
@@ -57,7 +57,7 @@ namespace Domain.Entities
             List<Amenitie> amenities,
             List<Requirement> requirements) : this()
         {
-            Name = name;
+            Title = title;
             Slug = slug;
 
             Description = description;
@@ -78,12 +78,12 @@ namespace Domain.Entities
             Medias = mediaUrls.Select(x => new Media
             {
                 Url = x,
-                AltTag = $"{Name} - image",
+                AltTag = $"{Title} - image",
             }).ToList();
 
             Meta = new Meta
             {
-                Title = name,
+                Title = title,
                 Description = Description,
                 Keywords = metaKeywords
             };
