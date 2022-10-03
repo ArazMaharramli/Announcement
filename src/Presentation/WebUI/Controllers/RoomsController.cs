@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.CQRS.Amenities.Queries.GetAll;
@@ -7,6 +8,8 @@ using Application.CQRS.Requirements.Queries.GetAll;
 using Application.CQRS.Rooms.Commands.Create;
 using Application.CQRS.Rooms.Queries.GetActiveRooms;
 using Microsoft.AspNetCore.Mvc;
+using WebUI.Areas.Admin.ViewModels;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace WebUI.Controllers
 {
@@ -30,9 +33,15 @@ namespace WebUI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> All(string query, string categoryId, DateTime? startFrom, CancellationToken cancellationToken)
+        public async Task<IActionResult> All([FromQuery] string query, [FromQuery] string categoryId, [FromForm] InfinityScrollModel scrollModel, CancellationToken cancellationToken)
         {
-            var resp = await Mediator.Send(new GetActiveRoomsQuery { CategoryId = categoryId, StartFrom = startFrom, Query = query }, cancellationToken);
+            var resp = await Mediator.Send(new GetActiveRoomsQuery
+            {
+                CategoryId = categoryId,
+                StartDate = scrollModel.StartDate,
+                EndDate = scrollModel.EndDate,
+                Query = query
+            }, cancellationToken);
             return Ok(resp);
         }
 

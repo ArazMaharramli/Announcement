@@ -43,10 +43,10 @@
         <!--end::Logo-->
         <!--begin::Toolbar-->
         <div class="d-flex align-items-center">
-            <button class="btn p-0 burger-icon rounded-0 burger-icon-left" id="kt_aside_tablet_and_mobile_toggle">
+            <button class="btn p-0 burger-icon rounded-0 burger-icon-left" aria-label="kt_aside_tablet_and_mobile_toggle" id="kt_aside_tablet_and_mobile_toggle">
                 <span></span>
             </button>
-            <button class="btn btn-hover-text-primary p-0 ml-3" id="kt_header_mobile_topbar_toggle">
+            <button class="btn btn-hover-text-primary p-0 ml-3" aria-label="header_mobile_topbar_toggle" id="kt_header_mobile_topbar_toggle">
                 <span class="svg-icon svg-icon-xl">
                     <!--begin::Svg Icon | path:assets/media/svg/icons/General/User.svg-->
                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -60,7 +60,7 @@
                 </span>
             </button>
 
-            <a class="btn btn-hover-text-primary p-0 ml-3" id="kt_header_mobile_topbar_toggle" asp-action="Create" asp-controller="Rooms">
+            <a class="btn btn-hover-text-primary p-0 ml-3" asp-action="Create" asp-controller="Rooms">
                 <span class="btn font-weight-bolder btn-sm btn-light-success px-5">
                     @Localizer["Create"]
                 </span>
@@ -137,7 +137,7 @@
                         <!--begin::Left-->
                         <div class="d-none d-lg-flex align-items-center mr-3">
                             <!--begin::Aside Toggle-->
-                            <button class="btn btn-icon aside-toggle ml-n3 mr-10" id="kt_aside_desktop_toggle">
+                            <button class="btn btn-icon aside-toggle ml-n3 mr-10" name="kt_aside_desktop_toggle" id="kt_aside_desktop_toggle">
                                 <span class="svg-icon svg-icon-xxl svg-icon-dark-75">
                                     <!--begin::Svg Icon | path:assets/media/svg/icons/Text/Align-left.svg-->
                                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -291,7 +291,38 @@
         </span>
     </div>
     <!--end::Scrolltop-->
-
+    <!--begin::Sticky Toolbar-->
+    <ul class="sticky-toolbar nav flex-column pl-2 pr-2 pt-3 pb-3 mt-4">
+        <!--begin::Item-->
+        <li class="nav-item mb-2" id="kt_demo_panel_toggle" data-toggle="tooltip" title="Check out more demos" data-placement="right">
+            <a class="btn btn-sm btn-icon btn-bg-light btn-icon-success btn-hover-success" href="#">
+                <i class="flaticon2-drop"></i>
+            </a>
+        </li>
+        <!--end::Item-->
+        <!--begin::Item-->
+        <li class="nav-item mb-2" data-toggle="tooltip" title="Layout Builder" data-placement="left">
+            <a class="btn btn-sm btn-icon btn-bg-light btn-icon-primary btn-hover-primary" href="https://preview.keenthemes.com/metronic/demo5/builder.html" target="_blank">
+                <i class="flaticon2-gear"></i>
+            </a>
+        </li>
+        <!--end::Item-->
+        <!--begin::Item-->
+        <li class="nav-item mb-2" data-toggle="tooltip" title="Documentation" data-placement="left">
+            <a class="btn btn-sm btn-icon btn-bg-light btn-icon-warning btn-hover-warning" href="https://keenthemes.com/metronic/?page=docs" target="_blank">
+                <i class="flaticon2-telegram-logo"></i>
+            </a>
+        </li>
+        <!--end::Item-->
+        <!--begin::Item-->
+        <li class="nav-item" id="kt_sticky_toolbar_chat_toggler" data-toggle="tooltip" title="Chat Example" data-placement="left">
+            <a class="btn btn-sm btn-icon btn-bg-light btn-icon-danger btn-hover-danger" href="#" data-toggle="modal" data-target="#kt_chat_modal">
+                <i class="flaticon2-chat-1"></i>
+            </a>
+        </li>
+        <!--end::Item-->
+    </ul>
+    <!--end::Sticky Toolbar-->
 
     <script>var HOST_URL = "https://localhost:50360";</script>
     <!--begin::Global Config(global config for global JS scripts)-->

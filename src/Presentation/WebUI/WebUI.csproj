@@ -40,6 +40,7 @@
     <Content Remove="Areas\Admin\Views\Amenities %28copy%29\Index.cshtml" />
     <Content Remove="wwwroot\uploads\" />
     <Content Remove="wwwroot\assets\js\pages\rooms\" />
+    <Content Remove="wwwroot\assets\js\customplugins\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\assets\" />
@@ -85,6 +86,7 @@
     <Folder Include="wwwroot\uploads\" />
     <Folder Include="wwwroot\assets\js\pages\rooms\" />
     <Folder Include="Areas\Admin\Views\Rooms\" />
+    <Folder Include="wwwroot\assets\js\customplugins\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Services\" />

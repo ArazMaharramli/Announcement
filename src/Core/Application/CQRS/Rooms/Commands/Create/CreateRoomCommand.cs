@@ -60,7 +60,7 @@ namespace Application.CQRS.Rooms.Commands.Create
                     .FirstOrDefaultAsync(z => z.LangCode == _currentLanguageService.LangCode && z.CategoryId == request.CategoryId, cancellationToken);
 
                 var slug = request.Name.ToUrlSlug();
-                var slugCount = await _dbContext.Rooms.CountAsync(x => x.Slug.Contains(slug), cancellationToken);
+                var slugCount = await _dbContext.Rooms.CountAsync(x => x.Slug.Contains(slug), cancellationToken) + 1;
                 slug += $"-{(slugCount > 0 ? slugCount : "")}";
 
                 var room = new Room(

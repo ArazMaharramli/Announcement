@@ -1,4 +1,5 @@
-﻿using Application.Common.Mappings;
+﻿using System;
+using Application.Common.Mappings;
 using AutoMapper;
 using Domain.Entities;
 
@@ -13,9 +14,12 @@ namespace Application.CQRS.Rooms.Queries.GetActiveRooms
         public string Url { get; set; }
         public int Price { get; set; }
 
+        public DateTime UpdatedAt { get; set; }
+
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Room, RoomBriefVM>();
+            profile.CreateMap<Room, RoomBriefVM>()
+                .ForMember(x => x.UpdatedAt, opt => opt.MapFrom(z => z.UpdatedAt));
         }
     }
 }

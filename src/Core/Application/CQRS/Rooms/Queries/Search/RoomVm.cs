@@ -10,7 +10,7 @@ namespace Application.CQRS.Rooms.Queries.Search
     public class RoomVm : IMapFrom<Room>
     {
         public string Id { get; set; }
-        public string Name { get; set; }
+        public string Title { get; set; }
         public string MediaUrl { get; set; }
 
         public RoomStatus Status { get; set; }

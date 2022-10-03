@@ -64,7 +64,7 @@ namespace Application.CQRS.Rooms.Queries.Search
                 if (!string.IsNullOrEmpty(request.SearchValue))
                 {
                     list = list.Where(m =>
-                            m.Name.Contains(request.SearchValue) ||
+                            m.Title.Contains(request.SearchValue) ||
                             m.UpdatedAt.ToString().Contains(request.SearchValue)
                         );
                 }
