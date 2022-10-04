@@ -61,6 +61,7 @@
 		<None Remove="CQRS\Rooms\Commands\Update\" />
 		<None Remove="CQRS\Rooms\Commands\Decline\" />
 		<None Remove="CQRS\Rooms\Queries\GetActiveRooms\" />
+		<None Remove="CQRS\Rooms\Queries\FindByIdOrSlug\" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.2" />
@@ -109,5 +110,6 @@
 	  <Folder Include="CQRS\Rooms\Commands\Update\" />
 	  <Folder Include="CQRS\Rooms\Commands\Decline\" />
 	  <Folder Include="CQRS\Rooms\Queries\GetActiveRooms\" />
+	  <Folder Include="CQRS\Rooms\Queries\FindByIdOrSlug\" />
 	</ItemGroup>
 </Project>

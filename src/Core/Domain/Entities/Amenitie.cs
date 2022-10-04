@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Domain.Common;
 
 namespace Domain.Entities
@@ -15,6 +16,15 @@ namespace Domain.Entities
         {
             Rooms = new HashSet<Room>();
             Translations = new HashSet<AmenitieTranslation>();
+        }
+
+        public string GetName(string langCode)
+        {
+            if (this.Translations.Count <= 0)
+            {
+                throw new InvalidOperationException("Translations field can not be empty");
+            }
+            return this.Translations.FirstOrDefault(x => x.LangCode == langCode)?.Name ?? "---";
         }
     }
 }

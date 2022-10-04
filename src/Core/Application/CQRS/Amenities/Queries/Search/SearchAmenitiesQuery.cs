@@ -21,17 +21,17 @@ namespace Application.CQRS.Amenities.Queries.Search
         public string SortColumnDirection { get; set; } = "asc";
         public string SearchValue { get; set; }
 
-        public string LangCode { get; set; }
-
         public class Handler : IRequestHandler<SearchAmenitiesQuery, IDataTablePagedList<AmenitieVm>>
         {
             private readonly IDbContext _dbContext;
             private readonly IMapper _mapper;
+            private readonly ICurrentLanguageService _currentLanguageService;
 
-            public Handler(IDbContext dbContext, IMapper mapper)
+            public Handler(IDbContext dbContext, IMapper mapper, ICurrentLanguageService currentLanguageService)
             {
                 _dbContext = dbContext;
                 _mapper = mapper;
+                _currentLanguageService = currentLanguageService;
             }
 
             public async Task<IDataTablePagedList<AmenitieVm>> Handle(SearchAmenitiesQuery request, CancellationToken cancellationToken)
@@ -44,7 +44,20 @@ namespace Application.CQRS.Amenities.Queries.Search
                     .Include(x => x.Translations)
                     .IgnoreQueryFilters()
                     .Where(x => x.Deleted == request.Deleted)
-                    .ProjectTo<AmenitieVm>(_mapper.ConfigurationProvider, new { lang = request.LangCode, deleted = request.Deleted });
+                    .AsNoTracking()
+                    .Select(x => new AmenitieVm
+                    {
+                        Icon = x.Icon,
+                        UpdatedAt = x.UpdatedAt,
+                        Id = x.Id,
+                        Name = x.GetName(_currentLanguageService.LangCode),
+                        Translations = x.Translations.Select(z => new AmenitieTranslationVM
+                        {
+                            Id = z.Id,
+                            LangCode = z.LangCode,
+                            Name = z.Name
+                        }).ToList()
+                    });
 
 
                 if (request.SortColumnDirection == "asc")

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using FluentValidation;
 
 namespace Application.CQRS.Rooms.Queries.FindById;
 

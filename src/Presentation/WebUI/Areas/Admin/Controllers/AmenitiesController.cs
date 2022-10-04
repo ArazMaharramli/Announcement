@@ -38,7 +38,6 @@ namespace WebUI.Areas.Admin.Controllers
         //[HttpPost]
         public async Task<IActionResult> DatatableAsync()
         {
-            var searchLang = "";//Request.Form["search[language]"].FirstOrDefault();
             var start = Request.Query["start"].FirstOrDefault();
             var length = Request.Query["length"].FirstOrDefault();
             var sortColumnIndex = Request.Query["order[0][column]"].FirstOrDefault();
@@ -48,12 +47,9 @@ namespace WebUI.Areas.Admin.Controllers
             int pageSize = string.IsNullOrEmpty(length) ? 10 : Convert.ToInt32(length);
             int skip = string.IsNullOrEmpty(start) ? 0 : Convert.ToInt32(start);
 
-            var lang = string.IsNullOrEmpty(searchLang) ? RouteData.Values["lang"].ToString() : searchLang;
-
             var query = new SearchAmenitiesQuery
             {
                 Deleted = false,
-                LangCode = lang,
                 PageSize = pageSize,
                 SearchValue = searchValue,
                 Page = skip / pageSize + 1,

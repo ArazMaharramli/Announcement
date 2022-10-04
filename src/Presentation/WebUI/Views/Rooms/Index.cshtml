@@ -18,21 +18,6 @@
                                                     </div>`;
         };
 
-        @*$.ajax({
-            url: "/rooms/All",
-            type: 'POST',
-            processData: false,
-            contentType: false,
-            success: function (res) {
-                res.data.forEach((item) => {
-                    console.log(item);
-                    $('#roomsList').append(generateRoomsListItem(item))
-                });
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                console.error(thrownError);
-            }
-        });*@
         var scroll = new InfinityScroll({
             selector: "#roomsList",
             useWindowScrool:true,

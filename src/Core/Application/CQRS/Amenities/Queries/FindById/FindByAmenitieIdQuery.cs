@@ -30,6 +30,7 @@ namespace Application.CQRS.Amenities.Queries.FindById
             {
                 var amenitie = await _dbContext.Amenities
                     .Include(x => x.Translations)
+                    .AsNoTracking()
                     .ProjectTo<AmenitieDto>(_mapper.ConfigurationProvider)
                     .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 

@@ -25,12 +25,14 @@ namespace Application.CQRS.Requirements.Queries.GetAll
                 _currentLanguageService = currentLanguageService;
             }
 
-            public Task<List<RequirementDetailsVM>> Handle(GetAllRequirementsQuery request, CancellationToken cancellationToken)
+            public async Task<List<RequirementDetailsVM>> Handle(GetAllRequirementsQuery request, CancellationToken cancellationToken)
             {
-                return _dbContext.Requirements
-                    .Include(x => x.Translations)
-                    .ProjectTo<RequirementDetailsVM>(_mapper.ConfigurationProvider, new { langCode = _currentLanguageService.LangCode })
+                var requirement = await _dbContext.Requirements
+                    .Include(x => x.Translations.Where(z => z.LangCode == _currentLanguageService.LangCode))
+                    .AsNoTracking()
                     .ToListAsync(cancellationToken);
+
+                return _mapper.Map<List<RequirementDetailsVM>>(requirement);
             }
         }
     }

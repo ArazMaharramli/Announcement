@@ -6,6 +6,7 @@ using Application.CQRS.Amenities.Queries.GetAll;
 using Application.CQRS.Categories.Queries.GetAll;
 using Application.CQRS.Requirements.Queries.GetAll;
 using Application.CQRS.Rooms.Commands.Create;
+using Application.CQRS.Rooms.Queries.FindBySlug;
 using Application.CQRS.Rooms.Queries.GetActiveRooms;
 using Microsoft.AspNetCore.Mvc;
 using WebUI.Areas.Admin.ViewModels;
@@ -32,6 +33,15 @@ namespace WebUI.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        [HttpGet]
+        [Route("[controller]/[action]/{slug}")]
+        public async Task<IActionResult> Details(string slug, CancellationToken cancellationToken)
+        {
+            var res = await Mediator.Send(new FindRoomBySlugQuery { Slug = slug }, cancellationToken);
+            var a = res;
+            return Ok(res);
+        }
+
         [HttpPost]
         public async Task<IActionResult> All([FromQuery] string query, [FromQuery] string categoryId, [FromForm] InfinityScrollModel scrollModel, CancellationToken cancellationToken)
         {
@@ -42,6 +52,7 @@ namespace WebUI.Controllers
                 EndDate = scrollModel.EndDate,
                 Query = query
             }, cancellationToken);
+
             return Ok(resp);
         }
 

@@ -26,12 +26,14 @@ namespace Application.CQRS.Amenities.Queries.GetAll
                 _currentLanguageService = currentLanguageService;
             }
 
-            public Task<List<AmenitieDetailsVM>> Handle(GetAllAmenitiesQuery request, CancellationToken cancellationToken)
+            public async Task<List<AmenitieDetailsVM>> Handle(GetAllAmenitiesQuery request, CancellationToken cancellationToken)
             {
-                return _dbContext.Amenities
+                var amenities = await _dbContext.Amenities
                     .Include(x => x.Translations.Where(x => x.LangCode == _currentLanguageService.LangCode))
-                    .ProjectTo<AmenitieDetailsVM>(_mapper.ConfigurationProvider)
+                    .AsNoTracking()
                     .ToListAsync(cancellationToken);
+
+                return _mapper.Map<List<AmenitieDetailsVM>>(amenities);
             }
         }
     }
