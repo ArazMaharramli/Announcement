@@ -25,6 +25,8 @@ using FluentValidation.AspNetCore;
 using FluentValidation;
 using Microsoft.AspNetCore.ResponseCompression;
 using System.IO.Compression;
+using Application.Common.Models.ConfigModels;
+using System;
 
 namespace WebUI
 {
@@ -76,6 +78,10 @@ namespace WebUI
 
 
             Configuration.Bind("SupportedLanguages", supportedLanguages);
+
+            TenantInfo tenantInfo = new TenantInfo();
+            Configuration.Bind("TenantInfo", tenantInfo);
+            services.AddScoped<TenantInfo>(opt => tenantInfo);
 
             services.AddSingleton<SupportedLanguages>(new SupportedLanguages { Languages = supportedLanguages });
 
@@ -132,7 +138,19 @@ namespace WebUI
             app.UseCustomExceptionHandler();
             app.UseHttpsRedirection();
             app.UseResponseCompression();
-            app.UseStaticFiles();
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                OnPrepareResponse = context =>
+                {
+                    // Cache static file for 1 year
+                    if (!string.IsNullOrEmpty(context.Context.Request.Query["v"]))
+                    {
+                        context.Context.Response.Headers.Add("cache-control", new[] { "public,max-age=31536000" });
+                        context.Context.Response.Headers.Add("Expires", new[] { DateTime.UtcNow.AddYears(1).ToString("R") }); // Format RFC1123
+                    }
+                }
+            });
 
             app.UseHealthChecks("/healthchecks");
 

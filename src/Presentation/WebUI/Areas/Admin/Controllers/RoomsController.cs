@@ -64,7 +64,7 @@ namespace WebUI.Areas.Admin.Controllers
             var room = await Mediator.Send(new FindByRoomIdQuery { Id = id }, cancellationToken); ;
             var model = new UpdateRoomCommand
             {
-                Title = room.Name,
+                Title = room.Title,
                 Address = room.Address,
                 AmenitieIds = room.Amenities.Select(x => x.Id).ToList(),
                 RequirementIds = room.Requirements.Select(x => x.Id).ToList(),

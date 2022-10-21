@@ -38,8 +38,7 @@ namespace WebUI.Controllers
         public async Task<IActionResult> Details(string slug, CancellationToken cancellationToken)
         {
             var res = await Mediator.Send(new FindRoomBySlugQuery { Slug = slug }, cancellationToken);
-            var a = res;
-            return Ok(res);
+            return View(res);
         }
 
         [HttpPost]

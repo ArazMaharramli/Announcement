@@ -1,4 +1,14 @@
-﻿@section Scripts{
+﻿@inject Application.Common.Models.ConfigModels.TenantInfo tenant
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
+@section Meta{
+    <title>@Localizer["RoomsPageTitle"] | @tenant.Domain</title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <link rel="canonical" href="https://roommate.az" />
+
+}
+@section Scripts{
     <script src="assets/js/customplugins/infinityscroll.js" asp-append-version="true"></script>
     <script defer>function generateRoomsListItem(item) {
             return `<div class="col-md-4 col-lg-12 col-xxl-4">
@@ -21,7 +31,6 @@
         var scroll = new InfinityScroll({
             selector: "#roomsList",
             useWindowScrool:true,
-            scrollElementSelector: "#mainscroolarea",
             template: generateRoomsListItem,
             url: "/rooms/All",
             method: "POST",
@@ -31,7 +40,6 @@
         scroll.start();
     </script>
 }
-@*class="scroll scroll-pull" style="height:100%;width:100%" data-scroll="true" id="mainscroolarea"*@
 <div>
     <div class="card card-custom gutter-b">
         <div class="card-body rounded p-0 d-flex bg-light">

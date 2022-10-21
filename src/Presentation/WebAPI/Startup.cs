@@ -80,17 +80,17 @@ namespace WebAPI
             .AddDbContextCheck<ApplicationDbContext>()
             .AddDbContextCheck<MainDbContext>();
 
-            ProjectDetails projectDetails = new ProjectDetails();
-            Configuration.Bind("ProjectDetails", projectDetails);
+            TenantInfo tenantInfo = new TenantInfo();
+            Configuration.Bind("TenantInfo", tenantInfo);
 
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = projectDetails.Name,
+                    Title = tenantInfo.Name,
                     Version = "V1",
-                    Contact = new OpenApiContact { Email = projectDetails.Contact.Email, Name = projectDetails.Contact.Name },
-                    Description = projectDetails.Description
+                    Contact = new OpenApiContact { Email = tenantInfo.Contact.Email, Name = tenantInfo.Contact.Name },
+                    Description = tenantInfo.Description
                 });
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
