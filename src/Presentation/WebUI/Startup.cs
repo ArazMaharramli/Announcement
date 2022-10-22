@@ -27,6 +27,8 @@ using Microsoft.AspNetCore.ResponseCompression;
 using System.IO.Compression;
 using Application.Common.Models.ConfigModels;
 using System;
+using Microsoft.Net.Http.Headers;
+using Microsoft.AspNetCore.Http;
 
 namespace WebUI
 {
@@ -141,15 +143,22 @@ namespace WebUI
 
             app.UseStaticFiles(new StaticFileOptions
             {
-                OnPrepareResponse = context =>
+                HttpsCompression = Microsoft.AspNetCore.Http.Features.HttpsCompressionMode.Compress,
+                OnPrepareResponse = (context) =>
                 {
-                    // Cache static file for 1 year
-                    if (!string.IsNullOrEmpty(context.Context.Request.Query["v"]))
+                    var headers = context.Context.Response.GetTypedHeaders();
+                    headers.CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue
                     {
-                        context.Context.Response.Headers.Add("cache-control", new[] { "public,max-age=31536000" });
-                        context.Context.Response.Headers.Add("Expires", new[] { DateTime.UtcNow.AddYears(1).ToString("R") }); // Format RFC1123
-                    }
+                        Public = true,
+                        MaxAge = TimeSpan.FromDays(30)
+                    };
                 }
+                //OnPrepareResponse = context =>
+                //{
+                //    context.Context.Response.Headers[HeaderNames.CacheControl] = "public,max-age=31536000";
+                //    context.Context.Response.Headers[HeaderNames.Expires] = DateTime.UtcNow.AddYears(1).ToString("R"); // Format RFC1123
+
+                //}
             });
 
             app.UseHealthChecks("/healthchecks");
