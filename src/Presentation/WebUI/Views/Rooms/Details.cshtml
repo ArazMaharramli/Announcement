@@ -16,22 +16,16 @@
 @section Scripts{
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.0/lightgallery.min.js" integrity="sha512-pG+XpUdyBtp28FzjpaIaj72KYvZ87ZbmB3iytDK5+WFVyun8r5LJ2x1/Jy/KHdtzUXA0CUVhEnG+Isy1jVJAbA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    <script>
-        $(document).ready(function () {
+    <script>$(document).ready(function () {
             lightGallery(document.getElementById('carouselExampleControls'), {
                 selector: '.carousel-item',
                 licenseKey: 'your_license_key',
-            @* thumbnail: true,*@
-                @* speed: 500,*@
-                @* height: "300px",*@
-                @* width: '100%',*@
                 preload: 1
             });
-        });
-    </script>
+        });</script>
 }
 <div class="card card-custom gutter-b">
-    <div class="card-body rounded p-0 pt-3">
+    <div class="card-body rounded p-0">
         <div id="carouselExampleControls" class="carousel slide" data-ride="carousel" data-interval="5000" data-touch="true">
             <ol class="carousel-indicators">
                 @for (int i = 0; i < Model.Medias.Count; i++)
