@@ -41,6 +41,7 @@
     <Content Remove="wwwroot\uploads\" />
     <Content Remove="wwwroot\assets\js\pages\rooms\" />
     <Content Remove="wwwroot\assets\js\customplugins\" />
+    <Content Remove="wwwroot\assets\media\svg\social\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\assets\" />
@@ -87,6 +88,7 @@
     <Folder Include="wwwroot\assets\js\pages\rooms\" />
     <Folder Include="Areas\Admin\Views\Rooms\" />
     <Folder Include="wwwroot\assets\js\customplugins\" />
+    <Folder Include="wwwroot\assets\media\svg\social\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Services\" />

@@ -153,12 +153,6 @@ namespace WebUI
                         MaxAge = TimeSpan.FromDays(30)
                     };
                 }
-                //OnPrepareResponse = context =>
-                //{
-                //    context.Context.Response.Headers[HeaderNames.CacheControl] = "public,max-age=31536000";
-                //    context.Context.Response.Headers[HeaderNames.Expires] = DateTime.UtcNow.AddYears(1).ToString("R"); // Format RFC1123
-
-                //}
             });
 
             app.UseHealthChecks("/healthchecks");
@@ -208,7 +202,6 @@ namespace WebUI
             options.RequestCultureProviders.Insert(1, new CookieRequestCultureProvider());
 
             return options;
-
         }
     }
 }
