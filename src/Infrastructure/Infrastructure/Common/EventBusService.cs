@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using Application.Common.Models;
@@ -44,6 +45,7 @@ namespace Infrastructure.Common
             {
                 await _mediator.Publish(item);
             }
+            _events.Clear();
         }
     }
 }

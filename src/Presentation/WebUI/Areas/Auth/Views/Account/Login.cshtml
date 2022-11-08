@@ -1,5 +1,4 @@
 ﻿@model WebUI.Areas.Auth.ViewModels.Account.LoginViewModel
-
 <!--begin::Signin-->
 <div class="login-form">
     <!--begin::Form-->
@@ -22,13 +21,13 @@
         </div>
         <!--end::Form group-->
         <!--begin::Form group-->
-        <div class="form-group">
-            <div class="d-flex justify-content-between mt-n5">
-                <label asp-for="Password" class="font-size-h6 font-weight-bolder text-dark pt-5"></label>
-                <a asp-action="ForgotPassword" asp-controller="Account" class="text-primary font-size-h6 font-weight-bolder text-hover-primary pt-5">Forgot Password ?</a>
-            </div>
-            <input asp-for="Password" class="form-control form-control-solid h-auto py-7 px-6 rounded-lg border-0" />
-        </div>
+        @*<div class="form-group">
+                <div class="d-flex justify-content-between mt-n5">
+                    <label asp-for="Password" class="font-size-h6 font-weight-bolder text-dark pt-5"></label>
+                    <a asp-action="ForgotPassword" asp-controller="Account" class="text-primary font-size-h6 font-weight-bolder text-hover-primary pt-5">Forgot Password ?</a>
+                </div>
+                <input asp-for="Password" class="form-control form-control-solid h-auto py-7 px-6 rounded-lg border-0" />
+            </div>*@
         <!--end::Form group-->
         <!--begin::Action-->
         <div class="pb-lg-0 pb-5">

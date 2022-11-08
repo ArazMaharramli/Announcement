@@ -9,7 +9,13 @@ namespace Infrastructure.Identity.Configurations
     {
         public void Configure(EntityTypeBuilder<ApplicationUser> builder)
         {
-            builder.Property(x => x.RegisteredAt).HasDefaultValueSql("getdate()");
+            builder.Property(x => x.RegisteredAt)
+                .HasDefaultValueSql("GETUTCDATE()");
+
+            builder.Property(x => x.Name)
+                .IsRequired()
+                .HasDefaultValue("Anonymous");
+
             builder.HasMany(x => x.RefreshTokens)
                 .WithOne(x => x.User);
         }

@@ -37,16 +37,19 @@ namespace Infrastructure
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("IdentityDB")));
 
-            services.AddIdentity<ApplicationUser, ApplicationRole>(opt =>
+            services.AddIdentityCore<ApplicationUser>(opt =>
             {
                 opt.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultPhoneProvider;
                 opt.Tokens.ChangeEmailTokenProvider = TokenOptions.DefaultPhoneProvider;
                 opt.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultPhoneProvider;
 
             })
+               .AddRoles<ApplicationRole>()
                .AddEntityFrameworkStores<ApplicationDbContext>()
-               .AddDefaultTokenProviders();
-
+               .AddDefaultTokenProviders()
+               .AddRoleValidator<RoleValidator<ApplicationRole>>()
+               .AddRoleManager<RoleManager<ApplicationRole>>()
+               .AddSignInManager<SignInManager<ApplicationUser>>();
 
             StaticUrls staticUrls = new StaticUrls();
 

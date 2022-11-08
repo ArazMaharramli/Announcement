@@ -6,7 +6,8 @@ using Domain.Events;
 using Microsoft.EntityFrameworkCore;
 using Domain.Entities;
 using System;
-using Application.CQRS.Owners.IntegrationEvents.Events;
+using Application.CQRS.Owners.Events.IntegrationEvents;
+//using Application.CQRS.Owners.IntegrationEvents.Events;
 
 namespace Application.CQRS.Rooms.DomainEventHandlers.RoomCreated
 {
@@ -39,6 +40,7 @@ namespace Application.CQRS.Rooms.DomainEventHandlers.RoomCreated
                 var userId = Guid.NewGuid().ToString();
                 owner = new Owner(userId, room.Contact.Name, room.Contact.Email, room.Contact.Phone);
                 _dbContext.Owners.Add(owner);
+                _eventBusService.AddEvent(new OwnerCreatedIntegrationEvent(owner));
             }
 
             owner.AddRoom(room);
@@ -48,7 +50,6 @@ namespace Application.CQRS.Rooms.DomainEventHandlers.RoomCreated
             }
 
             await _dbContext.SaveEntitiesAsync(cancellationToken);
-            _eventBusService.AddEvent(new OwnerUserCreatedIntegrationEvent(owner));
         }
     }
 }

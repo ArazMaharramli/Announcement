@@ -1,9 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
+using Application.CQRS.Users.Commands.ConfirmEmail;
+using Application.CQRS.Users.Commands.Register;
+using Application.CQRS.Users.Commands.SendEmailConfirmationCode;
+using Application.CQRS.Users.Queries.FindByEmail;
 using Infrastructure.Identity.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WebUI.Areas.Auth.ViewModels.Account;
@@ -13,78 +19,53 @@ using WebUI.Areas.Auth.ViewModels.Account;
 namespace WebUI.Controllers
 {
     [Area("Auth")]
-    [Route("[area]/[action]")]
+    [Route("[area]/[action]/{id?}")]
     public class AccountController : Controller
     {
-        /*private readonly IUserManagerService _userManagerService;
-        private readonly IEmailService _emailService;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IMediator _mediatr;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public AccountController(IUserManagerService userManagerService, IEmailService emailService, SignInManager<ApplicationUser> signInManager)
+        public AccountController(SignInManager<ApplicationUser> signInManager, IMediator mediatr, UserManager<ApplicationUser> userManager)
         {
-            _userManagerService = userManagerService;
-            _emailService = emailService;
             _signInManager = signInManager;
+            _mediatr = mediatr;
+            _userManager = userManager;
         }
-        */
+
         // GET: /<controller>/
         public IActionResult Login()
         {
             return View();
         }
-        /*
+
         [HttpPost]
-        public async Task<IActionResult> LoginAsync(LoginViewModel model)
+        public async Task<IActionResult> LoginAsync(FindUserByEmailQuery model, CancellationToken cancellationToken)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, true, false);
-
-            if (result.Succeeded)
-            {
-                //add check activity url
-                //await _emailService.SendLoginAttemptEmailAsync(model.Email, response.User.FullName, "google.com");
-
-                return RedirectToAction("Index", "Home");
-            }
-            ModelState.AddModelError("", "Email or password is incorrect");
-            return View(model);
+            var res = await _mediatr.Send(model, cancellationToken);
+            await _mediatr.Publish(new SendEmailConfirmationCodeCommand { UserId = res.Id }, cancellationToken);
+            return RedirectToAction("ConfirmEmail", "Account", new { id = res.Id });
         }
-        */
+
         public IActionResult Register()
         {
             return View();
         }
-        /*
+
         [HttpPost]
-        public async Task<IActionResult> RegisterAsync(RegisterViewModel model)
+        public async Task<IActionResult> RegisterAsync(RegisterUserCommand model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-            var response = await _userManagerService.CreateUserAsync(
-                    model.Email,
-                    model.Password
-                );
 
-            if (response.Result.Succeeded)
-            {
-                await SendConfirmationCode(response.User.Id);
+            var response = await _mediatr.Send(model);
 
-                return RedirectToAction("ConfirmEmail", "Account", new { id = response.User.Id });
-            }
-            foreach (var error in response.Result.Errors)
-            {
-                ModelState.AddModelError("", error);
-            }
+            return RedirectToAction("ConfirmEmail", "Account", new { id = response.Id });
 
-            return View(model);
         }
-        */
+
 
         public IActionResult ForgotPassword()
         {
@@ -97,48 +78,49 @@ namespace WebUI.Controllers
 
         public IActionResult ConfirmEmail(string id)
         {
-            var model = new ConfirmEmailViewModel
+            var model = new ConfirmEmailCommand
             {
-                Id = id
+                UserId = id
             };
             return View(model);
         }
-        /*
+
         [HttpPost]
-        public async Task<IActionResult> ConfirmEmailAsync(ConfirmEmailViewModel model)
+        public async Task<IActionResult> ConfirmEmailAsync(ConfirmEmailCommand command)
         {
-            var response = await _userManagerService.ConfirmEmail(model.Id, model.Code);
-            if (response.Result.Succeeded)
+            var response = await _mediatr.Send(command);
+            if (response.Succeeded)
             {
-                return RedirectToAction("Index", "Home");
+                await _signInManager.SignInAsync(await _userManager.FindByIdAsync(command.UserId), true);
+                return RedirectToAction("Index", "Rooms", new
+                {
+                    Area = ""
+                });
             }
-            foreach (var error in response.Result.Errors)
+            foreach (var error in response.Errors)
             {
                 ModelState.AddModelError("", error);
             }
-            return View(model);
+            return View(command);
         }
-        */
-        public IActionResult Logout()
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LogoutAsync()
         {
-            return View();
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Rooms", new { Area = "" });
         }
 
         public async Task<IActionResult> ResendConfirmationCodeAsync(string Id)
         {
-            await SendConfirmationCode(Id);
+            await _mediatr.Publish(new SendEmailConfirmationCodeCommand { UserId = Id });
             return Ok();
         }
+
         public IActionResult ExternalLogin()
         {
             return View();
         }
-
-        #region MyRegion
-        private async Task SendConfirmationCode(string userId)
-        {
-
-        }
-        #endregion
     }
 }

@@ -9,8 +9,8 @@ namespace Application.Common.Interfaces
 {
     public interface IUserManager
     {
-        Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password);
-        Task<Result> CreateUserAsync(string userName, string phoneNumber, string email, string id = null);
+        Task<(Result Result, string UserId)> CreateUserAsync(string name, string userName, string password);
+        Task<(Result Result, UserDTO User)> CreateUserAsync(string name, string userName, string phoneNumber, string email, string id = null, string profilePictureUrl = null);
 
         Task<Result> DeleteUserAsync(string userId);
         Task<IList<Claim>> GetUserClaimsAsync(string userId);
@@ -22,7 +22,7 @@ namespace Application.Common.Interfaces
         Task<Result> ResetPasswordAsync(string userId, string token, string newPassword);
 
         Task<UserDTO> FindByIdAsync(string userId);
-        Task<UserDTO> FindByEmailAsync(string email);
+        Task<UserDTO> FindByEmailAsync(string email, string tenantDomain);
 
         Task<(Result Result, UserDTO User)> LoginWithUserName(string userName, string password);
 

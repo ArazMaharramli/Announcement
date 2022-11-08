@@ -4,7 +4,6 @@ using System.Globalization;
 using Application;
 using Application.Common.Interfaces;
 using Infrastructure;
-using Infrastructure.Identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -29,6 +28,11 @@ using Application.Common.Models.ConfigModels;
 using System;
 using Microsoft.Net.Http.Headers;
 using Microsoft.AspNetCore.Http;
+using Infrastructure.Identity;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Net;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 
 namespace WebUI
 {
@@ -49,7 +53,13 @@ namespace WebUI
             services.AddPersistence(Configuration);
             services.AddApplication();
 
-            services.AddAuthentication();
+            services.AddAuthentication(opt =>
+            {
+                opt.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
+                opt.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
+                opt.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+            })
+                 .AddIdentityCookies();
 
             services.AddDbContext<LocalizationModelContext>(options =>
                options.UseSqlServer(
@@ -78,28 +88,20 @@ namespace WebUI
 
             services.Configure<RequestLocalizationOptions>(options => GetRequestLocalizationOptions());
 
-
-            Configuration.Bind("SupportedLanguages", supportedLanguages);
-
             TenantInfo tenantInfo = new TenantInfo();
             Configuration.Bind("TenantInfo", tenantInfo);
             services.AddScoped<TenantInfo>(opt => tenantInfo);
 
-            services.AddSingleton<SupportedLanguages>(new SupportedLanguages { Languages = supportedLanguages });
+            services.AddSingleton<SupportedLanguages>(new SupportedLanguages { Languages = tenantInfo.Languages });
+
+            supportedLanguages = tenantInfo.Languages;
 
             services.AddControllersWithViews()
             .AddRazorRuntimeCompilation()
-            .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
-            .AddFluentValidation(opt =>
-            {
-                opt.RegisterValidatorsFromAssembly(typeof(IDbContext).Assembly);
-                opt.DisableDataAnnotationsValidation = true;
-                opt.ConfigureClientsideValidation();
+            .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
 
-            });
-
-            //services.AddFluentValidationAutoValidation()
-            //    .AddFluentValidationClientsideAdapters();
+            services.AddFluentValidationAutoValidation()
+            .AddFluentValidationClientsideAdapters();
 
             services.AddValidatorsFromAssemblyContaining<IDbContext>();
 
@@ -117,6 +119,7 @@ namespace WebUI
             {
                 options.Level = CompressionLevel.SmallestSize;
             });
+
             services.AddResponseCompression(opt =>
             {
                 opt.EnableForHttps = true;
@@ -137,7 +140,7 @@ namespace WebUI
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            app.UseCustomExceptionHandler();
+            //app.UseCustomExceptionHandler();
             app.UseHttpsRedirection();
             app.UseResponseCompression();
 
@@ -174,6 +177,11 @@ namespace WebUI
                 endpoints.MapControllerRoute(
                     name: "areas",
                     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+
+                endpoints.MapControllerRoute(
+                    name: "defaultwithlang",
+                    pattern: "{lang}/{controller=Rooms}/{action=Index}/{id?}");
 
                 endpoints.MapControllerRoute(
                     name: "default",

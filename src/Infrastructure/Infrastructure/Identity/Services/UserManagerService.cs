@@ -36,10 +36,11 @@ namespace Infrastructure.Identity.Services
             return (result.ToApplicationResult(), user.ToApplicationUserDTO());
         }
 
-        public async Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password)
+        public async Task<(Result Result, string UserId)> CreateUserAsync(string name, string userName, string password)
         {
             var user = new ApplicationUser
             {
+                Name = name.Trim(),
                 UserName = userName,
                 Email = userName,
             };
@@ -48,19 +49,14 @@ namespace Infrastructure.Identity.Services
 
             return (result.ToApplicationResult(), user.Id);
         }
-        public async Task<Result> CreateUserAsync(string userName, string phoneNumber, string email, string id = null)
+
+        public async Task<(Result Result, UserDTO User)> CreateUserAsync(string name, string userName, string phoneNumber, string email, string id = null, string profilePictureUrl = null)
         {
-            var user = new ApplicationUser
-            {
-                Id = string.IsNullOrWhiteSpace(id) ? Guid.NewGuid().ToString() : id,
-                UserName = userName,
-                Email = userName,
-            };
-
+            var user = new ApplicationUser(id, name, userName, email, phoneNumber, profilePictureUrl);
             var result = await _userManager.CreateAsync(user);
-
-            return (result.ToApplicationResult());
+            return (result.ToApplicationResult(), user.ToApplicationUserDTO());
         }
+
         public async Task<Result> DeleteUserAsync(string userId)
         {
             var user = _userManager.Users.SingleOrDefault(u => u.Id == userId);
@@ -84,9 +80,13 @@ namespace Infrastructure.Identity.Services
             return user.ToApplicationUserDTO();
         }
 
-        public async Task<UserDTO> FindByEmailAsync(string email)
+        public async Task<UserDTO> FindByEmailAsync(string email, string tenantDomain)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Email == email && x.UserName.StartsWith(tenantDomain));
+            if (user is null)
+            {
+                throw new NotFoundException(nameof(ApplicationUser), email);
+            }
             return user.ToApplicationUserDTO();
         }
 

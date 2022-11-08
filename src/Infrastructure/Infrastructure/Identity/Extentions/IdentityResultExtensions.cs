@@ -21,7 +21,7 @@ namespace Infrastructure.Identity.Extentions
     {
         public static UserDTO ToApplicationUserDTO(this ApplicationUser user)
         {
-            return new UserDTO(user.Id, user.UserName, user.Email, user.PhoneNumber);
+            return new UserDTO(user.Id, user.Name, user.UserName, user.Email, user.PhoneNumber, user.ProfilePictureUrl);
         }
     }
 }

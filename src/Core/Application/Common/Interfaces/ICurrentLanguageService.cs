@@ -3,5 +3,7 @@
     public interface ICurrentLanguageService
     {
         string LangCode { get; }
+        string DisplayName { get; }
+        bool IsDefault { get; }
     }
 }

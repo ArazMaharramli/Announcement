@@ -50,9 +50,6 @@
 		<None Remove="CQRS\Rooms\Commands\Create\" />
 		<None Remove="CQRS\Rooms\Events\RoomCreated\" />
 		<None Remove="CQRS\Owners\" />
-		<None Remove="CQRS\Owners\IntegrationEvents\" />
-		<None Remove="CQRS\Owners\IntegrationEvents\Events\" />
-		<None Remove="CQRS\Owners\IntegrationEvents\Handlers\" />
 		<None Remove="CQRS\Rooms\IntegrationEvents\Handlers\" />
 		<None Remove="CQRS\Rooms\IntegrationEvents\Events\" />
 		<None Remove="CQRS\Rooms\Queries\Search\" />
@@ -62,6 +59,23 @@
 		<None Remove="CQRS\Rooms\Commands\Decline\" />
 		<None Remove="CQRS\Rooms\Queries\GetActiveRooms\" />
 		<None Remove="CQRS\Rooms\Queries\FindByIdOrSlug\" />
+		<None Remove="CQRS\Users\" />
+		<None Remove="CQRS\Users\Commands\" />
+		<None Remove="CQRS\Users\Commands\Register\" />
+		<None Remove="CQRS\Users\Events\" />
+		<None Remove="CQRS\Users\Events\IntegrationEvents\" />
+		<None Remove="CQRS\Users\EventHandlers\" />
+		<None Remove="CQRS\Users\EventHandlers\IntegrationEventHandlers\" />
+		<None Remove="CQRS\Owners\Events\" />
+		<None Remove="CQRS\Owners\Events\IntegrationEvents\" />
+		<None Remove="CQRS\Owners\EventHandlers\" />
+		<None Remove="CQRS\Owners\EventHandlers\IntegrationEventHandlers\" />
+		<None Remove="CQRS\Owners\EventHandlers\IntegrationEventHandlers\OwnerCreated\" />
+		<None Remove="CQRS\Users\Commands\SendEmailConfirmationCode\" />
+		<None Remove="CQRS\Users\Commands\ConfirmEmail\" />
+		<None Remove="CQRS\Users\Commands\Login\" />
+		<None Remove="CQRS\Users\Queries\" />
+		<None Remove="CQRS\Users\Queries\FindByEmail\" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.2" />
@@ -99,9 +113,6 @@
 	  <Folder Include="CQRS\Rooms\Commands\Create\" />
 	  <Folder Include="CQRS\Rooms\DomainEventHandlers\RoomCreated\" />
 	  <Folder Include="CQRS\Owners\" />
-	  <Folder Include="CQRS\Owners\IntegrationEvents\" />
-	  <Folder Include="CQRS\Owners\IntegrationEvents\Events\" />
-	  <Folder Include="CQRS\Owners\IntegrationEvents\Handlers\" />
 	  <Folder Include="CQRS\Rooms\IntegrationEvents\Handlers\" />
 	  <Folder Include="CQRS\Rooms\IntegrationEvents\Events\" />
 	  <Folder Include="CQRS\Rooms\Queries\Search\" />
@@ -111,5 +122,21 @@
 	  <Folder Include="CQRS\Rooms\Commands\Decline\" />
 	  <Folder Include="CQRS\Rooms\Queries\GetActiveRooms\" />
 	  <Folder Include="CQRS\Rooms\Queries\FindByIdOrSlug\" />
+	  <Folder Include="CQRS\Users\" />
+	  <Folder Include="CQRS\Users\Commands\" />
+	  <Folder Include="CQRS\Users\Commands\Register\" />
+	  <Folder Include="CQRS\Users\Events\" />
+	  <Folder Include="CQRS\Users\Events\IntegrationEvents\" />
+	  <Folder Include="CQRS\Users\EventHandlers\" />
+	  <Folder Include="CQRS\Users\EventHandlers\IntegrationEventHandlers\" />
+	  <Folder Include="CQRS\Owners\Events\" />
+	  <Folder Include="CQRS\Owners\Events\IntegrationEvents\" />
+	  <Folder Include="CQRS\Owners\EventHandlers\" />
+	  <Folder Include="CQRS\Owners\EventHandlers\IntegrationEventHandlers\" />
+	  <Folder Include="CQRS\Owners\EventHandlers\IntegrationEventHandlers\OwnerCreated\" />
+	  <Folder Include="CQRS\Users\Commands\SendEmailConfirmationCode\" />
+	  <Folder Include="CQRS\Users\Commands\ConfirmEmail\" />
+	  <Folder Include="CQRS\Users\Queries\" />
+	  <Folder Include="CQRS\Users\Queries\FindByEmail\" />
 	</ItemGroup>
 </Project>

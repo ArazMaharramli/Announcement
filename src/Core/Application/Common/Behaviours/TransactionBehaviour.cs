@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
@@ -55,6 +56,7 @@ namespace Application.Common.Behaviours
                     transactionId = transaction.TransactionId;
 
                 });
+
                 await _eventBusService.PublishAsync();
                 return response;
             }

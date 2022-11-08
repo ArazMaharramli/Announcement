@@ -89,6 +89,8 @@
     <Folder Include="Areas\Admin\Views\Rooms\" />
     <Folder Include="wwwroot\assets\js\customplugins\" />
     <Folder Include="wwwroot\assets\media\svg\social\" />
+    <Folder Include="Extentions\" />
+    <Folder Include="Extentions\HttpRequestExtentions\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Services\" />
@@ -124,6 +126,8 @@
     <None Remove="Areas\Admin\Views\Categories\" />
     <None Remove="FluentValidation.AspNetCore" />
     <None Remove="Areas\Admin\Views\Rooms\" />
+    <None Remove="Extentions\" />
+    <None Remove="Extentions\HttpRequestExtentions\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Application\Application.csproj">

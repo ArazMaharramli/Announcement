@@ -1,4 +1,43 @@
-﻿@model WebUI.Areas.Auth.ViewModels.Account.RegisterViewModel
+﻿@model Application.CQRS.Users.Commands.Register.RegisterUserCommand
+
+@section Styles{
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+
+    <style>
+        .iti {
+            width: 100%;
+            @*background-color: transparent;*@
+        }
+
+        .iti--separate-dial-code .iti__selected-flag {
+            background-color: transparent;
+        }
+    </style>
+}
+
+@section Scripts{
+    <script src="~/assets/js/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/assets/js/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script>const phoneInputField = document.querySelector("#phone");
+        const phoneInput = window.intlTelInput(phoneInputField, {
+            separateDialCode: true,
+            allowDropdown: true,
+            initialCountry: "az",
+            utilsScript:
+                "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+        });
+        $('#phone').on('keyup', function () {
+            if (phoneInput.isValidNumber()) {
+                $('#Phone').val(phoneInput.getNumber());
+                document.querySelector('[data-valmsg-for="Phone"]').innerHTML = "";
+            } else {
+                document.querySelector('[data-valmsg-for="Phone"]').innerHTML = "Enter valid phone";
+            }
+        });
+        @*$('.iti__flag-container').addClass('input-group-prepend');*@
+    </script>
+}
 <!--begin::Signin-->
 <div class="login-form">
     <!--begin::Form-->
@@ -15,16 +54,26 @@
         <div asp-validation-summary="All"></div>
         <!--begin::Form group-->
         <div class="form-group">
-            <label class="font-size-h6 font-weight-bolder text-dark" asp-for="Name"></label>
+            <label class="font-size-h6 font-weight-bolder text-dark required" asp-for="Name"></label>
             <input asp-for="Name" class="form-control form-control-solid h-auto py-7 px-6 rounded-lg border-0" />
             <span asp-validation-for="Name"></span>
         </div>
         <!--end::Form group-->
         <!--begin::Form group-->
         <div class="form-group">
-            <label class="font-size-h6 font-weight-bolder text-dark" asp-for="Phone"></label>
-            <input asp-for="Phone" class="form-control form-control-solid h-auto py-7 px-6 rounded-lg border-0" />
+            <label class="font-size-h6 font-weight-bolder text-dark required" asp-for="Phone"></label>
+            <div class="input-group">
+                <input id="phone" class="form-control form-control-solid h-auto py-7 pr-6 rounded-lg border-0 w-100" />
+            </div>
+            <input asp-for="Phone" type="tel" hidden class="form-control form-control-solid h-auto py-7 px-6 rounded-lg border-0" />
             <span asp-validation-for="Phone"></span>
+        </div>
+        <!--end::Form group-->
+        <!--begin::Form group-->
+        <div class="form-group">
+            <label class="font-size-h6 font-weight-bolder text-dark required" asp-for="Email"></label>
+            <input asp-for="Email" class="form-control form-control-solid h-auto py-7 px-6 rounded-lg border-0" />
+            <span asp-validation-for="Email"></span>
         </div>
         <!--end::Form group-->
         <!--begin::Action-->
