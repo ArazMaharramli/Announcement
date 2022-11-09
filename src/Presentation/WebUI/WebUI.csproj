@@ -42,6 +42,7 @@
     <Content Remove="wwwroot\assets\js\pages\rooms\" />
     <Content Remove="wwwroot\assets\js\customplugins\" />
     <Content Remove="wwwroot\assets\media\svg\social\" />
+    <Content Remove="wwwroot\assets\media\static\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\assets\" />
@@ -91,6 +92,7 @@
     <Folder Include="wwwroot\assets\media\svg\social\" />
     <Folder Include="Extentions\" />
     <Folder Include="Extentions\HttpRequestExtentions\" />
+    <Folder Include="wwwroot\assets\media\static\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Services\" />
@@ -128,6 +130,8 @@
     <None Remove="Areas\Admin\Views\Rooms\" />
     <None Remove="Extentions\" />
     <None Remove="Extentions\HttpRequestExtentions\" />
+    <None Remove="ImageProcessor" />
+    <None Remove="ImageProcessor.Plugins.WebP" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Application\Application.csproj">

@@ -90,7 +90,7 @@ namespace WebAPI
                     Title = tenantInfo.Name,
                     Version = "V1",
                     Contact = new OpenApiContact { Email = tenantInfo.Contact.Email, Name = tenantInfo.Contact.Name },
-                    Description = tenantInfo.Description
+                    Description = tenantInfo.ShortDescription
                 });
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {

@@ -9,7 +9,8 @@ namespace Application.Common.Models.ConfigModels
         public string Logo { get; set; }
         public string Icon { get; set; }
         public string FaviconIco { get; set; }
-        public string Description { get; set; }
+        public string ShortDescription { get; set; }
+        public string Slogan { get; set; }
 
         public ProjectContact Contact { get; set; }
         public List<SocialMedia> SocialMediaAccounts { get; set; }

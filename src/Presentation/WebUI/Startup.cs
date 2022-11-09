@@ -33,6 +33,9 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Net;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using Org.BouncyCastle.Crypto;
+using System.IO;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace WebUI
 {
