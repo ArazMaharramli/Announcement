@@ -82,8 +82,8 @@ namespace Application.CQRS.Rooms.Queries.GetActiveRooms
                 return new InfinityScroolList<RoomBriefVM>(
                     rooms,
                     rooms.Count < total,
-                    new DateTime(Math.Max(request.StartDate?.Ticks ?? 0, rooms.First().UpdatedAt.Ticks)),
-                    new DateTime(Math.Min(request.EndDate?.Ticks ?? _dateTimeService.Now.Ticks, rooms.Last().UpdatedAt.Ticks)));
+                    new DateTime(Math.Max(request.StartDate?.Ticks ?? 0, rooms.Select(x => x.UpdatedAt.Ticks).FirstOrDefault())),
+                    new DateTime(Math.Min(request.EndDate?.Ticks ?? _dateTimeService.Now.Ticks, rooms.Select(x => x.UpdatedAt.Ticks).LastOrDefault())));
             }
         }
     }

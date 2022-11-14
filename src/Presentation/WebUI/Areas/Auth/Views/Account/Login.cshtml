@@ -1,4 +1,13 @@
-﻿@model WebUI.Areas.Auth.ViewModels.Account.LoginViewModel
+﻿@inject Application.Common.Models.ConfigModels.TenantInfo tenant
+@model WebUI.Areas.Auth.ViewModels.Account.LoginViewModel
+
+@section Meta{
+    <title>@tenant.SEO.Login.Title | @tenant.Domain</title>
+    <meta name="keywords" content="@tenant.SEO.Login.Keywords" />
+    <meta name="description" content="@tenant.SEO.Login.Description" />
+    <link rel="canonical" href="https://roommate.az/auth/login" />
+}
+
 <!--begin::Signin-->
 <div class="login-form">
     <!--begin::Form-->

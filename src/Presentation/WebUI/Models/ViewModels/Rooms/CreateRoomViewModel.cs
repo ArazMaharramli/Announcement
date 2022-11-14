@@ -1,4 +1,5 @@
 ﻿using System;
+
 namespace WebUI.Models.ViewModels.Rooms
 {
     public class CreateRoomViewModel

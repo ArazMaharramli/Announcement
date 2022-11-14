@@ -1,14 +1,23 @@
 ﻿@inject Application.Common.Models.ConfigModels.TenantInfo tenant
 @inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
+@model WebUI.Models.ViewModels.Rooms.RoomsIndexViewModel
+
 @section Meta{
-    <title>@Localizer["RoomsPageTitle"] | @tenant.Domain</title>
-    <meta name="keywords" content="" />
-    <meta name="description" content="" />
+    <title>@tenant.SEO.Home.Title | @tenant.Domain</title>
+    <meta name="keywords" content="@tenant.SEO.Home.Keywords" />
+    <meta name="description" content="@tenant.SEO.Home.Description" />
     <link rel="canonical" href="https://roommate.az" />
 }
-@section Scripts{
 
+@section Scripts{
+    <script>//$.ajax({
+//            url: "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyCdVSHqtbLoxPRa5o35dyisKmSfHHgM0UI",
+//            type: 'POST',
+//            success: function (loc) {
+//                console.log(loc.location);
+//            },
+//        });</script>
 }
 
 <div class="bgi-size-cover bgi-position-center bg-image" style="background-image: url('/assets/media/static/homeintro_old.jpg');">
@@ -19,8 +28,8 @@
                     <!--begin::Heading Slogan-->
                     <h1 class="text-white font-weight-bolder mb-12 display-3">@tenant.Slogan</h1>
                     <!--end::Heading-->
-                    <button class="btn btn-primary font-weight-bolder h4 text-uppercase">
-                        Axtar
+                    <a asp-action="Search" asp-controller="Rooms" class="btn btn-primary font-weight-bolder h4 text-uppercase">
+                        @Localizer["Search"]
                         <span class="svg-icon svg-icon-xl">
                             <!--begin::Svg Icon | path:/metronic/theme/html/demo5/dist/assets/media/svg/icons/General/Search.svg-->
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -32,7 +41,7 @@
                             </svg>
                             <!--end::Svg Icon-->
                         </span>
-                    </button>
+                    </a>
                 </div>
 
             </div>
@@ -44,14 +53,12 @@
 <div class="d-none d-md-flex flex-column-fluid">
     <div class="container pt-15">
         <div class="w-100 d-flex justify-content-start mb-5">
-            <h1 class="font-weight-bolder">Haqqımızda</h1>
+            <h1 class="font-weight-bolder">@Localizer["AboutUs"]</h1>
         </div>
         <div class="d-flex">
             <div class="w-50">
                 <div class="h4">
-
                     @Html.Raw(tenant.ShortDescription)
-
                 </div>
             </div>
             <div class="w-50 d-flex align-self-center">
@@ -63,48 +70,52 @@
     </div>
 </div>
 <!--end::About Us (short)-->
-<!--begin::Last Announcements-->
-<div class="d-flex flex-column-fluid">
-    <div class="container pt-15">
-        <div class="w-100 d-flex justify-content-start mb-5">
-            <h1 class="font-weight-bolder">Son Elanlar</h1>
-        </div>
-        <div class="row">
-            @for (int i = 0; i < 9; i++)
-            {
-                <div class="col-lg-4 col-md-6">
-                    <div class="card card-custom my-4">
-                        <img class="card-img-top" loading="lazy" src="/assets/media/static/homeintro_old.jpg" />
-                        <div class="card-body p-4">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h4 class="card-title mb-2">Card title</h4>
-                                    <p class="card-text">2km aralı</p>
-                                </div>
-                                <div>
-                                    <span class="d-flex justify-content-end mb-2"><i class="la la-bookmark-o icon-2x"></i></span>
-                                    <h4 class="card-text font-weight-bolder text-uppercase">100 Azn</h4>
+@if (Model.Rooms.Count > 0)
+{
+    <!--begin::Last Announcements-->
+    <div class="d-flex flex-column-fluid">
+        <div class="container pt-15">
+            <div class="w-100 d-flex justify-content-start mb-5">
+                <h1 class="font-weight-bolder">@Localizer["LastAnnouncements"]</h1>
+            </div>
+            <div class="row">
+                @foreach (var room in Model.Rooms)
+                {
+                    <div class="col-lg-4 col-md-6">
+                        <a href="@room.Url" class="card card-custom my-4">
+                            <img class="card-img-top" loading="lazy" src="@room.MediaUrl" alt="@room.MediaAltTag" />
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h4 class="card-title mb-2">@room.Title</h4>
+                                        @*<p class="card-text">2km aralı</p>*@
+                                    </div>
+                                    <div>
+                                        <span class="d-flex justify-content-end mb-2"><i class="la la-bookmark-o icon-2x"></i></span>
+                                        <h4 class="card-text font-weight-bolder text-uppercase">@room.Price Azn</h4>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
-                </div>
-            }
-        </div>
-        <div class="d-flex justify-content-end">
-            <a class="btn btn-link pr-0"><i>Hamısını göstər</i><i class="pr-0 pl-2 icon-md la la-angle-down"></i> </a>
+                }
+            </div>
+            <div class="d-flex justify-content-end">
+                <a class="btn btn-link pr-0"><i>@Localizer["ShowAll"]</i><i class="pr-0 pl-2 icon-md la la-angle-down"></i> </a>
+            </div>
         </div>
     </div>
-</div>
-<!--end::Last Announcements-->
+    <!--end::Last Announcements-->
+}
+
 <!--begin:: Contact us-->
-<div class="mt-15 bgi-size-cover bgi-position-center bg-image" style="background-image: url('/assets/media/static/homeintro_old.jpg');">
-    <div class="w-100 h-100" style="background: linear-gradient(90deg, rgba(39, 50, 74, 0.7) 0%, rgba(0, 0, 0, 0) 100%);">
+<div class="mt-15 mb-10 bgi-size-cover bgi-position-center bg-image" style="background-image: url('/assets/media/static/subscribeus.jpg');">
+    <div class="w-100 h-100" style="background: linear-gradient(90deg, rgba(39, 50, 74, 1) 25%, rgba(0, 0, 0, 0) 100%);">
         <div class="container">
             <div class="d-flex align-items-stretch flex-column py-8 py-md-15">
-                <div class="w-100 w-md-50 w-lg-25">
+                <div class="col-md-6 col-lg-4">
                     <!--begin::Heading Slogan-->
-                    <h1 class="text-white font-weight-bolder">Bizimlə əlaqədə qal</h1>
+                    <h1 class="text-white font-weight-bolder">@Localizer["KeepInTouchWithUs"]</h1>
                     <form id="subscribe">
                         <div class="form-group">
                             <input name="Name" class="form-control" placeholder="Ad/Soyad" />
@@ -116,18 +127,7 @@
                             <input name="Telephone" class="form-control" placeholder="Telefon" />
                         </div>
                         <button class="btn btn-primary font-weight-bolder h4 text-uppercase">
-                            Axtar
-                            <span class="svg-icon svg-icon-xl">
-                                <!--begin::Svg Icon | path:/metronic/theme/html/demo5/dist/assets/media/svg/icons/General/Search.svg-->
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                        <rect x="0" y="0" width="24" height="24"></rect>
-                                        <path d="M14.2928932,16.7071068 C13.9023689,16.3165825 13.9023689,15.6834175 14.2928932,15.2928932 C14.6834175,14.9023689 15.3165825,14.9023689 15.7071068,15.2928932 L19.7071068,19.2928932 C20.0976311,19.6834175 20.0976311,20.3165825 19.7071068,20.7071068 C19.3165825,21.0976311 18.6834175,21.0976311 18.2928932,20.7071068 L14.2928932,16.7071068 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"></path>
-                                        <path d="M11,16 C13.7614237,16 16,13.7614237 16,11 C16,8.23857625 13.7614237,6 11,6 C8.23857625,6 6,8.23857625 6,11 C6,13.7614237 8.23857625,16 11,16 Z M11,18 C7.13400675,18 4,14.8659932 4,11 C4,7.13400675 7.13400675,4 11,4 C14.8659932,4 18,7.13400675 18,11 C18,14.8659932 14.8659932,18 11,18 Z" fill="#000000" fill-rule="nonzero"></path>
-                                    </g>
-                                </svg>
-                                <!--end::Svg Icon-->
-                            </span>
+                            @Localizer["Subscribe"]
                         </button>
                     </form>
                     <!--end::Heading-->

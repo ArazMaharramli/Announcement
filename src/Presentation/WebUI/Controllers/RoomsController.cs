@@ -10,15 +10,22 @@ using Application.CQRS.Rooms.Queries.FindBySlug;
 using Application.CQRS.Rooms.Queries.GetActiveRooms;
 using Microsoft.AspNetCore.Mvc;
 using WebUI.Areas.Admin.ViewModels;
+using WebUI.Models.ViewModels.Rooms;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace WebUI.Controllers
 {
     public class RoomsController : BaseController
     {
-        public IActionResult Index()
+        public async Task<IActionResult> IndexAsync(CancellationToken cancellationToken)
         {
-            return View();
+            var resp = await Mediator.Send(new GetActiveRoomsQuery(), cancellationToken);
+            var model = new RoomsIndexViewModel
+            {
+                Rooms = resp.Data
+            };
+            return View(model);
         }
 
         public IActionResult Create()

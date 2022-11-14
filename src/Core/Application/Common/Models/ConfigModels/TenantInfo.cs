@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Domain.Common;
 
 namespace Application.Common.Models.ConfigModels
 {
@@ -12,10 +13,19 @@ namespace Application.Common.Models.ConfigModels
         public string ShortDescription { get; set; }
         public string Slogan { get; set; }
 
+        public StaticPages SEO { get; set; }
         public ProjectContact Contact { get; set; }
-        public List<SocialMedia> SocialMediaAccounts { get; set; }
 
+        public List<SocialMedia> SocialMediaAccounts { get; set; }
         public List<LanguageModel> Languages { get; set; }
+    }
+
+    public class StaticPages
+    {
+        public Meta Login { get; set; }
+        public Meta Register { get; set; }
+        public Meta Home { get; set; }
+        public Meta RoomsSearch { get; set; }
     }
 
     public class ProjectContact

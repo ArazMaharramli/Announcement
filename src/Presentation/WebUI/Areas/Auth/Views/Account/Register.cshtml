@@ -1,4 +1,12 @@
-﻿@model Application.CQRS.Users.Commands.Register.RegisterUserCommand
+﻿@inject Application.Common.Models.ConfigModels.TenantInfo tenant
+@model Application.CQRS.Users.Commands.Register.RegisterUserCommand
+
+@section Meta{
+    <title>@tenant.SEO.Register.Title | @tenant.Domain</title>
+    <meta name="keywords" content="@tenant.SEO.Register.Keywords" />
+    <meta name="description" content="@tenant.SEO.Register.Description" />
+    <link rel="canonical" href="https://roommate.az/auth/register" />
+}
 
 @section Styles{
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
