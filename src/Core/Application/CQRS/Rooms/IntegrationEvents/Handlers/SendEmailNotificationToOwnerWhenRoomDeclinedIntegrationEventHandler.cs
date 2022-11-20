@@ -13,11 +13,11 @@ public class SendEmailNotificationToOwnerWhenRoomDeclinedIntegrationEventHandler
     private readonly EmailTemplates _emailTemplates;
     private readonly StaticUrls _staticUrls;
 
-    public SendEmailNotificationToOwnerWhenRoomDeclinedIntegrationEventHandler(IEmailService emailService, StaticUrls staticUrls, EmailTemplates emailTemplates)
+    public SendEmailNotificationToOwnerWhenRoomDeclinedIntegrationEventHandler(IEmailService emailService, StaticUrls staticUrls, TenantInfo tenant)
     {
         _emailService = emailService;
         _staticUrls = staticUrls;
-        _emailTemplates = emailTemplates;
+        _emailTemplates = tenant.EmailTemplates;
     }
 
 

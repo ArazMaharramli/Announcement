@@ -18,11 +18,11 @@ namespace Application.CQRS.Users.Commands.SendEmailConfirmationCode
             private readonly EmailTemplates _emailTemplates;
             private readonly StaticUrls _staticUrls;
 
-            public Handler(IEmailService emailService, IUserManager userManager, EmailTemplates emailTemplates, StaticUrls staticUrls)
+            public Handler(IEmailService emailService, IUserManager userManager, TenantInfo tenant, StaticUrls staticUrls)
             {
                 _emailService = emailService;
                 _userManager = userManager;
-                _emailTemplates = emailTemplates;
+                _emailTemplates = tenant.EmailTemplates;
                 _staticUrls = staticUrls;
             }
 

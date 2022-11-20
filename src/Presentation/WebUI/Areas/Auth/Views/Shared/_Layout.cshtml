@@ -5,8 +5,9 @@
 <html lang="en">
 <!--begin::Head-->
 <head>
-    <base href="../../">
+    <base href="/">
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     @RenderSection("Meta", false)
     <!--begin::Fonts-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
@@ -38,7 +39,7 @@
                     <div class="d-flex justify-content-center">
                         <!--begin::Logo-->
                         <a href="#" class="login-logo pb-xl-20 pb-15">
-                            <img src="@tenant.Logo" class="max-h-70px" alt="" />
+                            <img src="@tenant.Logo" class="max-h-70px" alt="@tenant.Name Logo" />
                         </a>
                         <!--end::Logo-->
                     </div>

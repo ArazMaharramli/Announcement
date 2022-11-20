@@ -14,10 +14,10 @@ namespace Application.CQRS.Rooms.IntegrationEvents.Handlers
         private readonly EmailTemplates _emailTemplates;
         private readonly StaticUrls _staticUrls;
 
-        public SendEmailToOwnerWhenRoomCreatedIntegrationEventHandler(StaticUrls staticUrls, EmailTemplates emailTemplates, IEmailService emailService)
+        public SendEmailToOwnerWhenRoomCreatedIntegrationEventHandler(StaticUrls staticUrls, TenantInfo tenant, IEmailService emailService)
         {
             _staticUrls = staticUrls;
-            _emailTemplates = emailTemplates;
+            _emailTemplates = tenant.EmailTemplates;
             _emailService = emailService;
         }
 
@@ -27,4 +27,3 @@ namespace Application.CQRS.Rooms.IntegrationEvents.Handlers
         }
     }
 }
-

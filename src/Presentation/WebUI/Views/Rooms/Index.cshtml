@@ -70,7 +70,7 @@
     </div>
 </div>
 <!--end::About Us (short)-->
-@if (Model.Rooms.Count > 0)
+@if (Model.Rooms.Count > 0 || true)
 {
     <!--begin::Last Announcements-->
     <div class="d-flex flex-column-fluid">
@@ -79,6 +79,19 @@
                 <h1 class="font-weight-bolder">@Localizer["LastAnnouncements"]</h1>
             </div>
             <div class="row">
+                @for (int i = 0; i < 9; i++)
+                {
+                    Model.Rooms.Add(new Application.CQRS.Rooms.Queries.GetActiveRooms.RoomBriefVM
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        MediaUrl = "/assets/media/static/homeintro_old.jpg",
+                        MediaAltTag = "asda",
+                        UpdatedAt = DateTime.Now,
+                        Price = 123,
+                        Title = "Oglan otaq yoldasi axtarilir",
+                        Url = "#"
+                    });
+                }
                 @foreach (var room in Model.Rooms)
                 {
                     <div class="col-lg-4 col-md-6">
@@ -88,7 +101,7 @@
                                 <div class="d-flex justify-content-between">
                                     <div>
                                         <h4 class="card-title mb-2">@room.Title</h4>
-                                        @*<p class="card-text">2km aralı</p>*@
+                                        <p class="card-text">2km aralı</p>
                                     </div>
                                     <div>
                                         <span class="d-flex justify-content-end mb-2"><i class="la la-bookmark-o icon-2x"></i></span>

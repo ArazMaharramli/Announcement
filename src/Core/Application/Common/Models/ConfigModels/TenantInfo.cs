@@ -15,6 +15,8 @@ namespace Application.Common.Models.ConfigModels
 
         public StaticPages SEO { get; set; }
         public ProjectContact Contact { get; set; }
+        public SmtpOptions SmtpOptions { get; set; }
+        public EmailTemplates EmailTemplates { get; set; }
 
         public List<SocialMedia> SocialMediaAccounts { get; set; }
         public List<LanguageModel> Languages { get; set; }

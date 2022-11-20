@@ -12,9 +12,9 @@ namespace Infrastructure.Common
     {
         private readonly SmtpOptions _smtpOptions;
 
-        public EmailService(IOptions<SmtpOptions> smtpOptions)
+        public EmailService(TenantInfo tenantInfo)
         {
-            _smtpOptions = smtpOptions.Value;
+            _smtpOptions = tenantInfo.SmtpOptions;
         }
 
         public async Task SendEmailAsync(string email, string subject, string message)

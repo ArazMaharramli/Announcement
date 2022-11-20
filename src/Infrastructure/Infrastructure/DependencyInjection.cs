@@ -24,14 +24,6 @@ namespace Infrastructure
             services.AddTransient<INotificationService, NotificationService>();
             services.AddTransient<IDateTimeService, MachineDateTime>();
 
-
-            services.Configure<SmtpOptions>(configuration.GetSection("SmtpOptions"));
-
-            EmailTemplates emailTemplates = new EmailTemplates();
-
-            configuration.Bind("EmailTemplates", emailTemplates);
-            services.AddScoped<EmailTemplates>(opt => emailTemplates);
-
             services.AddTransient<IEmailService, EmailService>();
 
             services.AddDbContext<ApplicationDbContext>(options =>
