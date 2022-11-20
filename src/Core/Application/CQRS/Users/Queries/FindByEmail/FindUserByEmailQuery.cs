@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.Common.Models;
 using Application.Common.Models.ConfigModels;
@@ -23,9 +24,16 @@ public class FindUserByEmailQuery : IRequest<UserDTO>
             this.tenantInfo = tenantInfo;
         }
 
-        public Task<UserDTO> Handle(FindUserByEmailQuery request, CancellationToken cancellationToken)
+        public async Task<UserDTO> Handle(FindUserByEmailQuery request, CancellationToken cancellationToken)
         {
-            return _userManager.FindByEmailAsync(request.Email, tenantInfo.Domain);
+            var res = await _userManager.FindByEmailAsync(request.Email, tenantInfo.Domain);
+
+            if (!res.Result.Succeeded)
+            {
+                throw new NotFoundException("User", request.Email);
+            }
+
+            return res.User;
         }
     }
 }

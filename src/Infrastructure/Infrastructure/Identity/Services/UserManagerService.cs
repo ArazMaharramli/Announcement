@@ -13,6 +13,7 @@ using Infrastructure.Identity.Entities;
 using Infrastructure.Identity.Extentions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace Infrastructure.Identity.Services
 {
@@ -50,9 +51,9 @@ namespace Infrastructure.Identity.Services
             return (result.ToApplicationResult(), user.Id);
         }
 
-        public async Task<(Result Result, UserDTO User)> CreateUserAsync(string name, string userName, string phoneNumber, string email, string id = null, string profilePictureUrl = null)
+        public async Task<(Result Result, UserDTO User)> CreateUserAsync(string name, string tenantDomain, string phoneNumber, string email, string id = null, string profilePictureUrl = null)
         {
-            var user = new ApplicationUser(id, name, userName, email, phoneNumber, profilePictureUrl);
+            var user = new ApplicationUser(id, name, tenantDomain + "_" + email, email, phoneNumber, profilePictureUrl);
             var result = await _userManager.CreateAsync(user);
             return (result.ToApplicationResult(), user.ToApplicationUserDTO());
         }
@@ -80,14 +81,14 @@ namespace Infrastructure.Identity.Services
             return user.ToApplicationUserDTO();
         }
 
-        public async Task<UserDTO> FindByEmailAsync(string email, string tenantDomain)
+        public async Task<(Result Result, UserDTO User)> FindByEmailAsync(string email, string tenantDomain)
         {
             var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Email == email && x.UserName.StartsWith(tenantDomain));
             if (user is null)
             {
-                throw new NotFoundException(nameof(ApplicationUser), email);
+                return (Result.Failure(new List<string> { "User not found" }), null);
             }
-            return user.ToApplicationUserDTO();
+            return (Result.Success(), user.ToApplicationUserDTO());
         }
 
         public async Task<string> GeneratePasswordResetTokenAsync(string userId)

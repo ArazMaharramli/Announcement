@@ -36,7 +36,7 @@ public class RegisterUserCommand : IRequest<UserDTO>
         {
             var resp = await _userManager.CreateUserAsync(
                 name: request.Name,
-                userName: _tenantInfo.Domain.ToLower() + "_" + request.Email,
+                tenantDomain: _tenantInfo.Domain.ToLower(),
                 phoneNumber: request.Phone,
                 email: request.Email,
                 id: request.Id);
