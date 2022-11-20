@@ -1,4 +1,5 @@
-﻿@inject Application.Common.Models.ConfigModels.TenantInfo tenant
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@inject Application.Common.Models.ConfigModels.TenantInfo tenant
 @model Application.CQRS.Users.Commands.Register.RegisterUserCommand
 
 @section Meta{
@@ -40,7 +41,7 @@
                 $('#Phone').val(phoneInput.getNumber());
                 document.querySelector('[data-valmsg-for="Phone"]').innerHTML = "";
             } else {
-                document.querySelector('[data-valmsg-for="Phone"]').innerHTML = "Enter valid phone";
+                document.querySelector('[data-valmsg-for="Phone"]').innerHTML = "@Localizer["Enter valid phone"]";
             }
         });
         @*$('.iti__flag-container').addClass('input-group-prepend');*@
@@ -52,10 +53,10 @@
     <form class="form" id="kt_login_singin_form" method="post">
         <!--begin::Title-->
         <div class="pb-5 pb-lg-15">
-            <h3 class="font-weight-bolder text-dark font-size-h2 font-size-h1-lg">Sign up</h3>
+            <h3 class="font-weight-bolder text-dark font-size-h2 font-size-h1-lg">@Localizer["Sign up"]</h3>
             <div class="text-muted font-weight-bold font-size-h4">
-                Already have an Account?
-                <a asp-action="Login" asp-controller="Account" asp-area="Auth" class="text-primary font-weight-bolder">Sign in</a>
+                @Localizer["Already have an Account?"]
+                <a asp-action="Login" asp-controller="Account" asp-area="Auth" class="text-primary font-weight-bolder">@Localizer["Sign in"]</a>
             </div>
         </div>
         <!--begin::Title-->
@@ -86,7 +87,7 @@
         <!--end::Form group-->
         <!--begin::Action-->
         <div class="pb-lg-0 pb-5">
-            <button type="submit" id="kt_login_singin_form_submit_button" class="btn btn-primary font-weight-bolder font-size-h6 px-8 py-4 my-3 mr-3">Register</button>
+            <button type="submit" id="kt_login_singin_form_submit_button" class="btn btn-primary font-weight-bolder font-size-h6 px-8 py-4 my-3 mr-3">@Localizer["Register"]</button>
         </div>
         <!--end::Action-->
     </form>

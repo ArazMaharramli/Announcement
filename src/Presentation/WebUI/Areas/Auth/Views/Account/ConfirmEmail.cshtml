@@ -1,4 +1,5 @@
-﻿@model Application.CQRS.Users.Commands.ConfirmEmail.ConfirmEmailCommand
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@model Application.CQRS.Users.Commands.ConfirmEmail.ConfirmEmailCommand
 
 @section Meta{
     <meta name="robots" content="noindex">
@@ -19,7 +20,6 @@
                     console.log(error);
                 },
                 complete: function () {
-                    console.log('completed');
                 }
             });
         }
@@ -30,12 +30,12 @@
                 }
 
                 // Display the result in the element with id="demo"
-                document.getElementById("resendConfirmationCodeBtn").innerHTML = "Send again (" + seconds + ")";
+                document.getElementById("resendConfirmationCodeBtn").innerHTML = "@Localizer["Send again"] (" + seconds + ")";
 
                 // If the count down is finished, write some text
                 if (seconds <= 0) {
                     clearInterval(counter);
-                    document.getElementById("resendConfirmationCodeBtn").innerHTML = "Send again";
+                    document.getElementById("resendConfirmationCodeBtn").innerHTML = "@Localizer["Send again"]";
                     $("#resendConfirmationCodeBtn").attr("disabled", false);
                 }
             }, 1000);
@@ -48,9 +48,9 @@
     <form class="form" id="kt_login_singin_form" method="post">
         <!--begin::Title-->
         <div class="pb-5 pb-lg-15">
-            <h3 class="font-weight-bolder text-dark font-size-h2 font-size-h1-lg">Confirm Email</h3>
+            <h3 class="font-weight-bolder text-dark font-size-h2 font-size-h1-lg">@Localizer["ConfirmEmail"]</h3>
             <div class="text-muted font-weight-bold font-size-h4">
-                Enter the 6 digit code that sent to your email
+                @Localizer["Enter the 6 digit code that sent to your email"]
             </div>
         </div>
         <!--begin::Title-->
@@ -59,7 +59,7 @@
         <div class="form-group">
             <div class="d-flex justify-content-between mt-n5">
                 <label asp-for="Code" class="font-size-h6 font-weight-bolder text-dark pt-5"></label>
-                <button type="button" id="resendConfirmationCodeBtn" onclick="resendConfirmationCode()" class="btn btn-link text-primary font-size-h6 font-weight-bolder text-hover-primary pt-5">Send again</button>
+                <button type="button" id="resendConfirmationCodeBtn" onclick="resendConfirmationCode()" class="btn btn-link text-primary font-size-h6 font-weight-bolder text-hover-primary pt-5">@Localizer["Send again"]</button>
             </div>
             <input asp-for="Code" class="form-control form-control-solid h-auto rounded-lg border-0" style="text-align: center; font-size: 3rem;" />
         </div>
@@ -67,7 +67,7 @@
         <!--begin::Action-->
         <div class="pb-lg-0 pb-5">
             <input asp-for="UserId" hidden />
-            <button type="submit" id="kt_login_singin_form_submit_button" class="btn btn-primary font-weight-bolder font-size-h6 px-8 py-4 my-3 mr-3">Confirm</button>
+            <button type="submit" id="kt_login_singin_form_submit_button" class="btn btn-primary font-weight-bolder font-size-h6 px-8 py-4 my-3 mr-3">@Localizer["Confirm"]</button>
         </div>
         <!--end::Action-->
     </form>
