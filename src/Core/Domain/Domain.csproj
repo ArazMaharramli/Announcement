@@ -10,11 +10,13 @@
 		<None Remove="Microsoft.EntityFrameworkCore.SqlServer.NetTopologySuite" />
 		<None Remove="MediatR" />
 		<None Remove="Events\" />
+		<None Remove="Events\Roles\" />
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="Common\" />
 		<Folder Include="Entities\" />
 		<Folder Include="Events\" />
+		<Folder Include="Events\Roles\" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Compile Update="Entities\EmptyClass.cs">

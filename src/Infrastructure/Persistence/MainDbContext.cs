@@ -52,8 +52,12 @@ namespace Persistence
         public DbSet<Owner> Owners { get; set; }
 
 
-        public bool HasActiveTransaction => _currentTransaction != null;
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<RoleClaim> RoleClaims { get; set; }
+        public DbSet<Manager> Managers { get; set; }
+        public DbSet<ManagerClaim> ManagerClaims { get; set; }
 
+        public bool HasActiveTransaction => _currentTransaction != null;
 
         public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default(CancellationToken))
         {

@@ -7,7 +7,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.2" />
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="6.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.2" />
     <PackageReference Include="Microsoft.Extensions.Localization" Version="6.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Localization.Routing" Version="2.2.0" />
     <PackageReference Include="Localization.SqlLocalizer" Version="3.1.0" />
@@ -93,6 +92,7 @@
     <Folder Include="Extentions\" />
     <Folder Include="Extentions\HttpRequestExtentions\" />
     <Folder Include="wwwroot\assets\media\static\" />
+    <Folder Include="Areas\Admin\ViewModels\Roles\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Services\" />
@@ -132,6 +132,7 @@
     <None Remove="Extentions\HttpRequestExtentions\" />
     <None Remove="ImageProcessor" />
     <None Remove="ImageProcessor.Plugins.WebP" />
+    <None Remove="Areas\Admin\ViewModels\Roles\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Application\Application.csproj">

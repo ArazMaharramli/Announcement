@@ -23,6 +23,14 @@ namespace Application.Common.Models
             };
 
         }
+
+        public DataTablePagedList(IEnumerable<T> data, int recordsTotal, int recordsFiltered)
+        {
+            Data = data;
+            RecordsTotal = recordsTotal;
+            RecordsFiltered = recordsFiltered;
+        }
+
         //public int PageCount { get; protected set; }
 
         public DatatableMeta Meta { get; private set; }

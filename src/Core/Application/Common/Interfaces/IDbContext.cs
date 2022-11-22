@@ -22,6 +22,11 @@ namespace Application.Common.Interfaces
         DbSet<Owner> Owners { get; set; }
         DbSet<Setting> Settings { get; set; }
 
+        DbSet<Role> Roles { get; set; }
+        DbSet<RoleClaim> RoleClaims { get; set; }
+        DbSet<Manager> Managers { get; set; }
+        DbSet<ManagerClaim> ManagerClaims { get; set; }
+
         public bool HasActiveTransaction { get; }
 
         Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken);

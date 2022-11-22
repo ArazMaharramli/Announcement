@@ -26,6 +26,7 @@ namespace Application.Common.Behaviours
                 .Select(v => v.Validate(context))
                 .SelectMany(result => result.Errors)
                 .Where(f => f != null)
+                .Distinct()
                 .ToList();
 
             if (failures.Count != 0)

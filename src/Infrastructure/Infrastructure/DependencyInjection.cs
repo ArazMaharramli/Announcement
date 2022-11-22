@@ -20,6 +20,7 @@ namespace Infrastructure
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IUserManager, UserManagerService>();
+            services.AddScoped<IRoleManager, RoleManagerService>();
 
             services.AddTransient<INotificationService, NotificationService>();
             services.AddTransient<IDateTimeService, MachineDateTime>();

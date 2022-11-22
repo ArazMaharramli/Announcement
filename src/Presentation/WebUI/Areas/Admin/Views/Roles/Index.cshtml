@@ -1,0 +1,124 @@
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@model WebUI.Areas.Admin.ViewModels.Roles.IndexRoleViewModel
+
+<div class="post d-flex flex-column-fluid" id="kt_post">
+    <!--begin::Container-->
+    <div id="kt_content_container" class="container-xxl">
+        <!--begin::Row-->
+        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-5 g-xl-9">
+            <!--begin::Col-->
+            @foreach (var role in Model.Roles)
+            {
+                <div class="col-md-4">
+                    <!--begin::Card-->
+                    <div class="card card-flush h-md-100">
+                        <!--begin::Card header-->
+                        <div class="card-header">
+                            <!--begin::Card title-->
+                            <div class="card-title">
+                                <h2>@role.Name</h2>
+                            </div>
+                            <!--end::Card title-->
+                        </div>
+                        <!--end::Card header-->
+                        <!--begin::Card body-->
+                        <div class="card-body pt-1">
+                            <!--begin::Users-->
+                            <div class="fw-bolder text-gray-600 mb-5">@Localizer["Total users with this role:"] @role.UsersCount</div>
+                            <!--end::Users-->
+                            <!--begin::Permissions-->
+                            <div class="d-flex flex-column text-gray-600">
+                                @if (role.Claims.Count > 6)
+                                {
+                                    var more = role.Claims.Count - 6;
+                                    @foreach (var item in role.Claims.Take(6))
+                                    {
+                                        <div class="d-flex align-items-center py-2">
+                                            <span class="bullet bg-primary me-3"></span>@item
+                                        </div>
+                                    }
+                                    <div class="d-flex align-items-center py-2">
+                                        <span class="bullet bg-primary me-3"></span>
+                                        <em>@Localizer["and"] @more @Localizer["more"]...</em>
+                                    </div>
+                                }
+                                else
+                                {
+                                    @foreach (var item in role.Claims)
+                                    {
+                                        <div class="d-flex align-items-center py-2">
+                                            <span class="bullet bg-primary me-3"></span>@item
+                                        </div>
+                                    }
+                                }
+                            </div>
+                            <!--end::Permissions-->
+                        </div>
+                        <!--end::Card body-->
+                        <!--begin::Card footer-->
+                        <div class="card-footer flex-wrap pt-0">
+                            <a asp-action="Detail" asp-route-Name="@role.Name" class="btn btn-light btn-active-primary my-1 me-2">@Localizer["View Role"]</a>
+                            <a asp-action="Edit" asp-controller="Roles" asp-area="Admin" asp-route-id="@role.Id" class="btn btn-light btn-active-light-primary my-1">@Localizer["Edit Role"]</a>
+
+                        </div>
+                        <!--end::Card footer-->
+                    </div>
+                    <!--end::Card-->
+                </div>
+
+            }
+            <!--end::Col-->
+            <!--begin::Add new card-->
+            <div class="ol-md-4">
+                <!--begin::Card-->
+                <div class="card h-md-100">
+                    <!--begin::Card body-->
+                    <div class="card-body d-flex flex-center">
+                        <!--begin::Button-->
+                        <a class="btn btn-clear d-flex flex-column flex-center" asp-action="Create" asp-controller="Roles" asp-area="Admin">
+                            <!--begin::Illustration-->
+                            <img src="assets/media/illustrations/sketchy-1/4.png" alt="" class="mw-100 mh-150px mb-7">
+                            <!--end::Illustration-->
+                            <!--begin::Label-->
+                            <div class="fw-bolder fs-3 text-gray-600 text-hover-primary">@Localizer["Create New Role"]</div>
+                            <!--end::Label-->
+                        </a>
+                        <!--begin::Button-->
+                    </div>
+                    <!--begin::Card body-->
+                </div>
+                <!--begin::Card-->
+            </div>
+            <!--begin::Add new card-->
+        </div>
+        <!--end::Row-->
+
+    </div>
+    <!--end::Container-->
+</div>
+
+@section Scripts{
+    <script>function editRole(roleId, roleName) {
+            $.ajax({
+                url: "/admin/roles/editrole?roleId=" + roleId + "&roleName=" + roleName,
+                method: 'get'
+            }).done(function (data) {
+                $("#kt_content_container").append(data);
+                $("body").addClass("modal-open")
+                $("body").css("overflow", "hidden")
+                $("body").css("padding-right", "15px")
+            })
+        }
+
+        function addRole() {
+            $.ajax({
+                url: "/admin/roles/addrole",
+                method: 'get'
+            }).done(function (data) {
+                $("#kt_content_container").append(data);
+                $("body").addClass("modal-open")
+                $("body").css("overflow", "hidden")
+                $("body").css("padding-right", "15px")
+            })
+        }</script>
+}

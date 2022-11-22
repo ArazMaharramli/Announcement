@@ -76,6 +76,11 @@
 		<None Remove="CQRS\Users\Commands\Login\" />
 		<None Remove="CQRS\Users\Queries\" />
 		<None Remove="CQRS\Users\Queries\FindByEmail\" />
+		<None Remove="CQRS\Roles\IntegrationEvents\" />
+		<None Remove="CQRS\Roles\IntegrationEvents\RoleCreated\" />
+		<None Remove="CQRS\Roles\IntegrationEvents\RoleCreated\Handlers\" />
+		<None Remove="CQRS\Roles\IntegrationEvents\RoleUpdated\" />
+		<None Remove="CQRS\Roles\IntegrationEvents\RoleUpdated\Handlers\" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.2" />
@@ -138,5 +143,10 @@
 	  <Folder Include="CQRS\Users\Commands\ConfirmEmail\" />
 	  <Folder Include="CQRS\Users\Queries\" />
 	  <Folder Include="CQRS\Users\Queries\FindByEmail\" />
+	  <Folder Include="CQRS\Roles\IntegrationEvents\" />
+	  <Folder Include="CQRS\Roles\IntegrationEvents\RoleCreated\" />
+	  <Folder Include="CQRS\Roles\IntegrationEvents\RoleCreated\Handlers\" />
+	  <Folder Include="CQRS\Roles\IntegrationEvents\RoleUpdated\" />
+	  <Folder Include="CQRS\Roles\IntegrationEvents\RoleUpdated\Handlers\" />
 	</ItemGroup>
 </Project>

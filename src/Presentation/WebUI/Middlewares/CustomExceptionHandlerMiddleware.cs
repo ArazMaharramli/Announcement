@@ -42,13 +42,7 @@ namespace WebUI.Middlewares
 
                     result = JsonConvert.SerializeObject(validationException.Failures);
                     break;
-                case BadRequestException badRequestException:
-                    code = HttpStatusCode.BadRequest;
-                    result = badRequestException.Message;
-                    break;
-                case NotFoundException _:
-                    code = HttpStatusCode.NotFound;
-                    break;
+                default: throw exception;
             }
 
             context.Response.ContentType = "application/json";
