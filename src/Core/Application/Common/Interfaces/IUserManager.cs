@@ -26,10 +26,13 @@ namespace Application.Common.Interfaces
 
         Task<(Result Result, UserDTO User)> LoginWithUserName(string userName, string password);
 
+        Task AddToRolesAsync(string userId, List<string> roleNames);
+        Task AddToRoleAsync(string userId, string roleName);
+        Task RemoveFromRoleAsync(string userId, string roleName);
+        Task RemoveAllRolesAsync(string userId, CancellationToken cancellationToken);
 
         Task<(string Token, string AccessTokenId)> CreateRefreshTokenAsync(string userId, CancellationToken cancellationToken);
         Task<(string Token, string AccessTokenId)> UpdateRefreshTokenAsync(string refreshToken, string accessTokenId, CancellationToken cancellationToken);
         Task<bool> InvalidateRefreshTokenAsync(string accessTokenId, CancellationToken cancellationToken);
-
     }
 }

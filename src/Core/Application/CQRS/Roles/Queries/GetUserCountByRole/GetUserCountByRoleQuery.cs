@@ -4,30 +4,27 @@ using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using MediatR;
 
-namespace Application.CQRS.Roles.Queries.GetUserCountByRole
+namespace Application.CQRS.Roles.Queries.GetUserCountByRole;
+
+public class GetUserCountByRoleQuery : IRequest<int>
 {
-    public class GetUserCountByRoleQuery : IRequest<int>
+    public string Name { get; set; }
+
+    public class Handler : IRequestHandler<GetUserCountByRoleQuery, int>
     {
-        public string Name { get; set; }
+        private readonly IRoleManager _roleManager;
 
-        public class Handler : IRequestHandler<GetUserCountByRoleQuery, int>
+        public Handler(IRoleManager roleManager)
         {
-            private readonly IRoleManager _roleManager;
+            _roleManager = roleManager;
+        }
 
-            public Handler(IRoleManager roleManager)
-            {
-                _roleManager = roleManager;
-            }
-
-            public async Task<int> Handle(GetUserCountByRoleQuery request, CancellationToken cancellationToken)
-            {
-                var userCount = await _roleManager.GetUserCountByRole(request.Name);
-
-                return userCount;
-            }
-
+        public Task<int> Handle(GetUserCountByRoleQuery request, CancellationToken cancellationToken)
+        {
+            return _roleManager.GetUserCountByRole(request.Name);
         }
 
     }
+
 }
 

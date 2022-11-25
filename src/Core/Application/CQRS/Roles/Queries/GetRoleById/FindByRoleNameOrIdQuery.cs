@@ -9,33 +9,33 @@ using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.CQRS.Roles.Queries.GetRoleById
+namespace Application.CQRS.Roles.Queries.GetRoleById;
+
+public class FindByRoleNameOrIdQuery : IRequest<RoleDto>
 {
-    public class FindByRoleNameOrIdQuery : IRequest<RoleDto>
+    public string Id { get; set; }
+
+    public class Handler : IRequestHandler<FindByRoleNameOrIdQuery, RoleDto>
     {
-        public string Id { get; set; }
+        private readonly IDbContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public class Handler : IRequestHandler<FindByRoleNameOrIdQuery, RoleDto>
+        public Handler(IDbContext dbContext, IMapper mapper)
         {
-            private readonly IDbContext _dbContext;
-            private readonly IMapper _mapper;
+            _dbContext = dbContext;
+            _mapper = mapper;
+        }
 
-            public Handler(IDbContext dbContext, IMapper mapper)
-            {
-                _dbContext = dbContext;
-                _mapper = mapper;
-            }
-
-            public Task<RoleDto> Handle(FindByRoleNameOrIdQuery request, CancellationToken cancellationToken)
-            {
-                return _dbContext.Roles
-                    .Include(x => x.Claims)
-                    .ProjectTo<RoleDto>(_mapper.ConfigurationProvider)
-                    .FirstOrDefaultAsync(x => x.Id == request.Id || x.Name == request.Id, cancellationToken);
-            }
-
+        public Task<RoleDto> Handle(FindByRoleNameOrIdQuery request, CancellationToken cancellationToken)
+        {
+            return _dbContext.Roles
+                .Include(x => x.Claims)
+                .Include(x => x.Managers)
+                .ProjectTo<RoleDto>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(x => x.Id == request.Id || x.Name == request.Id, cancellationToken);
         }
 
     }
+
 }
 

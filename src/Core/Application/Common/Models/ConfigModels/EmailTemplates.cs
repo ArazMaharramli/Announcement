@@ -4,5 +4,7 @@
     {
         public EmailTemplate UserEmailConfirmation { get; set; }
         public EmailTemplate UserEmailConfirmed { get; set; }
+        public EmailTemplate WelcomeToNewManager { get; set; }
+
     }
 }

@@ -49,7 +49,6 @@
 		<None Remove="CQRS\Rooms\Queries\" />
 		<None Remove="CQRS\Rooms\Commands\Create\" />
 		<None Remove="CQRS\Rooms\Events\RoomCreated\" />
-		<None Remove="CQRS\Owners\" />
 		<None Remove="CQRS\Rooms\IntegrationEvents\Handlers\" />
 		<None Remove="CQRS\Rooms\IntegrationEvents\Events\" />
 		<None Remove="CQRS\Rooms\Queries\Search\" />
@@ -66,11 +65,6 @@
 		<None Remove="CQRS\Users\Events\IntegrationEvents\" />
 		<None Remove="CQRS\Users\EventHandlers\" />
 		<None Remove="CQRS\Users\EventHandlers\IntegrationEventHandlers\" />
-		<None Remove="CQRS\Owners\Events\" />
-		<None Remove="CQRS\Owners\Events\IntegrationEvents\" />
-		<None Remove="CQRS\Owners\EventHandlers\" />
-		<None Remove="CQRS\Owners\EventHandlers\IntegrationEventHandlers\" />
-		<None Remove="CQRS\Owners\EventHandlers\IntegrationEventHandlers\OwnerCreated\" />
 		<None Remove="CQRS\Users\Commands\SendEmailConfirmationCode\" />
 		<None Remove="CQRS\Users\Commands\ConfirmEmail\" />
 		<None Remove="CQRS\Users\Commands\Login\" />
@@ -81,6 +75,19 @@
 		<None Remove="CQRS\Roles\IntegrationEvents\RoleCreated\Handlers\" />
 		<None Remove="CQRS\Roles\IntegrationEvents\RoleUpdated\" />
 		<None Remove="CQRS\Roles\IntegrationEvents\RoleUpdated\Handlers\" />
+		<None Remove="CQRS\Managers\IntegrationEvents\" />
+		<None Remove="CQRS\Managers\IntegrationEvents\ManagerCreated\" />
+		<None Remove="CQRS\Managers\IntegrationEvents\ManagerCreated\Handlers\" />
+		<None Remove="CQRS\Owner\IntegrationEvents\" />
+		<None Remove="CQRS\Owner\IntegrationEvents\OwnerCreated\" />
+		<None Remove="CQRS\Managers\IntegrationEvents\ManagerDeleted\" />
+		<None Remove="CQRS\Managers\IntegrationEvents\ManagerDeleted\Handlers\" />
+		<None Remove="CQRS\Managers\IntegrationEvents\ManagerRolesUpdated\" />
+		<None Remove="CQRS\Managers\IntegrationEvents\ManagerUpdated\" />
+		<None Remove="CQRS\Managers\IntegrationEvents\ManagerClaimsUpdated\" />
+		<None Remove="CQRS\Managers\IntegrationEvents\ManagerRolesUpdated\Handlers\" />
+		<None Remove="CQRS\Managers\IntegrationEvents\ManagerRemovedFromRole\Handlers\" />
+		<None Remove="CQRS\Managers\Queries\SearchByRole\" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.2" />
@@ -117,7 +124,6 @@
 	  <Folder Include="CQRS\Rooms\Queries\" />
 	  <Folder Include="CQRS\Rooms\Commands\Create\" />
 	  <Folder Include="CQRS\Rooms\DomainEventHandlers\RoomCreated\" />
-	  <Folder Include="CQRS\Owners\" />
 	  <Folder Include="CQRS\Rooms\IntegrationEvents\Handlers\" />
 	  <Folder Include="CQRS\Rooms\IntegrationEvents\Events\" />
 	  <Folder Include="CQRS\Rooms\Queries\Search\" />
@@ -134,11 +140,6 @@
 	  <Folder Include="CQRS\Users\Events\IntegrationEvents\" />
 	  <Folder Include="CQRS\Users\EventHandlers\" />
 	  <Folder Include="CQRS\Users\EventHandlers\IntegrationEventHandlers\" />
-	  <Folder Include="CQRS\Owners\Events\" />
-	  <Folder Include="CQRS\Owners\Events\IntegrationEvents\" />
-	  <Folder Include="CQRS\Owners\EventHandlers\" />
-	  <Folder Include="CQRS\Owners\EventHandlers\IntegrationEventHandlers\" />
-	  <Folder Include="CQRS\Owners\EventHandlers\IntegrationEventHandlers\OwnerCreated\" />
 	  <Folder Include="CQRS\Users\Commands\SendEmailConfirmationCode\" />
 	  <Folder Include="CQRS\Users\Commands\ConfirmEmail\" />
 	  <Folder Include="CQRS\Users\Queries\" />
@@ -148,5 +149,18 @@
 	  <Folder Include="CQRS\Roles\IntegrationEvents\RoleCreated\Handlers\" />
 	  <Folder Include="CQRS\Roles\IntegrationEvents\RoleUpdated\" />
 	  <Folder Include="CQRS\Roles\IntegrationEvents\RoleUpdated\Handlers\" />
+	  <Folder Include="CQRS\Managers\IntegrationEvents\" />
+	  <Folder Include="CQRS\Managers\IntegrationEvents\ManagerCreated\" />
+	  <Folder Include="CQRS\Managers\IntegrationEvents\ManagerCreated\Handlers\" />
+	  <Folder Include="CQRS\Owners\IntegrationEvents\" />
+	  <Folder Include="CQRS\Owners\IntegrationEvents\OwnerCreated\" />
+	  <Folder Include="CQRS\Managers\IntegrationEvents\ManagerDeleted\" />
+	  <Folder Include="CQRS\Managers\IntegrationEvents\ManagerDeleted\Handlers\" />
+	  <Folder Include="CQRS\Managers\IntegrationEvents\ManagerRolesUpdated\" />
+	  <Folder Include="CQRS\Managers\IntegrationEvents\ManagerUpdated\" />
+	  <Folder Include="CQRS\Managers\IntegrationEvents\ManagerClaimsUpdated\" />
+	  <Folder Include="CQRS\Managers\IntegrationEvents\ManagerRolesUpdated\Handlers\" />
+	  <Folder Include="CQRS\Managers\IntegrationEvents\ManagerRemovedFromRole\Handlers\" />
+	  <Folder Include="CQRS\Managers\Queries\SearchByRole\" />
 	</ItemGroup>
 </Project>

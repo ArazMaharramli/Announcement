@@ -123,7 +123,5 @@ namespace Domain.Entities
 
             this.AddDomainEvent(roomCreatedDomainEvent);
         }
-
-
     }
 }

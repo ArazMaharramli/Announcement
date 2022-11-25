@@ -5,30 +5,27 @@ using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using MediatR;
 
-namespace Application.CQRS.Roles.Queries.GetRoleClaims
+namespace Application.CQRS.Roles.Queries.GetRoleClaims;
+
+public class GetRoleClaimsQuery : IRequest<List<string>>
 {
-	public class GetRoleClaimsQuery : IRequest<List<string>>
-	{
-        public string Name { get; set; }
+    public string Name { get; set; }
 
-        public class Handler : IRequestHandler<GetRoleClaimsQuery, List<string>>
+    public class Handler : IRequestHandler<GetRoleClaimsQuery, List<string>>
+    {
+        private readonly IRoleManager _roleManager;
+
+        public Handler(IRoleManager roleManager)
         {
-            private readonly IRoleManager _roleManager;
+            _roleManager = roleManager;
+        }
 
-            public Handler(IRoleManager roleManager)
-            {
-                _roleManager = roleManager;
-            }
-
-            public async Task<List<string>> Handle(GetRoleClaimsQuery request, CancellationToken cancellationToken)
-            {
-                var claimsByRole = await _roleManager.GetClaimsByRole(request.Name);
-
-                return claimsByRole;
-            }
-
+        public Task<List<string>> Handle(GetRoleClaimsQuery request, CancellationToken cancellationToken)
+        {
+            return _roleManager.GetClaimsByRole(request.Name);
         }
 
     }
+
 }
 

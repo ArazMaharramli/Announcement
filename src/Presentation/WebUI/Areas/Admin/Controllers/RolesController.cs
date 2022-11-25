@@ -6,9 +6,7 @@ using Application.CQRS.Roles.Commands.Create;
 using Application.CQRS.Roles.Commands.Update;
 using Application.CQRS.Roles.Queries.GetAll;
 using Application.CQRS.Roles.Queries.GetRoleById;
-using Application.CQRS.Roles.Queries.GetRoleByName;
 using Application.CQRS.Roles.Queries.GetRoleClaims;
-using Application.CQRS.Roles.Queries.SearchUsersByRole;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
@@ -101,7 +99,7 @@ namespace WebUI.Areas.Admin.Controllers
         }
 
         //[Authorize(Policy = SystemClaims.Roles.Show)]
-        public async Task<IActionResult> Detail(GetRoleByNameQuery request)
+        public async Task<IActionResult> Detail(FindByRoleNameOrIdQuery request)
         {
             var roleDto = await _mediator.Send(request);
 
@@ -118,30 +116,29 @@ namespace WebUI.Areas.Admin.Controllers
         }
 
         //[Authorize(Policy = SystemClaims.Roles.Show)]
-        public async Task<IActionResult> DatatableAsync(string roleName, CancellationToken cancellationToken)
-        {
-            //var searchLang = Request.Form["query[language]"].FirstOrDefault();
-            var start = Request.Query["start"].FirstOrDefault();
-            var length = Request.Query["length"].FirstOrDefault();
-            var sortColumnIndex = Request.Query["order[0][column]"].FirstOrDefault();
-            var sortColumn = Request.Query[$"columns[{sortColumnIndex}][name]"].FirstOrDefault();
-            var sortColumnDirection = Request.Query["order[0][dir]"].FirstOrDefault();
-            var searchValue = Request.Query["search[value]"].FirstOrDefault();
-            int pageSize = string.IsNullOrEmpty(length) ? 10 : Convert.ToInt32(length);
-            int skip = string.IsNullOrEmpty(start) ? 0 : Convert.ToInt32(start);
+        //public async Task<IActionResult> DatatableAsync(string roleName, CancellationToken cancellationToken)
+        //{
+        //    var start = Request.Query["start"].FirstOrDefault();
+        //    var length = Request.Query["length"].FirstOrDefault();
+        //    var sortColumnIndex = Request.Query["order[0][column]"].FirstOrDefault();
+        //    var sortColumn = Request.Query[$"columns[{sortColumnIndex}][name]"].FirstOrDefault();
+        //    var sortColumnDirection = Request.Query["order[0][dir]"].FirstOrDefault();
+        //    var searchValue = Request.Query["search[value]"].FirstOrDefault();
+        //    int pageSize = string.IsNullOrEmpty(length) ? 10 : Convert.ToInt32(length);
+        //    int skip = string.IsNullOrEmpty(start) ? 0 : Convert.ToInt32(start);
 
-            var query = new SearchUsersByroleQuery
-            {
-                Deleted = false,
-                PageSize = pageSize,
-                SearchValue = searchValue,
-                Skip = skip,
-                SortColumnDirection = sortColumnDirection,
-                SortColumn = sortColumn,
-                RoleName = roleName
-            };
-            return Ok(await _mediator.Send(query, cancellationToken));
-        }
+        //    var query = new SearchManagersByRoleQuery
+        //    {
+        //        Deleted = false,
+        //        PageSize = pageSize,
+        //        SearchValue = searchValue,
+        //        Skip = skip,
+        //        SortColumnDirection = sortColumnDirection,
+        //        SortColumn = sortColumn,
+        //        RoleName = roleName
+        //    };
+        //    return Ok(await _mediator.Send(query, cancellationToken));
+        //}
 
         //[HttpPost]
         //public async Task<IActionResult> RemoveUserFromRole(string roleName, string[] ids, CancellationToken cancellationToken)

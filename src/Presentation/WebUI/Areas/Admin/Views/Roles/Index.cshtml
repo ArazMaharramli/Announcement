@@ -57,7 +57,7 @@
                         <!--end::Card body-->
                         <!--begin::Card footer-->
                         <div class="card-footer flex-wrap pt-0">
-                            <a asp-action="Detail" asp-route-Name="@role.Name" class="btn btn-light btn-active-primary my-1 me-2">@Localizer["View Role"]</a>
+                            <a asp-action="Detail" asp-route-Id="@role.Id" class="btn btn-light btn-active-primary my-1 me-2">@Localizer["View Role"]</a>
                             <a asp-action="Edit" asp-controller="Roles" asp-area="Admin" asp-route-id="@role.Id" class="btn btn-light btn-active-light-primary my-1">@Localizer["Edit Role"]</a>
 
                         </div>

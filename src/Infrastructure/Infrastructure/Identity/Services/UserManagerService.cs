@@ -211,11 +211,48 @@ namespace Infrastructure.Identity.Services
             return (newRefreshToken.Token, newRefreshToken.AccessTokenId);
         }
 
-        #region MyRegion
         private bool IsValidToken(RefreshToken token)
         {
             return !(token.Expired || token.Invalidated);
         }
-        #endregion
+
+        public async Task AddToRolesAsync(string userId, List<string> roleNames)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user is null)
+            {
+                throw new NotFoundException(nameof(ApplicationUser), userId);
+            }
+            await _userManager.AddToRolesAsync(user, roleNames);
+        }
+
+        public async Task AddToRoleAsync(string userId, string roleName)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user is null)
+            {
+                throw new NotFoundException(nameof(ApplicationUser), userId);
+            }
+            await _userManager.AddToRoleAsync(user, roleName);
+        }
+
+        public async Task RemoveAllRolesAsync(string userId, CancellationToken cancellationToken)
+        {
+            var userRoles = await _dbContext.UserRoles
+                .Where(x => x.UserId == userId)
+                .ToListAsync(cancellationToken);
+            _dbContext.UserRoles.RemoveRange(userRoles);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task RemoveFromRoleAsync(string userId, string roleName)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user is null)
+            {
+                throw new NotFoundException(nameof(ApplicationUser), userId);
+            }
+            await _userManager.RemoveFromRoleAsync(user, roleName);
+        }
     }
 }
