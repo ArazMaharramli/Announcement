@@ -93,6 +93,7 @@
     <Folder Include="Extentions\HttpRequestExtentions\" />
     <Folder Include="wwwroot\assets\media\static\" />
     <Folder Include="Areas\Admin\ViewModels\Roles\" />
+    <Folder Include="Extentions\ServiceCollectionExtentions\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Services\" />
@@ -133,6 +134,7 @@
     <None Remove="ImageProcessor" />
     <None Remove="ImageProcessor.Plugins.WebP" />
     <None Remove="Areas\Admin\ViewModels\Roles\" />
+    <None Remove="Extentions\ServiceCollectionExtentions\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Application\Application.csproj">

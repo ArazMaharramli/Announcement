@@ -2,7 +2,7 @@
 
 namespace Application.CQRS.Managers.Commands.Delete;
 
-public class DeleteManagerCommandValidator : AbstractValidator<DeleteManagerCommand>
+public class DeleteManagerCommandValidator : AbstractValidator<DeleteManagersCommand>
 {
     public DeleteManagerCommandValidator()
     {

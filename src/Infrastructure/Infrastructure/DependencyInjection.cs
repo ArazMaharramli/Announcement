@@ -35,7 +35,6 @@ namespace Infrastructure
                 opt.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultPhoneProvider;
                 opt.Tokens.ChangeEmailTokenProvider = TokenOptions.DefaultPhoneProvider;
                 opt.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultPhoneProvider;
-
             })
                .AddRoles<ApplicationRole>()
                .AddEntityFrameworkStores<ApplicationDbContext>()

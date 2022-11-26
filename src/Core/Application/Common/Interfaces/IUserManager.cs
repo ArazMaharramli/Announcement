@@ -13,7 +13,10 @@ namespace Application.Common.Interfaces
         Task<(Result Result, UserDTO User)> CreateUserAsync(string name, string tenantDomain, string phoneNumber, string email, string id = null, string profilePictureUrl = null);
 
         Task<Result> DeleteUserAsync(string userId);
+
         Task<IList<Claim>> GetUserClaimsAsync(string userId);
+        Task ClearUserClaims(string userId, CancellationToken cancellationToken);
+        Task AddUserClaims(string userId, List<string> claimNames);
 
         Task<string> GenerateEmailConfirmationToken(string userId);
         Task<string> GeneratePasswordResetTokenAsync(string userId);

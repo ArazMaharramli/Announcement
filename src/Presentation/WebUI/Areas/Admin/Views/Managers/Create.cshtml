@@ -1,0 +1,80 @@
+﻿@model Application.CQRS.Managers.Commands.Create.CreateManagerCommand
+
+@{
+    ViewData["Title"] = "Create Manager";
+}
+
+@section Scripts{
+    <script>$.ajax({
+            url: "/admin/roles/get",
+            type: 'GET',
+            success: function (res) {
+
+                res.forEach(function (data, index, arr) {
+                    var newOption = new Option(data.text, data.id, false, false);
+                    $("#RoleIds").append(newOption);
+                });
+                $("#RoleIds").trigger('refresh');
+
+            }
+        });</script>
+}
+<!--begin::Card-->
+<div class="card">
+
+    <div class="card-header border-0 pt-6">
+        <!--begin::Card title-->
+        <div class="card-title">
+            @ViewBag.Title
+        </div>
+        <!--begin::Card title-->
+    </div>
+    <form method="post">
+        <!--begin::Card body-->
+        <div class="card-body pt-0">
+            <div class="d-flex flex-column flex-md-row gap-5">
+                <div class="flex-row-fluid">
+                    <label asp-for="Name" class="fs-6 fw-bold form-label mt-3"></label>
+                    <input asp-for="Name" class="form-control" />
+                </div>
+            </div>
+            <div class="d-flex flex-column flex-md-row gap-5">
+                <div class="flex-row-fluid">
+                    <label asp-for="Phone" class="fs-6 fw-bold form-label mt-3"></label>
+                    <input asp-for="Phone" class="form-control" />
+                </div>
+            </div>
+            <div class="d-flex flex-column flex-md-row gap-5">
+                <div class="flex-row-fluid">
+                    <label asp-for="Email" class="fs-6 fw-bold form-label mt-3"></label>
+                    <input asp-for="Email" class="form-control" />
+                </div>
+            </div>
+            <div class="d-flex flex-column flex-md-row gap-5">
+                <div class="flex-row-fluid">
+                    <label asp-for="RoleIds" class="fs-6 fw-bold form-label mt-3"></label>
+                    <select asp-for="RoleIds" class="form-select" data-control="select2" data-placeholder="Select"></select>
+                    <span asp-validation-for="RoleIds"></span>
+                </div>
+            </div>
+        </div>
+        <!--end::Card body-->
+        <!--begin::Card footer-->
+        <div class="card-footer pt-4" id="kt_drawer_chat_messenger_footer">
+            <!--begin:Toolbar-->
+            <div class="d-flex flex-stack">
+                <!--begin::Actions-->
+                <div class="d-flex align-items-center me-2">
+
+                </div>
+                <!--end::Actions-->
+                <!--begin::Send-->
+                <button class="btn btn-primary" type="submit" data-kt-element="send">Submit</button>
+                <!--end::Send-->
+            </div>
+            <!--end::Toolbar-->
+        </div>
+        <!--end::Card footer-->
+    </form>
+
+</div>

@@ -13,7 +13,7 @@ using Application.Common.Extentions;
 
 namespace Application.CQRS.Managers.Queries.SearchByRole;
 
-public class SearchUsersByRoleQuery : IRequest<IDataTablePagedList<ManagerDto>>
+public class SearchManagersByRoleQuery : IRequest<IDataTablePagedList<ManagerDto>>
 {
     public int Skip { get; set; } = 0;
     public int PageSize { get; set; } = 10;
@@ -24,7 +24,7 @@ public class SearchUsersByRoleQuery : IRequest<IDataTablePagedList<ManagerDto>>
 
     public string RoleName { get; set; }
 
-    public class Handler : IRequestHandler<SearchUsersByRoleQuery, IDataTablePagedList<ManagerDto>>
+    public class Handler : IRequestHandler<SearchManagersByRoleQuery, IDataTablePagedList<ManagerDto>>
     {
         private readonly IDbContext _dbContext;
         private readonly IMapper _mapper;
@@ -35,7 +35,7 @@ public class SearchUsersByRoleQuery : IRequest<IDataTablePagedList<ManagerDto>>
             _mapper = mapper;
         }
 
-        public async Task<IDataTablePagedList<ManagerDto>> Handle(SearchUsersByRoleQuery request, CancellationToken cancellationToken)
+        public async Task<IDataTablePagedList<ManagerDto>> Handle(SearchManagersByRoleQuery request, CancellationToken cancellationToken)
         {
             var list = _dbContext.Managers
                 .Include(x => x.Roles)

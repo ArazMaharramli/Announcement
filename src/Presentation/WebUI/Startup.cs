@@ -36,6 +36,8 @@ using Microsoft.Extensions.Options;
 using Org.BouncyCastle.Crypto;
 using System.IO;
 using Microsoft.AspNetCore.StaticFiles;
+using WebUI.Extentions.ServiceCollectionExtentions;
+using Infrastructure.Identity.Entities;
 
 namespace WebUI
 {
@@ -56,13 +58,7 @@ namespace WebUI
             services.AddPersistence(Configuration);
             services.AddApplication();
 
-            services.AddAuthentication(opt =>
-            {
-                opt.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
-                opt.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
-                opt.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-            })
-                 .AddIdentityCookies();
+            services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, AdditionalUserClaimsPrincipalFactory>();
 
             services.AddDbContext<LocalizationModelContext>(options =>
                options.UseSqlServer(
@@ -99,12 +95,24 @@ namespace WebUI
 
             supportedLanguages = tenantInfo.Languages;
 
+            services.AddRouting(opt => opt.LowercaseUrls = true);
+
             services.AddControllersWithViews()
             .AddRazorRuntimeCompilation()
             .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
 
             services.AddFluentValidationAutoValidation()
             .AddFluentValidationClientsideAdapters();
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie("Identity.Application", opt =>
+                {
+                    opt.LoginPath = "/auth/login";
+                    opt.LogoutPath = "/auth/logout";
+                    opt.AccessDeniedPath = "/auth/accessdenied";
+                });
+
+            services.AddCustomRoleAuthorization();
 
             services.AddValidatorsFromAssemblyContaining<IDbContext>();
 

@@ -11,11 +11,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.CQRS.Managers.Commands.Delete;
 
-public class DeleteManagerCommand : IRequest<Unit>
+public class DeleteManagersCommand : IRequest<Unit>
 {
     public string[] Ids { get; set; }
 
-    public class Handler : IRequestHandler<DeleteManagerCommand, Unit>
+    public class Handler : IRequestHandler<DeleteManagersCommand, Unit>
     {
         private readonly IDbContext _dbContext;
         private readonly IEventBusService _eventBusService;
@@ -26,7 +26,7 @@ public class DeleteManagerCommand : IRequest<Unit>
             _eventBusService = eventBusService;
         }
 
-        public async Task<Unit> Handle(DeleteManagerCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(DeleteManagersCommand request, CancellationToken cancellationToken)
         {
             var managers = await _dbContext.Managers
                 .Where(x => request.Ids.Contains(x.Id))

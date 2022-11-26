@@ -32,6 +32,7 @@ public class FindByManagerIdQuery : IRequest<ManagerDto>
             var manager = await _dbContext.Managers
                 .Include(x => x.Roles)
                 .Include(x => x.Claims)
+                .AsNoTracking()
                 .ProjectTo<ManagerDto>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 

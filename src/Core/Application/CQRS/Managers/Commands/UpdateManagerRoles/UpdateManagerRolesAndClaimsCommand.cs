@@ -38,17 +38,32 @@ public class UpdateManagerRolesAndClaimsCommand : IRequest<Unit>
                 .Include(x => x.Claims.Where(y => !y.Deleted))
                 .FirstOrDefault(x => x.Id == request.Id);
 
+            var selectedRoles = await _dbContext.Roles
+                .Include(x => x.Claims)
+                .Where(x => request.RoleIds.Contains(x.Id))
+                .ToListAsync(cancellationToken);
+
             if (request.RoleIds is not null && request.RoleIds.Count > 0)
             {
-                var selectedRoles = await _dbContext.Roles.Where(x => request.RoleIds.Contains(x.Id)).ToListAsync(cancellationToken);
                 manager.UpdateRoles(selectedRoles);
                 _eventBusService.AddEvent(new ManagerRolesUpdatedIntegrationEvent(manager.Id, selectedRoles.Select(x => x.Name).ToList()));
             }
 
             if (request.Claims is not null && request.Claims.Count > 0)
             {
-                manager.UpdateClaims(request.Claims);
-                _eventBusService.AddEvent(new ManagerClaimsUpdatedIntegrationEvent(manager.Id, request.Claims));
+                var roleClaims = selectedRoles.SelectMany(x => x.Claims.Select(z => z.ClaimName)).Distinct().ToList();
+                var isClaimsAreSameWithRoleClaims = roleClaims.Intersect(request.Claims).Count() == roleClaims.Count();
+
+                if (!isClaimsAreSameWithRoleClaims)
+                {
+                    manager.UpdateClaims(request.Claims);
+                }
+                else
+                {
+                    manager.ClearClaims();
+                }
+
+                _eventBusService.AddEvent(new ManagerClaimsUpdatedIntegrationEvent(manager.Id, manager.Claims.Select(x => x.ClaimName).ToList()));
             }
 
             _dbContext.Managers.Update(manager);

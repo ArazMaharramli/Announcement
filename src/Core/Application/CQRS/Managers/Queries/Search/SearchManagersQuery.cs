@@ -31,11 +31,15 @@ public class SearchManagersQuery : IRequest<IDataTablePagedList<ManagerIndexMode
         public async Task<IDataTablePagedList<ManagerIndexModel>> Handle(SearchManagersQuery request, CancellationToken cancellationToken)
         {
             var list = _dbContext.Managers
+                .IgnoreQueryFilters()
+                .AsNoTracking()
                .Where(x => x.Deleted == request.Deleted)
                .Select(x => new ManagerIndexModel
                {
                    Id = x.Id,
                    Name = x.Name,
+                   Email = x.Email,
+                   Phone = x.Phone,
                    CreatedAt = x.CreatedAt,
                });
 

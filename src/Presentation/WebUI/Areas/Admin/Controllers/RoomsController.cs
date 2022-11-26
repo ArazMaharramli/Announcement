@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Common.Models;
 using Application.CQRS.Rooms.Commands.Decline;
 using Application.CQRS.Rooms.Commands.Delete;
 using Application.CQRS.Rooms.Commands.Publish;
 using Application.CQRS.Rooms.Commands.Update;
 using Application.CQRS.Rooms.Queries.FindById;
 using Application.CQRS.Rooms.Queries.Search;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using WebUI.Controllers;
@@ -52,12 +54,13 @@ namespace WebUI.Areas.Admin.Controllers
             return Ok(resp);
         }
 
-        // GET: /<controller>/
+        [Authorize(Policy = SystemClaims.Managers.Show)]
         public IActionResult Index(bool deleted = false)
         {
             ViewBag.Deleted = deleted;
             return View();
         }
+
         // GET: /<controller>/
         public async Task<IActionResult> EditAsync(string id, CancellationToken cancellationToken)
         {

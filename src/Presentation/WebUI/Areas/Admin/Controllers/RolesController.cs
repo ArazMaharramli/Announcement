@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using Application.Common.Models;
 using WebUI.Areas.Admin.ViewModels.Roles;
 using WebUI.Models;
+using Application.CQRS.Managers.Queries.SearchByRole;
 
 namespace WebUI.Areas.Admin.Controllers
 {
@@ -116,29 +117,29 @@ namespace WebUI.Areas.Admin.Controllers
         }
 
         //[Authorize(Policy = SystemClaims.Roles.Show)]
-        //public async Task<IActionResult> DatatableAsync(string roleName, CancellationToken cancellationToken)
-        //{
-        //    var start = Request.Query["start"].FirstOrDefault();
-        //    var length = Request.Query["length"].FirstOrDefault();
-        //    var sortColumnIndex = Request.Query["order[0][column]"].FirstOrDefault();
-        //    var sortColumn = Request.Query[$"columns[{sortColumnIndex}][name]"].FirstOrDefault();
-        //    var sortColumnDirection = Request.Query["order[0][dir]"].FirstOrDefault();
-        //    var searchValue = Request.Query["search[value]"].FirstOrDefault();
-        //    int pageSize = string.IsNullOrEmpty(length) ? 10 : Convert.ToInt32(length);
-        //    int skip = string.IsNullOrEmpty(start) ? 0 : Convert.ToInt32(start);
+        public async Task<IActionResult> DatatableAsync(string roleName, CancellationToken cancellationToken)
+        {
+            var start = Request.Query["start"].FirstOrDefault();
+            var length = Request.Query["length"].FirstOrDefault();
+            var sortColumnIndex = Request.Query["order[0][column]"].FirstOrDefault();
+            var sortColumn = Request.Query[$"columns[{sortColumnIndex}][name]"].FirstOrDefault();
+            var sortColumnDirection = Request.Query["order[0][dir]"].FirstOrDefault();
+            var searchValue = Request.Query["search[value]"].FirstOrDefault();
+            int pageSize = string.IsNullOrEmpty(length) ? 10 : Convert.ToInt32(length);
+            int skip = string.IsNullOrEmpty(start) ? 0 : Convert.ToInt32(start);
 
-        //    var query = new SearchManagersByRoleQuery
-        //    {
-        //        Deleted = false,
-        //        PageSize = pageSize,
-        //        SearchValue = searchValue,
-        //        Skip = skip,
-        //        SortColumnDirection = sortColumnDirection,
-        //        SortColumn = sortColumn,
-        //        RoleName = roleName
-        //    };
-        //    return Ok(await _mediator.Send(query, cancellationToken));
-        //}
+            var query = new SearchManagersByRoleQuery
+            {
+                Deleted = false,
+                PageSize = pageSize,
+                SearchValue = searchValue,
+                Skip = skip,
+                SortColumnDirection = sortColumnDirection,
+                SortColumn = sortColumn,
+                RoleName = roleName
+            };
+            return Ok(await _mediator.Send(query, cancellationToken));
+        }
 
         //[HttpPost]
         //public async Task<IActionResult> RemoveUserFromRole(string roleName, string[] ids, CancellationToken cancellationToken)

@@ -74,4 +74,14 @@ public class Manager : Entity
             Claims.Add(new ManagerClaim(Id, claim));
         }
     }
+
+    public void ClearClaims()
+    {
+        Claims.Clear();
+    }
+
+    public void Recover()
+    {
+        Deleted = false;
+    }
 }

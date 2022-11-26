@@ -88,6 +88,10 @@
 		<None Remove="CQRS\Managers\IntegrationEvents\ManagerRolesUpdated\Handlers\" />
 		<None Remove="CQRS\Managers\IntegrationEvents\ManagerRemovedFromRole\Handlers\" />
 		<None Remove="CQRS\Managers\Queries\SearchByRole\" />
+		<None Remove="CQRS\Managers\IntegrationEvents\ManagerClaimsUpdated\Handlers\" />
+		<None Remove="CQRS\Managers\Commands\Recover\" />
+		<None Remove="CQRS\Managers\IntegrationEvents\ManagerRecovered\" />
+		<None Remove="CQRS\Managers\IntegrationEvents\ManagerRecovered\Handlers\" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.2" />
@@ -162,5 +166,9 @@
 	  <Folder Include="CQRS\Managers\IntegrationEvents\ManagerRolesUpdated\Handlers\" />
 	  <Folder Include="CQRS\Managers\IntegrationEvents\ManagerRemovedFromRole\Handlers\" />
 	  <Folder Include="CQRS\Managers\Queries\SearchByRole\" />
+	  <Folder Include="CQRS\Managers\IntegrationEvents\ManagerClaimsUpdated\Handlers\" />
+	  <Folder Include="CQRS\Managers\Commands\Recover\" />
+	  <Folder Include="CQRS\Managers\IntegrationEvents\ManagerRecovered\" />
+	  <Folder Include="CQRS\Managers\IntegrationEvents\ManagerRecovered\Handlers\" />
 	</ItemGroup>
 </Project>
