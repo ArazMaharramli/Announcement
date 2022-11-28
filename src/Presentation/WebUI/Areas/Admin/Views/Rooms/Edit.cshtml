@@ -342,10 +342,10 @@
             <!--Begin:: Tab Nav Bar-->
             <ul class="nav nav-tabs mb-5 fs-6 nav-stretch">
                 <li class="nav-item">
-                    <a class="nav-link " data-bs-toggle="tab" href="#kt_tab_pane_details">@Localizer["Room Details"]</a>
+                    <a class="nav-link active" data-bs-toggle="tab" href="#kt_tab_pane_details">@Localizer["Room Details"]</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" data-bs-toggle="tab" href="#kt_tab_pane_medias">@Localizer["Medias"]</a>
+                    <a class="nav-link" data-bs-toggle="tab" href="#kt_tab_pane_medias">@Localizer["Medias"]</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="tab" href="#kt_tab_pane_seo">@Localizer["SEO"]</a>
@@ -354,7 +354,7 @@
             <!--End:: Tab Nav Bar-->
             <!--Begin:: Tab: Details-->
             <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade" id="kt_tab_pane_details" role="tabpanel">
+                <div class="tab-pane fade show active" id="kt_tab_pane_details" role="tabpanel">
                     <div class="form-floating mb-7">
                         <input class="form-control" asp-for="Title" />
                         <label asp-for="Title"></label>
@@ -405,7 +405,7 @@
                 </div>
                 <!--End:: Tab: Details-->
                 <!--Begin:: Tab: Medias-->
-                <div class="tab-pane fade show active" id="kt_tab_pane_medias" role="tabpanel">
+                <div class="tab-pane fade" id="kt_tab_pane_medias" role="tabpanel">
                     <div id="mediasRepeaterList">
 
                         <div class="row" data-repeater-list="Medias">
