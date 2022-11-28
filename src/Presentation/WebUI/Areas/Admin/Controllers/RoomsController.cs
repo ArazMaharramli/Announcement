@@ -30,6 +30,7 @@ namespace WebUI.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = SystemClaims.Rooms.Show)]
         public async Task<IActionResult> DatatableAsync(bool deleted = false)
         {
             var start = Request.Form["start"].FirstOrDefault();
@@ -54,14 +55,14 @@ namespace WebUI.Areas.Admin.Controllers
             return Ok(resp);
         }
 
-        [Authorize(Policy = SystemClaims.Managers.Show)]
+        [Authorize(Policy = SystemClaims.Rooms.Show)]
         public IActionResult Index(bool deleted = false)
         {
             ViewBag.Deleted = deleted;
             return View();
         }
 
-        // GET: /<controller>/
+        [Authorize(Policy = SystemClaims.Rooms.Edit)]
         public async Task<IActionResult> EditAsync(string id, CancellationToken cancellationToken)
         {
             var room = await Mediator.Send(new FindByRoomIdQuery { Id = id }, cancellationToken); ;
@@ -84,12 +85,14 @@ namespace WebUI.Areas.Admin.Controllers
             return View(model);
         }
         [HttpPost]
+        [Authorize(Policy = SystemClaims.Rooms.Edit)]
         public async Task<IActionResult> EditAsync(UpdateRoomCommand command, CancellationToken cancellationToken)
         {
             await Mediator.Send(command, cancellationToken);
             return Ok();
         }
         [HttpPost]
+        [Authorize(Policy = SystemClaims.Rooms.Delete)]
         public async Task<IActionResult> Delete([FromBody] DeleteRoomsCommand command)
         {
             var resp = await Mediator.Send(command);
@@ -98,7 +101,8 @@ namespace WebUI.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Publish([FromBody] PublishRoomCommand command)
+        [Authorize(Policy = SystemClaims.Rooms.Approve)]
+        public async Task<IActionResult> Approve([FromBody] PublishRoomCommand command)
         {
             var resp = await Mediator.Send(command);
 
@@ -106,6 +110,7 @@ namespace WebUI.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = SystemClaims.Rooms.Decline)]
         public async Task<IActionResult> Decline([FromBody] DeclineRoomCommand command)
         {
             var resp = await Mediator.Send(command);

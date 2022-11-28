@@ -52,7 +52,7 @@ public class UpdateManagerRolesAndClaimsCommand : IRequest<Unit>
             if (request.Claims is not null && request.Claims.Count > 0)
             {
                 var roleClaims = selectedRoles.SelectMany(x => x.Claims.Select(z => z.ClaimName)).Distinct().ToList();
-                var isClaimsAreSameWithRoleClaims = roleClaims.Intersect(request.Claims).Count() == roleClaims.Count();
+                var isClaimsAreSameWithRoleClaims = roleClaims.OrderBy(x => x).SequenceEqual(request.Claims.OrderBy(x => x));
 
                 if (!isClaimsAreSameWithRoleClaims)
                 {

@@ -1,4 +1,5 @@
 ﻿
+using Application.Common.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Common.Interfaces
@@ -8,5 +9,8 @@ namespace Application.Common.Interfaces
         string UserId { get; }
 
         bool IsAuthenticated { get; }
+
+        public UserDTO User { get; }
+
     }
 }

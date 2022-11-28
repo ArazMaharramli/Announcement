@@ -193,14 +193,14 @@
 
         });
 
-        $('#publishbtn').on('click', function () {
-            var publishbtn = $(this);
-            publishbtn.attr("data-kt-indicator", "on");
+        $('#approvebtn').on('click', function () {
+            var approvebtn = $(this);
+            approvebtn.attr("data-kt-indicator", "on");
 
                    var data = new FormData();
                    data.append("Id", '@Model.Id');
                    $.ajax({
-                       url: "/admin/rooms/publish",
+                       url: "/admin/rooms/approve",
                        type: 'POST',
                        data: JSON.stringify({
                            "Id" : '@Model.Id'
@@ -208,9 +208,9 @@
                        contentType:'application/json',
                        processData: false,
                        success: function (res) {
-                           publishbtn.removeAttr("data-kt-indicator");
+                           approvebtn.removeAttr("data-kt-indicator");
                             Swal.fire({
-                                text: "@Localizer["Published!"]",
+                                text: "@Localizer["Approveed!"]",
                                 icon: "success",
                                 buttonsStyling: false,
                                 confirmButtonText: "@Localizer["Ok, Go Back!"]",
@@ -227,7 +227,7 @@
                             });
                         },
                        error: function (xhr, ajaxOptions, thrownError) {
-                           publishbtn.removeAttr("data-kt-indicator");
+                           approvebtn.removeAttr("data-kt-indicator");
                             Swal.fire({
                                 text: "@Localizer["Something went wrong"]",
                                 icon: "error",
@@ -473,9 +473,9 @@
         </div>
         <input type="hidden" asp-for="Id" class="form-control form-control-solid" />
         <div class="card-footer">
-            <button type="button" id="publishbtn" class="btn btn-primary mr-2">
+            <button type="button" id="approvebtn" class="btn btn-primary mr-2">
                 <span class="indicator-label">
-                    @Localizer["Publish"]
+                    @Localizer["Approve"]
                 </span>
                 <span class="indicator-progress">
                     @Localizer["Please wait"]... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>

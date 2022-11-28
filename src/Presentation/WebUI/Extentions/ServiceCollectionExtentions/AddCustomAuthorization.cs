@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Claims;
 using Application.Common.Models;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,7 +16,7 @@ public static class AddCustomAuthorization
                 foreach (var claim in claimgroup.Claims)
                 {
                     options.AddPolicy(claim.Value,
-                        policy => policy.RequireClaim(claim.Value));
+                        policy => policy.RequireClaim(ClaimTypes.UserData, claim.Value));
                 }
             }
         });

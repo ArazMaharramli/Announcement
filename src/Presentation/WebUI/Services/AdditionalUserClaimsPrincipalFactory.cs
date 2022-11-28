@@ -33,7 +33,7 @@ public class AdditionalUserClaimsPrincipalFactory : UserClaimsPrincipalFactory<A
         var claims = await _userManager.GetClaimsAsync(user);
         if (claims is not null && claims.Count > 0)
         {
-            var claimsToRemove = identity.Claims.ToList();
+            var claimsToRemove = identity.Claims.Where(x => x.Type == ClaimTypes.Role || x.Type == ClaimTypes.UserData).ToList();
             foreach (var item in claimsToRemove)
             {
                 identity.RemoveClaim(item);

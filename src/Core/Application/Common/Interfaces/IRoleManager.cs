@@ -22,6 +22,7 @@ namespace Application.Common.Interfaces
         Task<List<string>> GetClaimsByRole(string roleName);
         Task<Result> AddOneRoleClaim(string roleId, string claimValue);
         Task<Result> RemoveOneRoleClaim(string roleId, string claimValue);
+        Task DeleteRole(string roleId, CancellationToken cancellationToken);
     }
 }
 

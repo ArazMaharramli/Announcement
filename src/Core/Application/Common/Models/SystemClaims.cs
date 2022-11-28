@@ -27,7 +27,16 @@ namespace Application.Common.Models
             [Display(Name = "Can Handle Tickets")]
             public const string CanBeAssignedToTickets = "Managers.CanHandleTickets";
         }
+        public static class Rooms
+        {
+            public const string Show = "Rooms.Show";
+            public const string Create = "Rooms.Create";
+            public const string Edit = "Rooms.Edit";
+            public const string Delete = "Rooms.Delete";
 
+            public const string Approve = "Rooms.Approve";
+            public const string Decline = "Rooms.Decline";
+        }
         public static class Notifications
         {
             public const string OwnerCreated = "Notification.OwnerCreated";

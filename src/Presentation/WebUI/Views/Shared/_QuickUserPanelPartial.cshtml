@@ -1,9 +1,9 @@
 ﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
-@inject Microsoft.AspNetCore.Identity.SignInManager<Infrastructure.Identity.Entities.ApplicationUser> SignInManager
+@inject Application.Common.Interfaces.ICurrentUserService currentUserService
 
 @{
-    var user = await SignInManager.UserManager.GetUserAsync(User);
+    var user = currentUserService.User;
 }
 
 <!-- begin::User Panel-->

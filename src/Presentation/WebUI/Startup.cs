@@ -38,6 +38,7 @@ using System.IO;
 using Microsoft.AspNetCore.StaticFiles;
 using WebUI.Extentions.ServiceCollectionExtentions;
 using Infrastructure.Identity.Entities;
+using Microsoft.CodeAnalysis;
 
 namespace WebUI
 {
@@ -58,7 +59,22 @@ namespace WebUI
             services.AddPersistence(Configuration);
             services.AddApplication();
 
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                 .AddCookie(options =>
+                 {
+                     options.AccessDeniedPath = "/Auth/AccessDenied";
+                     options.ExpireTimeSpan = TimeSpan.FromDays(300);
+                     options.LoginPath = "/Auth/Login";
+                     options.SlidingExpiration = true;
+                 });
+
             services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, AdditionalUserClaimsPrincipalFactory>();
+
+            services.Configure<SecurityStampValidatorOptions>(options =>
+            {
+                options.ValidationInterval = TimeSpan.Zero;
+            });
 
             services.AddDbContext<LocalizationModelContext>(options =>
                options.UseSqlServer(
@@ -103,14 +119,6 @@ namespace WebUI
 
             services.AddFluentValidationAutoValidation()
             .AddFluentValidationClientsideAdapters();
-
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie("Identity.Application", opt =>
-                {
-                    opt.LoginPath = "/auth/login";
-                    opt.LogoutPath = "/auth/logout";
-                    opt.AccessDeniedPath = "/auth/accessdenied";
-                });
 
             services.AddCustomRoleAuthorization();
 
@@ -175,6 +183,7 @@ namespace WebUI
 
             app.UseRouting();
 
+            app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseAuthorization();
 

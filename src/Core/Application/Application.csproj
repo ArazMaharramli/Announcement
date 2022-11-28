@@ -92,6 +92,9 @@
 		<None Remove="CQRS\Managers\Commands\Recover\" />
 		<None Remove="CQRS\Managers\IntegrationEvents\ManagerRecovered\" />
 		<None Remove="CQRS\Managers\IntegrationEvents\ManagerRecovered\Handlers\" />
+		<None Remove="CQRS\Roles\Commands\Delete\" />
+		<None Remove="CQRS\Roles\IntegrationEvents\RoleDeleted\" />
+		<None Remove="CQRS\Roles\IntegrationEvents\RoleDeleted\Handlers\" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.2" />
@@ -170,5 +173,8 @@
 	  <Folder Include="CQRS\Managers\Commands\Recover\" />
 	  <Folder Include="CQRS\Managers\IntegrationEvents\ManagerRecovered\" />
 	  <Folder Include="CQRS\Managers\IntegrationEvents\ManagerRecovered\Handlers\" />
+	  <Folder Include="CQRS\Roles\Commands\Delete\" />
+	  <Folder Include="CQRS\Roles\IntegrationEvents\RoleDeleted\" />
+	  <Folder Include="CQRS\Roles\IntegrationEvents\RoleDeleted\Handlers\" />
 	</ItemGroup>
 </Project>

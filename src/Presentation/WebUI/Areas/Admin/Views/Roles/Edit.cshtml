@@ -9,6 +9,74 @@
 }
 @section Scripts{
     <partial name="_ValidationscriptsPartial" />
+
+    <script>
+             $('#deleteBtn').on('click', function () {
+                 var deleteBtn = $('#deleteBtn');
+
+            Swal.fire({
+                icon: "warning",
+                title: "@Localizer["Are you sure to delete?"]",
+                showCancelButton: true,
+                buttonsStyling: false,
+                showLoaderOnConfirm: true,
+                confirmButtonText: "@Localizer["Yes, delete"]",
+                cancelButtonText:"@Localizer["No, Cancel."]",
+                allowOutsideClick: () => !Swal.isLoading(),
+                customClass: {
+                    confirmButton: "btn fw-bold btn-primary",
+                    cancelButton: "btn fw-bold btn-danger",
+                },
+            }).then((res) => {
+                if (res.isConfirmed) {
+                    deleteBtn.attr("data-kt-indicator", "on");
+
+                    $.ajax({
+                       type: 'POST',
+                       url: "/admin/roles/delete",
+                       data: JSON.stringify({
+                           "Id" : '@Model.Id',
+                       }),
+                        contentType:'application/json',
+                        processData: false,
+                        success: function (res) {
+                            deleteBtn.removeAttr("data-kt-indicator");
+                            Swal.fire({
+                                text: "@Localizer["Deleted!"]",
+                                icon: "success",
+                                buttonsStyling: false,
+                                confirmButtonText: "@Localizer["Ok, Go Back!"]",
+                                showCancelButton: true,
+                                customClass: {
+                                    confirmButton: "btn fw-bold btn-primary",
+                                    cancelButton: "btn fw-bold btn-success",
+                                }
+                            }).then((res) => {
+                                console.log('response',res);
+                                if (res.isConfirmed) {
+                                    window.location = document.referrer;
+                                }
+                            });
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            deleteBtn.removeAttr("data-kt-indicator");
+                            Swal.fire({
+                                text: "@Localizer["Something went wrong"]",
+                                icon: "error",
+                                buttonsStyling: false,
+                                confirmButtonText: "@Localizer["Ok!"]",
+                                customClass: {
+                                    confirmButton: "btn fw-bold btn-primary",
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+
+        });
+
+    </script>
 }
 <!--begin::Card-->
 <div class="card">
@@ -67,7 +135,14 @@
             <div class="d-flex flex-stack">
                 <!--begin::Actions-->
                 <div class="d-flex align-items-center me-2">
-
+                    <button class="btn btn-danger" type="button" id="deleteBtn">
+                        <span class="indicator-label">
+                            @Localizer["Delete"]
+                        </span>
+                        <span class="indicator-progress">
+                            @Localizer["Please wait"]... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                        </span>
+                    </button>
                 </div>
                 <!--end::Actions-->
                 <!--begin::Send-->

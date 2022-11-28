@@ -20,6 +20,7 @@
 		<None Remove="EPPlus" />
 		<None Remove="Hangfire.AspNetCore" />
 		<None Remove="Hangfire.SqlServer" />
+		<None Remove="Microsoft.Extensions.DependencyInjection" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.8" />
@@ -31,6 +32,7 @@
 		<PackageReference Include="EPPlus" Version="6.0.6" />
 		<PackageReference Include="Hangfire.AspNetCore" Version="1.7.30" />
 		<PackageReference Include="Hangfire.SqlServer" Version="1.7.30" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\..\Core\Application\Application.csproj" />

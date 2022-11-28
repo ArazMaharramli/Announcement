@@ -1,29 +1,34 @@
 ﻿using System.Security.Claims;
 using Application.Common.Interfaces;
+using Application.Common.Models;
 using Microsoft.AspNetCore.Http;
 
-namespace WebUI.Services
+namespace WebUI.Services;
+
+public class CurrentUserService : ICurrentUserService
 {
-    public class CurrentUserService : ICurrentUserService
+    public CurrentUserService(IHttpContextAccessor httpContextAccessor, IUserManager userManager)
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        public CurrentUserService(IHttpContextAccessor httpContextAccessor)
+        UserId = httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+        IsAuthenticated = UserId != null;
+        if (IsAuthenticated)
         {
-            _httpContextAccessor = httpContextAccessor;
-
-            UserId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
-            IsAuthenticated = UserId != null;
+            var res = userManager.FindByIdAsync(UserId).Result;
+            User = res;
         }
+    }
 
-        public string UserId { get; }
+    public string UserId { get; }
 
-        public bool IsAuthenticated { get; }
-        public string AccessToken
+    public bool IsAuthenticated { get; }
+
+    public UserDTO User { get; }
+
+    public string AccessToken
+    {
+        get
         {
-            get
-            {
-                return "";
-            }
+            return "";
         }
     }
 }

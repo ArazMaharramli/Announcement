@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.Common.Models;
 using Infrastructure.Identity.Entities;
@@ -155,6 +156,16 @@ namespace Infrastructure.Identity.Services
             var res = await _roleManager.RemoveClaimAsync(role, c);
 
             return res.ToApplicationResult();
+        }
+
+        public async Task DeleteRole(string roleId, CancellationToken cancellationToken)
+        {
+            var role = await _roleManager.FindByIdAsync(roleId);
+            if (role is null)
+            {
+                throw new NotFoundException(nameof(ApplicationRole), roleId);
+            }
+            await _roleManager.DeleteAsync(role);
         }
     }
 }
