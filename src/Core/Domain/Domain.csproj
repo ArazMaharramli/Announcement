@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 	</PropertyGroup>
 	<ItemGroup>
 		<None Remove="Common\" />
@@ -11,12 +11,14 @@
 		<None Remove="MediatR" />
 		<None Remove="Events\" />
 		<None Remove="Events\Roles\" />
+		<None Remove="Events\Searches\" />
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="Common\" />
 		<Folder Include="Entities\" />
 		<Folder Include="Events\" />
 		<Folder Include="Events\Roles\" />
+		<Folder Include="Events\Searches\" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Compile Update="Entities\EmptyClass.cs">
@@ -60,7 +62,7 @@
 	  </Compile>
 	</ItemGroup>
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.NetTopologySuite" Version="6.0.2" />
-	  <PackageReference Include="MediatR" Version="10.0.1" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.NetTopologySuite" Version="7.0.1" />
+	  <PackageReference Include="MediatR" Version="11.1.0" />
 	</ItemGroup>
 </Project>

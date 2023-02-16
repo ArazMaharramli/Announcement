@@ -1,27 +1,26 @@
 ﻿using System;
 using Microsoft.AspNetCore.Http;
 
-namespace WebUI.Extentions.HttpRequestExtentions
+namespace WebUI.Extentions.HttpRequestExtentions;
+
+public static class HttpRequestExtensions
 {
-    public static class HttpRequestExtensions
+    private const string RequestedWithHeader = "X-Requested-With";
+    private const string XmlHttpRequest = "XMLHttpRequest";
+
+    public static bool IsAjaxRequest(this HttpRequest request)
     {
-        private const string RequestedWithHeader = "X-Requested-With";
-        private const string XmlHttpRequest = "XMLHttpRequest";
-
-        public static bool IsAjaxRequest(this HttpRequest request)
+        if (request == null)
         {
-            if (request == null)
-            {
-                throw new ArgumentNullException("request");
-            }
-
-            if (request.Headers != null)
-            {
-                return request.Headers[RequestedWithHeader] == XmlHttpRequest;
-            }
-
-            return false;
+            throw new ArgumentNullException("request");
         }
+
+        if (request.Headers != null)
+        {
+            return request.Headers[RequestedWithHeader] == XmlHttpRequest;
+        }
+
+        return false;
     }
 }
 

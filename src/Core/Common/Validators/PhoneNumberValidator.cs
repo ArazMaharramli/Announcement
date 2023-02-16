@@ -1,26 +1,25 @@
 ﻿using System;
 using PhoneNumbers;
 
-namespace Common.Validators
+namespace Common.Validators;
+
+public static class PhoneNumberValidator
 {
-    public static class PhoneNumberValidator
+    public static bool ValidatePhoneNumber(this string phoneNumber)
     {
-        public static bool ValidatePhoneNumber(this string phoneNumber)
+        try
         {
-            try
-            {
-                PhoneNumberUtil phoneUtil = PhoneNumberUtil.GetInstance();
-                PhoneNumber phoneNo = phoneUtil.Parse(phoneNumber, "");
+            PhoneNumberUtil phoneUtil = PhoneNumberUtil.GetInstance();
+            PhoneNumber phoneNo = phoneUtil.Parse(phoneNumber, "");
 
-                //var region = phoneUtil.GetRegionCodeForNumber(phoneNo);
-                var isValid = phoneUtil.IsValidNumber(phoneNo);
-                return isValid;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-
+            //var region = phoneUtil.GetRegionCodeForNumber(phoneNo);
+            var isValid = phoneUtil.IsValidNumber(phoneNo);
+            return isValid;
         }
+        catch (Exception ex)
+        {
+            return false;
+        }
+
     }
 }

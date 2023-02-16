@@ -11,7 +11,7 @@ public class CurrentUserService : ICurrentUserService
     {
         UserId = httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
         IsAuthenticated = UserId != null;
-        if (IsAuthenticated)
+        if (IsAuthenticated && User is null)
         {
             var res = userManager.FindByIdAsync(UserId).Result;
             User = res;

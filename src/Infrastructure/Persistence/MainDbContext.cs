@@ -57,6 +57,9 @@ namespace Persistence
         public DbSet<Manager> Managers { get; set; }
         public DbSet<ManagerClaim> ManagerClaims { get; set; }
 
+        public DbSet<Search> Searches { get; set; }
+        public DbSet<Subscriber> Subscribers { get; set; }
+
         public bool HasActiveTransaction => _currentTransaction != null;
 
         public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default(CancellationToken))

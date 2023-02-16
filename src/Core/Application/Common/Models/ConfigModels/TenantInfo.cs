@@ -28,6 +28,8 @@ namespace Application.Common.Models.ConfigModels
         public Meta Register { get; set; }
         public Meta Home { get; set; }
         public Meta RoomsSearch { get; set; }
+        public Meta CreateRoom { get; set; }
+
     }
 
     public class ProjectContact

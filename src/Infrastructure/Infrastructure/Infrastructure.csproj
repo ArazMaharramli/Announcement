@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 	</PropertyGroup>
 	<ItemGroup>
 		<None Remove="Microsoft.AspNetCore.Identity" />
@@ -23,15 +23,14 @@
 		<None Remove="Microsoft.Extensions.DependencyInjection" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.8" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.8" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
-		<PackageReference Include="MailKit" Version="3.3.0" />
-		<PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
-		<PackageReference Include="EPPlus" Version="6.0.6" />
-		<PackageReference Include="Hangfire.AspNetCore" Version="1.7.30" />
-		<PackageReference Include="Hangfire.SqlServer" Version="1.7.30" />
+		<PackageReference Include="MailKit" Version="3.4.3" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0" />
+		<PackageReference Include="Hangfire.AspNetCore" Version="1.7.32" />
+		<PackageReference Include="Hangfire.SqlServer" Version="1.7.32" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
 	</ItemGroup>
 	<ItemGroup>

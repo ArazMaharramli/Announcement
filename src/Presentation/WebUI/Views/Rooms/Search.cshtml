@@ -1,0 +1,462 @@
+﻿
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@inject Application.Common.Interfaces.ICurrentUserService CurrentUserService
+@inject Application.Common.Models.ConfigModels.TenantInfo tenant
+
+@section Styles{
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+
+    <style>
+        #categoriesContainer::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Hide scrollbar for IE, Edge and Firefox */
+        #categoriesContainer {
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+    </style>
+
+    <style>
+        .iti {
+            width: 100%;
+            @*background-color: transparent;*@
+        }
+
+        .iti--separate-dial-code .iti__selected-flag {
+            background-color: transparent;
+        }
+    </style>
+}
+
+@section Scripts{
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD1uU_tT63977_KyXVILofNxnKlLdA32go&libraries=places&callback=initMap&v=weekly&region=az"></script>
+    <script src="/assets/js/customplugins/infinityscroll.js"></script>
+
+    <script>
+        const categoryIdInput = $('#CategoryId');
+        const latInput = $('#Lat');
+        const lngInput = $('#Lng');
+        const searchQueryInput = $('#Query');
+
+        let selectedCategoryId = '';
+        let searchedLocation = { lat: '', lng: '' };
+        let searchQuery = '';
+
+        let locationPermissionGranted = false;
+        let selectedAddressFromSearchInput = '';
+
+        const showNearestRoomsBtn = $('#showNearestRoomsBtn');
+        const searchBtn = $('#searchBtn');
+
+        const updateCoordinates = (loc) => {
+            latInput.val(loc.lat);
+            lngInput.val(loc.lng);
+        }
+        const resetCoordinates = () => {
+            latInput.val('');
+            lngInput.val('');
+        }
+
+        const updateSearchQuery = (query) => {
+            searchQuery = query;
+            searchQueryInput.val(query);
+        }
+        const resetSearchQuery= () => {
+            searchQuery = '';
+            searchQueryInput.val('');
+        }
+
+        navigator.permissions.query({ name: 'geolocation' }).then((resp) => {
+            locationPermissionGranted = resp.state == 'granted';
+        });
+        var getUserLocationFromIp = () => {
+            resetCoordinates();
+            var btnhtml = showNearestRoomsBtn.html();
+            showNearestRoomsBtn.html("<span class=\"spinner-border spinner-border-sm align-middle ms-2\"></span>");
+
+            $.ajax({
+                    url: "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyCdVSHqtbLoxPRa5o35dyisKmSfHHgM0UI",
+                    type: 'POST',
+                    success: function (loc) {
+                        updateCoordinates(loc.location)
+                        showNearestRoomsBtn.html(btnhtml);
+                        refreshRoomsList();
+                },
+                error: function () {
+                    showNearestRoomsBtn.html(btnhtml);
+                }
+            });
+        }
+
+        var getUserLocationFromGPS = () => {
+            resetCoordinates();
+
+            var btnhtml = showNearestRoomsBtn.html();
+            showNearestRoomsBtn.html("<span class=\"spinner-border spinner-border-sm align-middle ms-2\"></span>");
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    let currentLoc = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                    };
+                    updateCoordinates(currentLoc);
+
+                    showNearestRoomsBtn.html(btnhtml);
+                    refreshRoomsList();
+                },
+                (err) => {
+                    showNearestRoomsBtn.html(btnhtml);
+                }
+            );
+        }
+
+        showNearestRoomsBtn.on('click', function () {
+            if (locationPermissionGranted) {
+                getUserLocationFromGPS();
+                return;
+            }
+            Swal.fire({
+                title: "@Localizer["Please give access to your location"]",
+                text: "@Localizer["In order to calculate distances correctly we need your location data. Otherwise, shown distances will be approximate numbers."]",
+                icon: "info",
+                buttonsStyling: false,
+                reverseButtons: true,
+                confirmButtonText: "<i class='la la-thumbs-up'></i> @Localizer["Yes"]",
+                cancelButtonText: "<i class='la la-pen-fancy'></i> @Localizer["No, Use random location."]",
+                showCancelButton: true,
+                customClass: {
+                    confirmButton: "btn fw-bold btn-success",
+                    cancelButton: "btn fw-bold btn-info",
+                }
+            }).then((res) => {
+                if (res.isConfirmed) {
+                    getUserLocationFromGPS();
+                } else {
+                    getUserLocationFromIp();
+                }
+            });
+        });
+        searchBtn.on('click', function () {
+            refreshRoomsList();
+        });
+        $.ajax({
+            url: "/rooms/categories",
+            type: 'GET',
+            success: function (res) {
+                res.forEach(function (data, index, arr) {
+                    var categoryItem = `<div class="border border-primary rounded-pill py-2 px-4 mx-2 categoryItem" data-category-id="${data.id}">
+                                            <div class="d-flex mx-2 align-items-center">
+                                                <img src="${data.icon}" alt="@Localizer["${data.name} - category"].Value" loading="lazy" class="h-30px w-30px mr-2" />
+                                                <span class="text-dark lead">${data.name}</span>
+                                            </div>
+                                        </div>`;
+                    $("#categoriesContainer").append(categoryItem);
+                });
+
+                $('.categoryItem').on('click', function () {
+                    $('.categoryItem').removeClass('border-3');
+                    const btn = $(this);
+                    var id = btn.attr('data-category-id');
+
+                    if (categoryIdInput.val() != id) {
+                        btn.addClass('border-3');
+                        categoryIdInput.val( id);
+                    } else {
+                        categoryIdInput.val( '');
+                    }
+
+                    refreshRoomsList();
+                });
+            }
+        });
+        function initSearchBox() {
+            var input = document.getElementById("searchBox");
+            // Create the search box and link it to the UI element
+            const searchBox = new google.maps.places.SearchBox(input);
+            let enterKeyPressed = false;
+
+            input.onkeypress = function (e) {
+                enterKeyPressed = e.key == "Enter";
+
+                if (enterKeyPressed && input.value != selectedAddressFromSearchInput) {
+                    resetCoordinates();
+                    refreshRoomsList();
+                }
+            }
+
+            input.onkeyup = function (e) {
+                if (input.value == selectedAddressFromSearchInput) {
+                    resetSearchQuery();
+                    return;
+                }
+
+                updateSearchQuery(input.value);
+            }
+
+            // Listen for the event fired when the user selects a prediction and retrieve
+            // more details for that place.
+            searchBox.addListener("places_changed", () => {
+
+                if (enterKeyPressed) {
+                    return;
+                }
+
+                const places = searchBox.getPlaces();
+                if (places.length == 0) {
+                    return;
+                }
+
+                var place = places[0];
+
+                if (!place.geometry || !place.geometry.location) {
+                    resetCoordinates();
+                    updateSearchQuery(input.value);
+                    return;
+                }
+                selectedAddressFromSearchInput = place.formatted_address;
+                resetSearchQuery();
+                updateCoordinates(place.geometry.location);
+                refreshRoomsList();
+            });
+        }
+
+        const roomScrollList = new InfinityScroll({
+            scrollElementSelector: '',
+            selector: '#roomsContainer',
+            useWindowScrool: true,
+            url: '/rooms/all',
+            method: 'POST',
+            data: function () {
+                var form = document.getElementById('searchForm');
+                var data = new FormData(form);
+
+                return data;
+            },
+            template: function (room) {
+                return `
+                    <div class="col-md-4 col-lg-4 col-xxl-4">
+                        <div class="card card-custom gutter-b card-stretch">
+                                <div class="card-body d-flex flex-column rounded bg-light justify-content-between  p-0  ribbon ribbon-clip ribbon-right">
+                                    <div class="ribbon-target  text-secondary" style="top: 12px;" >
+                                        <span class="ribbon-inner bg-warning"></span>${room.price} AZN
+                                    </div>
+                                    <a href="${room.url}">
+                                        <div class="text-center rounded mb-7">
+                                            <img loading="lazy" src="${room.mediaUrl}" alt="${room.mediaAltTag}" class="w-100 h-300px img-fluid rounded" style="object-fit:cover;">
+                                        </div>
+                                    </a>
+                                    <div class="d-flex align-items-center me-2 justify-content-between">
+                                        <div>
+                                            <h4 class="font-size-h5">
+                                                <a href="${room.url}" class="text-dark-75 font-weight-bolder">${room.title}</a>
+                                            </h4>
+                                            <div class="font-size-h6 text-muted font-weight-bolder">
+                                                @Localizer["~${(room.distance / 1000).toFixed(2)} km away"].Value
+                                            </div>
+                                        </div>
+                                        <span class="d-flex justify-content-end mb-2" onclick="saveIconClick(this)" data-id="${room.id}"><i class="la la-bookmark-o icon-3x"></i></span>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>`;
+            },
+            loaderTemplate: '<span class="spinner-border spinner-border-sm align-middle ms-2"></span>',
+            onNotFound: function () {
+                $('#resultsContainer').hide();
+                $('#notFoundContainer').show();
+                $('#subscribeToSearchModal').modal('show');
+            }
+        });
+
+        roomScrollList.start();
+
+        function refreshRoomsList() {
+            $('#resultsContainer').show();
+            $('#notFoundContainer').hide();
+            roomScrollList.reStart();
+        };
+
+        initSearchBox();
+
+        function saveIconClick(btn) {
+            alert($(btn).attr('data-id'));
+        };
+
+        $('#subscribeToSearchModal').on('hidden.bs.modal', function () {
+            $('#modalNothingFoundLabel').hide();
+        });
+
+        let isSubscribing = false;
+
+        $('#subscribeFormSubmitBtn').on('click', function () {
+
+            if (isSubscribing) { return;}
+            isSubscribing = true;
+            $('#subscribeFormSubmitBtn').attr('disabled', true);
+
+            var searchForm = document.getElementById('searchForm');
+            var subscribeForm = document.getElementById('subscribeForm');
+            var searchData = new FormData(searchForm);
+            var subscribeData = new FormData(subscribeForm);
+
+            searchData.forEach((val, key) => {
+                //var arrVal = searchData.getAll(key);
+                //subscribeData[key] = arrVal.length == 1 ? arrVal[0] : arrVal;
+
+                subscribeData.append(key, val);
+            });
+
+            $.ajax({
+                url: "/subscriptions/search",
+                type: 'POST',
+                data: subscribeData,
+                processData: false,
+                contentType: false,
+                success: function (res) {
+                    $('#subscribeFormSubmitBtn').attr('disabled', false);
+
+                    isSubscribing = false;
+
+                    Swal.fire({
+                        text: "@Localizer["Successfully subscribed!"]",
+                        icon: "success",
+                        buttonsStyling: false,
+                        confirmButtonText: "@Localizer["Ok"]",
+                        customClass: {
+                            confirmButton: "btn fw-bold btn-primary",
+                        }
+                    });
+                    $('#subscribeToSearchModal').modal('hide');
+
+                },
+                error: function () {
+                    $('#subscribeFormSubmitBtn').attr('disabled', false);
+                    isSubscribing = false;
+                },
+            });
+        });
+    </script>
+    <script>
+        const phoneInputField = document.querySelector("#phone");
+        const phoneInput = window.intlTelInput(phoneInputField, {
+            separateDialCode: true,
+            allowDropdown: true,
+            initialCountry: "az",
+            utilsScript:
+                "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+        });
+        $('#phone').on('keyup', function () {
+            if (phoneInput.isValidNumber()) {
+                $('#validPhone').val(phoneInput.getNumber());
+                document.querySelector('[data-valmsg-for="Phone"]').innerHTML = "";
+            } else {
+                document.querySelector('[data-valmsg-for="Phone"]').innerHTML = "@Localizer["Enter valid phone"]";
+            }
+        });
+    </script>
+    @if (CurrentUserService.IsAuthenticated)
+    {
+        <script>
+            phoneInput.setNumber("@Html.Raw(CurrentUserService.User.Phone)");
+            $('#validPhone').val("@CurrentUserService.User.Phone");
+            $('#Email').val("@CurrentUserService.User.Email");
+            $('#Name').val("@CurrentUserService.User.Name");
+        </script>
+    }
+}
+
+<div class="d-flex">
+    <div class="container pt-lg-15 ">
+        <form id="searchForm">
+            <div class="row m-0 flex-nowrap overflow-auto pt-4 justify-content-center align-items-center" id="categoriesContainer">
+            </div>
+            <div class="d-flex align-items-center justify-content-center flex-column py-10 py-md-20">
+                <div class="w-100 w-xl-50 align-items-center">
+                    <div class="form-group m-0">
+                        <div class="input-icon input-icon-right">
+                            <input type="text" id="searchBox" name="SearchBox" class="form-control form-control-lg" placeholder="@Localizer["Search Location or any other keyword..."]" />
+                            <span id="searchBtn"><i class="flaticon2-search-1 icon-md"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <input hidden id="CategoryId" name="CategoryId" />
+                <input hidden id="Lat" name="Lat" />
+                <input hidden id="Lng" name="Lng" />
+                <input hidden id="Query" name="Query" />
+                <div class="row m-0 flex-nowrap overflow-auto pt-4 justify-content-center align-items-center">
+                    <button type="button" class="btn btn-outline-info btn-lg mx-2 my-2" id="subscribeToSearchBtn" data-toggle="modal" data-target="#subscribeToSearchModal"><i class='la la-bell'></i>@Localizer["Subscribe to this search"]</button>
+                    <button type="button" class="btn btn-outline-primary btn-lg mx-2 my-2" id="showNearestRoomsBtn"><i class='la la-map-marker'></i>@Localizer["Show nearest"]</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="resultsContainer">
+    <div class="d-flex flex-column-fluid mb-sm-5">
+        <div class="container">
+            <div class="w-100 d-flex justify-content-start mb-5">
+                <h1 class="font-weight-bolder">@Localizer["Matching results"]</h1>
+            </div>
+            <div class="row" id="roomsContainer">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="display:none;" id="notFoundContainer">
+    <div class="d-flex flex-column flex-row-fluid align-items-center text-center px-10 px-md-30 py-10 py-md-0">
+        <div class="font-weight-bolder h1">@Localizer["Nothing Found"]</div>
+        <p class="h3">@Localizer["Subscribe this search to get notified when there is matching result"]</p>
+    </div>
+</div>
+
+<div class="modal fade" id="subscribeToSearchModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form id="subscribeForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">
+                        @Localizer["Subscribe to this search"]
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i aria-hidden="true" class="ki ki-close"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-dark font-size-lg mb-7" id="modalNothingFoundLabel" style="display:none;">
+                        @Localizer["Nothing found for this search. You can subscribe to this search"]
+                    </p>
+                    <p class="text-dark font-size-lg mb-7">
+                        @Localizer["We will notify you when we have new room matching with your search"]
+                    </p>
+                    <div class="form-group ">
+                        <label> @Localizer["Name"]</label>
+                        <input name="Name" id="Name" type="text" class="form-control" />
+                    </div>
+                    <div class="form-group ">
+                        <label> @Localizer["Email"]</label>
+                        <input name="Email" id="Email" type="email" class="form-control" />
+                    </div>
+                    <div class="form-group ">
+                        <label> @Localizer["Phone"]</label>
+                        <input id="phone" type="text" class="form-control" />
+                        <input hidden name="Phone" id="validPhone" type="text" class="form-control" />
+                        <span class="text-danger" data-valmsg-for="Phone"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light-info font-weight-bold" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-info font-weight-bold" id="subscribeFormSubmitBtn">
+                        <i class='la la-bell'></i> @Localizer["Subscribe"]
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

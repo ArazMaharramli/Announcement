@@ -18,10 +18,10 @@ namespace Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.8")
+                .HasAnnotation("ProductVersion", "7.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("AmenitieRoom", b =>
                 {
@@ -467,6 +467,45 @@ namespace Persistence.Migrations
                     b.ToTable("Rooms");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Search", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CategoryId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Point>("Location")
+                        .HasColumnType("geography");
+
+                    b.Property<string>("Query")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SearchBox")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("Searches");
+                });
+
             modelBuilder.Entity("Domain.Entities.Setting", b =>
                 {
                     b.Property<string>("Key")
@@ -482,6 +521,48 @@ namespace Persistence.Migrations
                     b.HasKey("Key");
 
                     b.ToTable("Settings");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Subscriber", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("SubscribedToMarketing")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Subscribers");
                 });
 
             modelBuilder.Entity("ManagerRole", b =>
@@ -512,6 +593,21 @@ namespace Persistence.Migrations
                     b.HasIndex("RoomsId");
 
                     b.ToTable("RequirementRoom");
+                });
+
+            modelBuilder.Entity("SearchSubscriber", b =>
+                {
+                    b.Property<string>("SearchesId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("SubscribersId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("SearchesId", "SubscribersId");
+
+                    b.HasIndex("SubscribersId");
+
+                    b.ToTable("SearchSubscriber");
                 });
 
             modelBuilder.Entity("AmenitieRoom", b =>
@@ -709,6 +805,15 @@ namespace Persistence.Migrations
                     b.Navigation("Owner");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Search", b =>
+                {
+                    b.HasOne("Domain.Entities.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId");
+
+                    b.Navigation("Category");
+                });
+
             modelBuilder.Entity("ManagerRole", b =>
                 {
                     b.HasOne("Domain.Entities.Manager", null)
@@ -735,6 +840,21 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Entities.Room", null)
                         .WithMany()
                         .HasForeignKey("RoomsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SearchSubscriber", b =>
+                {
+                    b.HasOne("Domain.Entities.Search", null)
+                        .WithMany()
+                        .HasForeignKey("SearchesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Subscriber", null)
+                        .WithMany()
+                        .HasForeignKey("SubscribersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

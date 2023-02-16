@@ -1,0 +1,100 @@
+﻿@model Application.CQRS.Users.Commands.Update.UpdateUserCommand
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
+@section Styles{
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+
+    <style>
+        .iti {
+            width: 100%;
+            @*background-color: transparent;*@
+        }
+
+        .iti--separate-dial-code .iti__selected-flag {
+            background-color: transparent;
+        }
+    </style>
+}
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const phoneInputField = document.querySelector("#phone");
+        const phoneInput = window.intlTelInput(phoneInputField, {
+            separateDialCode: true,
+            allowDropdown: true,
+            initialCountry: "az",
+            utilsScript:
+                "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+        });
+        $('#phone').on('keyup', function () {
+            if (phoneInput.isValidNumber()) {
+                $('#PhoneNumber').val(phoneInput.getNumber());
+                document.querySelector('[data-valmsg-for="PhoneNumber"]').innerHTML = "";
+            } else {
+                document.querySelector('[data-valmsg-for="PhoneNumber"]').innerHTML = "@Localizer["Enter valid phone"]";
+            }
+        });
+    </script>
+    @if (Model is not null)
+    {
+        <script>
+            phoneInput.setNumber("@Html.Raw(Model.PhoneNumber)");
+        </script>
+    }
+}
+<div class="d-flex flex-column-fluid align-items-center">
+    <div class="container pt-15">
+        <div class="card card-custom">
+            <!--begin::Header-->
+            <div class="card-header py-3">
+                <div class="card-title align-items-start flex-column">
+                    <h3 class="card-label font-weight-bolder text-dark">
+                        @Localizer["Account Information"]
+                    </h3>
+                    <span class="text-muted font-weight-bold font-size-sm mt-1">
+                        @Localizer["Change your account settings"]
+                    </span>
+                </div>
+            </div>
+            <!--end::Header-->
+            <!--begin::Form-->
+            <form class="form" method="post">
+                <div class="card-body">
+                    <!--begin::Form Group-->
+                    <div class="form-group">
+                        <label>@Localizer["Name"]</label>
+                        <input class="form-control form-control-lg form-control" asp-for="Name" />
+                        <span class="form-text text-danger" asp-validation-for="Name"></span>
+                    </div>
+                    <!--begin::Form Group-->
+                    <div class="form-group">
+                        <label>@Localizer["Email Address"]</label>
+                        <div>
+                            <div class="input-group input-group-lg input-group">
+                                <input type="text" readonly asp-for="Email" class="form-control form-control-lg form-control-solid" placeholder="Email" />
+                            </div>
+                            <span class="form-text text-danger" asp-validation-for="Email"></span>
+                        </div>
+                    </div>
+                    <!--begin::Input-->
+                    <div class="form-group">
+                        <label>@Localizer["Phone"]</label>
+                        <input id="phone" class="form-control form-control-lg" />
+                        <input hidden asp-for="PhoneNumber" />
+                        <span class="form-text text-danger" asp-validation-for="PhoneNumber"></span>
+                    </div>
+                    <!--end::Input-->
+                    <input hidden asp-for="Id" />
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-success mr-2">Save Changes</button>
+                    <button type="reset" class="btn btn-secondary">Cancel</button>
+                </div>
+            </form>
+            <!--end::Form-->
+        </div>
+    </div>
+</div>

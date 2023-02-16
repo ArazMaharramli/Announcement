@@ -1,14 +1,17 @@
-﻿function InfinityScroll({ scrollElementSelector, selector, template, url, method, data, useWindowScrool = false }) {
+﻿function InfinityScroll({ scrollElementSelector, selector, template, url, method, data, useWindowScrool = false, loaderTemplate = '', onNotFound }) {
 
     const selectedItem = document.querySelectorAll(selector)[0];
     const scrollElement = useWindowScrool ? window : document.querySelectorAll(scrollElementSelector)[0];
 
-    let startDate = undefined;//selectedItem.dataset.startDate; 
-    let endDate = undefined; //selectedItem.dataset.endDate;
+    let startDate = null;//selectedItem.dataset.startDate; 
+    let endDate = null; //selectedItem.dataset.endDate;
 
+    let isFirstLoad = true;
     let hasNext = true;
     let scrollLock = false;
     let isLoading = false;
+
+    let xhrRequest = null;
 
     const addElement = (elem) => {
         selectedItem.innerHTML += (template(elem));
@@ -22,17 +25,32 @@
             addElement(elem)
         }
     };
+    const removeLoader = () => {
+        selectedItem.innerHTML = selectedItem.innerHTML.replace(loaderTemplate, '');
+    }
 
     const onSuccess = (res) => {
         startDate = res.startDate;
         endDate = res.endDate;
 
+        removeLoader();
+
+        if (isFirstLoad && (!res.data || !res.data.length)) {
+            onNotFound();
+            return;
+        }
+
         addElements(res.data);
+
+        isFirstLoad = false;
         hasNext = res.hasNext;
         isLoading = false;
     };
 
     const onError = (xhr, ajaxOptions, thrownError) => {
+
+        removeLoader();
+
         console.error('Server returned with unsuccessfull response');
         isLoading = false;
     };
@@ -41,15 +59,25 @@
         if (!hasNext) {
             return;
         }
-        data.set("StartDate", startDate);
-        data.set("EndDate", endDate);
+
+        if (xhrRequest && isLoading) {
+            xhrRequest.abort();
+        }
+
+        var d = data();
+        if (startDate)
+            d.set("StartDate", startDate);
+        if (endDate)
+            d.set("EndDate", endDate);
 
         isLoading = true;
+        selectedItem.innerHTML += loaderTemplate;
 
-        $.ajax({
+
+        xhrRequest = $.ajax({
             url: url,
             type: method,
-            data: data,
+            data: d,
             processData: false,
             contentType: false,
             success: onSuccess,
@@ -58,6 +86,16 @@
     };
 
     const start = () => {
+        requestNext();
+    }
+
+    const reStart = () => {
+        startDate = null;
+        endDate = null;
+        hasNext = true;
+        isFirstLoad = true;
+
+        selectedItem.innerHTML = '';
         requestNext();
     }
 
@@ -77,5 +115,6 @@
     }, false);
 
     InfinityScroll.prototype.start = start;
+    InfinityScroll.prototype.reStart = reStart;
     return this;
 }

@@ -53,9 +53,19 @@ public class UserManagerService : IUserManager
 
     public async Task<(Result Result, UserDTO User)> CreateUserAsync(string name, string tenantDomain, string phoneNumber, string email, string id = null, string profilePictureUrl = null)
     {
-        var user = new ApplicationUser(id, name, tenantDomain + "_" + email, email, phoneNumber, profilePictureUrl);
+        var user = new ApplicationUser(id, name, createUsername(tenantDomain, email), email, phoneNumber, profilePictureUrl);
         var result = await _userManager.CreateAsync(user);
         return (result.ToApplicationResult(), user.ToApplicationUserDTO());
+    }
+
+    public async Task<(Result Result, UserDTO User)> UpdateUserAsync(string id, string name, string tenantDomain, string phoneNumber)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        user.Name = name.Trim();
+        user.PhoneNumber = phoneNumber.Trim();
+
+        var res = await _userManager.UpdateAsync(user);
+        return new(res.ToApplicationResult(), user.ToApplicationUserDTO());
     }
 
     public async Task<Result> DeleteUserAsync(string userId)
@@ -278,4 +288,10 @@ public class UserManagerService : IUserManager
 
         await _userManager.AddClaimsAsync(user, claimNames.Select(x => new Claim(ClaimTypes.UserData, x)));
     }
+
+    private static string createUsername(string tenantDomain, string email)
+    {
+        return tenantDomain + "_" + email;
+    }
+
 }

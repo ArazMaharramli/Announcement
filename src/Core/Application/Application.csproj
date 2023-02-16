@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 	</PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Domain\Domain.csproj" />
@@ -95,16 +95,20 @@
 		<None Remove="CQRS\Roles\Commands\Delete\" />
 		<None Remove="CQRS\Roles\IntegrationEvents\RoleDeleted\" />
 		<None Remove="CQRS\Roles\IntegrationEvents\RoleDeleted\Handlers\" />
+		<None Remove="CQRS\Subscriptions\" />
+		<None Remove="CQRS\Subscriptions\Commands\" />
+		<None Remove="CQRS\Subscriptions\Commands\SubscribeToSearch\" />
+		<None Remove="CQRS\Users\Commands\Update\" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.2" />
-		<PackageReference Include="MediatR" Version="10.0.1" />
-		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
-		<PackageReference Include="FluentValidation" Version="10.3.6" />
-		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="10.3.6" />
-		<PackageReference Include="AutoMapper" Version="11.0.1" />
-		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.NetTopologySuite" Version="6.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.1" />
+		<PackageReference Include="MediatR" Version="11.1.0" />
+		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+		<PackageReference Include="FluentValidation" Version="11.4.0" />
+		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.4.0" />
+		<PackageReference Include="AutoMapper" Version="12.0.0" />
+		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.NetTopologySuite" Version="7.0.1" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="CQRS\Amenities\" />
@@ -176,5 +180,9 @@
 	  <Folder Include="CQRS\Roles\Commands\Delete\" />
 	  <Folder Include="CQRS\Roles\IntegrationEvents\RoleDeleted\" />
 	  <Folder Include="CQRS\Roles\IntegrationEvents\RoleDeleted\Handlers\" />
+	  <Folder Include="CQRS\Subscriptions\" />
+	  <Folder Include="CQRS\Subscriptions\Commands\" />
+	  <Folder Include="CQRS\Subscriptions\Commands\SubscribeToSearch\" />
+	  <Folder Include="CQRS\Users\Commands\Update\" />
 	</ItemGroup>
 </Project>

@@ -6,35 +6,34 @@ using FluentValidation;
 using MediatR;
 using ValidationException = Application.Common.Exceptions.ValidationException;
 
-namespace Application.Common.Behaviours
+namespace Application.Common.Behaviours;
+
+public class RequestValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+   where TRequest : IRequest<TResponse>
 {
-    public class RequestValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-       where TRequest : IRequest<TResponse>
+    private readonly IEnumerable<IValidator<TRequest>> _validators;
+
+    public RequestValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
     {
-        private readonly IEnumerable<IValidator<TRequest>> _validators;
+        _validators = validators;
+    }
 
-        public RequestValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
+    public Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+    {
+        var context = new ValidationContext<TRequest>(request);
+
+        var failures = _validators
+            .Select(v => v.Validate(context))
+            .SelectMany(result => result.Errors)
+            .Where(f => f != null)
+            .Distinct()
+            .ToList();
+
+        if (failures.Count != 0)
         {
-            _validators = validators;
+            throw new ValidationException(failures);
         }
 
-        public Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
-        {
-            var context = new ValidationContext<TRequest>(request);
-
-            var failures = _validators
-                .Select(v => v.Validate(context))
-                .SelectMany(result => result.Errors)
-                .Where(f => f != null)
-                .Distinct()
-                .ToList();
-
-            if (failures.Count != 0)
-            {
-                throw new ValidationException(failures);
-            }
-
-            return next();
-        }
+        return next();
     }
 }

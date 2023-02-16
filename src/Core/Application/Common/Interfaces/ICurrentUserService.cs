@@ -2,15 +2,14 @@
 using Application.Common.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Common.Interfaces
+namespace Application.Common.Interfaces;
+
+public interface ICurrentUserService
 {
-    public interface ICurrentUserService
-    {
-        string UserId { get; }
+    string UserId { get; }
 
-        bool IsAuthenticated { get; }
+    bool IsAuthenticated { get; }
 
-        public UserDTO User { get; }
+    public UserDTO User { get; }
 
-    }
 }

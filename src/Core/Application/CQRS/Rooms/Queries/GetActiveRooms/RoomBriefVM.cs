@@ -13,6 +13,7 @@ namespace Application.CQRS.Rooms.Queries.GetActiveRooms
         public string Title { get; set; }
         public string Url { get; set; }
         public int Price { get; set; }
+        public double Distance { get; set; }
 
         public DateTime UpdatedAt { get; set; }
 

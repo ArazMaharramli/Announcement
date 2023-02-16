@@ -9,33 +9,31 @@ using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.CQRS.Amenities.Queries.GetAll
+namespace Application.CQRS.Amenities.Queries.GetAll;
+
+public class GetAllAmenitiesQuery : IRequest<List<AmenitieDetailsVM>>
 {
-    public class GetAllAmenitiesQuery : IRequest<List<AmenitieDetailsVM>>
+    public class Handler : IRequestHandler<GetAllAmenitiesQuery, List<AmenitieDetailsVM>>
     {
-        public class Handler : IRequestHandler<GetAllAmenitiesQuery, List<AmenitieDetailsVM>>
+        private readonly IDbContext _dbContext;
+        private readonly IMapper _mapper;
+        private readonly ICurrentLanguageService _currentLanguageService;
+
+        public Handler(IDbContext dbContext, IMapper mapper, ICurrentLanguageService currentLanguageService)
         {
-            private readonly IDbContext _dbContext;
-            private readonly IMapper _mapper;
-            private readonly ICurrentLanguageService _currentLanguageService;
+            _dbContext = dbContext;
+            _mapper = mapper;
+            _currentLanguageService = currentLanguageService;
+        }
 
-            public Handler(IDbContext dbContext, IMapper mapper, ICurrentLanguageService currentLanguageService)
-            {
-                _dbContext = dbContext;
-                _mapper = mapper;
-                _currentLanguageService = currentLanguageService;
-            }
+        public async Task<List<AmenitieDetailsVM>> Handle(GetAllAmenitiesQuery request, CancellationToken cancellationToken)
+        {
+            var amenities = await _dbContext.Amenities
+                .Include(x => x.Translations.Where(x => x.LangCode == _currentLanguageService.LangCode))
+                .AsNoTracking()
+                .ToListAsync(cancellationToken);
 
-            public async Task<List<AmenitieDetailsVM>> Handle(GetAllAmenitiesQuery request, CancellationToken cancellationToken)
-            {
-                var amenities = await _dbContext.Amenities
-                    .Include(x => x.Translations.Where(x => x.LangCode == _currentLanguageService.LangCode))
-                    .AsNoTracking()
-                    .ToListAsync(cancellationToken);
-
-                return _mapper.Map<List<AmenitieDetailsVM>>(amenities);
-            }
+            return _mapper.Map<List<AmenitieDetailsVM>>(amenities);
         }
     }
-
 }
