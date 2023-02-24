@@ -1,10 +1,10 @@
 # Project name 
-[Project name](url) About project section
+[Roommate.az](url) About project section
 
 ## You need
 
 ```bash
-.Net Core 5.0.0
+.Net Core 7.0.0
 SQL Server 2019+
 ```
 
