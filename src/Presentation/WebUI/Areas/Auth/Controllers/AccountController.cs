@@ -20,6 +20,7 @@ namespace WebUI.Controllers
 {
     [Area("Auth")]
     [Route("[area]/[action]/{id?}")]
+    [Route("{lang}[area]/[action]/{id?}")]
     public class AccountController : Controller
     {
         private readonly SignInManager<ApplicationUser> _signInManager;

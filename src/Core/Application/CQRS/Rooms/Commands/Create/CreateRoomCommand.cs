@@ -66,7 +66,7 @@ public class CreateRoomCommand : IRequest<Unit>
             var room = new Room(
                 title: name,
                 slug: slug,
-                description: request.Description.Trim(),
+                description: request.Description?.Trim(),
                 price: request.Price,
                 address: request.Address.Trim(),
                 lng: request.Lng,

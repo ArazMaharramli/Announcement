@@ -31,6 +31,7 @@ using WebUI.Extentions.ServiceCollectionExtentions;
 using Infrastructure.Identity.Entities;
 using Microsoft.CodeAnalysis;
 using WebUI.Filters;
+using WebUI.Middlewares;
 
 namespace WebUI;
 
@@ -144,6 +145,8 @@ public class Startup
     {
         if (env.IsDevelopment())
         {
+            //app.UseCustomExceptionHandler();
+            //app.UseExceptionHandler(opt => opt.UseMiddleware<CustomExceptionHandlerMiddleware>());
             app.UseDeveloperExceptionPage();
         }
         else

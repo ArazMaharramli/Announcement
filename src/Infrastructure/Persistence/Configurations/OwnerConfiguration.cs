@@ -2,16 +2,16 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Persistence.Configurations.Base;
 
-namespace Persistence.Configurations
-{
-    public class OwnerConfiguration : EntityConfiguration<Owner>
-    {
-        public override void Configure(EntityTypeBuilder<Owner> builder)
-        {
-            builder.HasMany(x => x.Rooms)
-                .WithOne(x => x.Owner);
+namespace Persistence.Configurations;
 
-            base.Configure(builder);
-        }
+public class OwnerConfiguration : EntityConfiguration<Owner>
+{
+    public override void Configure(EntityTypeBuilder<Owner> builder)
+    {
+        builder.HasMany(x => x.Rooms)
+            .WithOne(x => x.Owner)
+            .HasForeignKey(x => x.OwnerId);
+
+        base.Configure(builder);
     }
 }

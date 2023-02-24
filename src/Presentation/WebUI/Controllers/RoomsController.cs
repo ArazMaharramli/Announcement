@@ -13,7 +13,6 @@ namespace WebUI.Controllers;
 
 public class RoomsController : BaseController
 {
-
     public async Task<IActionResult> IndexAsync(CancellationToken cancellationToken)
     {
         var resp = await Mediator.Send(new GetActiveRoomsQuery(), cancellationToken);
@@ -49,11 +48,12 @@ public class RoomsController : BaseController
     public async Task<IActionResult> CreateAsync(CreateRoomCommand command, CancellationToken cancellationToken)
     {
         var res = await Mediator.Send(command, cancellationToken);
-        return RedirectToAction("Index", "Home");
+        return View("RoomCreated");
     }
 
     [HttpGet]
     [Route("[controller]/[action]/{slug}")]
+    [Route("{lang}/[controller]/[action]/{slug}")]
     public async Task<IActionResult> Details(string slug, CancellationToken cancellationToken)
     {
         var res = await Mediator.Send(new FindRoomBySlugQuery { Slug = slug }, cancellationToken);

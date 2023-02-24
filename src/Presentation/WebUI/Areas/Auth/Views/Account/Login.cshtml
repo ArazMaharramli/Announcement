@@ -3,10 +3,19 @@
 @model WebUI.Areas.Auth.ViewModels.Account.LoginViewModel
 
 @section Meta{
-    <title>@tenant.SEO.Login.Title | @tenant.Domain</title>
-    <meta name="keywords" content="@tenant.SEO.Login.Keywords" />
-    <meta name="description" content="@tenant.SEO.Login.Description" />
-    <link rel="canonical" href="https://@tenant.Domain/auth/login" />
+    <title>@tenant.StaticPages.Login.SEO.Title | @tenant.Domain</title>
+    <meta name="keywords" content="@tenant.StaticPages.Login.SEO.Keywords" />
+    <meta name="description" content="@tenant.StaticPages.Login.SEO.Description" />
+    @foreach (var lang in tenant.Languages)
+    {
+        <link rel="canonical" href="https://@tenant.Domain/@lang.Culture/auth/login" />
+    }
+}
+
+@section Headers{
+
+    @Html.Raw(tenant.StaticPages.Login.Headers is null ? "" :
+    string.Join("", tenant.StaticPages.Login.Headers))
 }
 
 <!--begin::Signin-->

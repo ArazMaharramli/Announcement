@@ -11,6 +11,8 @@
     <base href="/">
     <meta charset="utf-8" />
 
+    <meta name="robots" content="noindex" />
+
     @RenderSection("Meta", false)
 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -28,6 +30,7 @@
     <link href="assets/css/style.bundle.css" rel="stylesheet" type="text/css" asp-append-version="true" />
     <!--end::Global Theme Styles-->
     <!--begin::Layout Themes(used by all pages)-->
+    @RenderSection("Headers", false)
     <!--end::Layout Themes-->
     <link rel="shortcut icon" href="@tenant.FaviconIco" />
 </head>

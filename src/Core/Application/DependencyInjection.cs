@@ -17,7 +17,7 @@ public static class DependencyInjection
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
-        services.AddMediatR(new Assembly[] { Assembly.GetExecutingAssembly(), typeof(Entity).Assembly });
+        services.AddMediatR(opt => opt.RegisterServicesFromAssemblies(new Assembly[] { Assembly.GetExecutingAssembly(), typeof(Entity).Assembly }));
 
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPerformanceBehaviour<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));

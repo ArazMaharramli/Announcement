@@ -6,13 +6,17 @@
     <title>@Localizer["RoomDetailsTitle"] | @tenant.Domain</title>
     <meta name="keywords" content="@Model.Meta.Keywords" />
     <meta name="description" content="@Model.Meta.Description" />
-    <link rel="canonical" href="https://roommate.az" />
 
+    @foreach (var lang in tenant.Languages)
+    {
+        <link rel="canonical" href="https://@tenant.Domain/@lang.Culture/rooms/details/@Model.Slug" />
+    }
 }
+
 @section Styles{
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.0/css/lightgallery.min.css" integrity="sha512-F2E+YYE1gkt0T5TVajAslgDfTEUQKtlu4ralVq78ViNxhKXQLrgQLLie8u1tVdG2vWnB3ute4hcdbiBtvJQh0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
 }
+
 @section Scripts{
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.0/lightgallery.min.js" integrity="sha512-pG+XpUdyBtp28FzjpaIaj72KYvZ87ZbmB3iytDK5+WFVyun8r5LJ2x1/Jy/KHdtzUXA0CUVhEnG+Isy1jVJAbA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 

@@ -4,20 +4,19 @@
 @model WebUI.Models.ViewModels.Rooms.RoomsIndexViewModel
 
 @section Meta{
-    <title>@tenant.SEO.Home.Title | @tenant.Domain</title>
-    <meta name="keywords" content="@tenant.SEO.Home.Keywords" />
-    <meta name="description" content="@tenant.SEO.Home.Description" />
-    <link rel="canonical" href="https://roommate.az" />
+    <title>@tenant.StaticPages.Home.SEO.Title | @tenant.Domain</title>
+    <meta name="keywords" content="@tenant.StaticPages.Home.SEO.Keywords" />
+    <meta name="description" content="@tenant.StaticPages.Home.SEO.Description" />
+    @foreach (var lang in tenant.Languages)
+    {
+        <link rel="canonical" href="https://@tenant.Domain/@lang.Culture/" />
+    }
 }
 
-@section Scripts{
-    <script>//$.ajax({
-                                    //            url: "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyCdVSHqtbLoxPRa5o35dyisKmSfHHgM0UI",
-                                    //            type: 'POST',
-                                    //            success: function (loc) {
-                                    //                console.log(loc.location);
-                                    //            },
-                                    //        });</script>
+@section Headers{
+
+    @Html.Raw(tenant.StaticPages.Home.Headers is null ? "" :
+    string.Join("", tenant.StaticPages.Home.Headers))
 }
 
 <div class="bgi-size-cover bgi-position-center bg-image" style="background-image: url('/assets/media/static/homeintro_old.jpg');">
@@ -116,7 +115,7 @@
             <div class="d-flex align-items-stretch flex-column py-8 py-md-15">
                 <div class="col-md-6 col-lg-4">
                     <!--begin::Heading Slogan-->
-                    <h1 class="text-white font-weight-bolder">@Localizer["KeepInTouchWithUs"]</h1>
+                    <h1 class="text-white font-weight-bolder">@Localizer["Keep in touch with us"]</h1>
                     <form id="subscribe">
                         <div class="form-group">
                             <input name="Name" class="form-control" placeholder="Ad/Soyad" />

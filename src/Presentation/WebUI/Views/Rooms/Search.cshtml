@@ -3,6 +3,22 @@
 @inject Application.Common.Interfaces.ICurrentUserService CurrentUserService
 @inject Application.Common.Models.ConfigModels.TenantInfo tenant
 
+@section Meta{
+    <title>@tenant.StaticPages.RoomsSearch.SEO.Title | @tenant.Domain</title>
+    <meta name="keywords" content="@tenant.StaticPages.RoomsSearch.SEO.Keywords" />
+    <meta name="description" content="@tenant.StaticPages.RoomsSearch.SEO.Description" />
+    @foreach (var lang in tenant.Languages)
+    {
+        <link rel="canonical" href="https://@tenant.Domain/@lang.Culture/search" />
+    }
+}
+
+@section Headers{
+
+    @Html.Raw(tenant.StaticPages.RoomsSearch.Headers is null ? "" :
+    string.Join("", tenant.StaticPages.RoomsSearch.Headers))
+}
+
 @section Styles{
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>

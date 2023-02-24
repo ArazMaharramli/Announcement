@@ -15,6 +15,6 @@
 	  <Folder Include="Models\" />
 	</ItemGroup>
 	<ItemGroup>
-	  <PackageReference Include="libphonenumber-csharp" Version="8.13.3" />
+	  <PackageReference Include="libphonenumber-csharp" Version="8.13.6" />
 	</ItemGroup>
 </Project>

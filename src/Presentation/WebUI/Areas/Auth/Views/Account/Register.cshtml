@@ -3,10 +3,18 @@
 @model Application.CQRS.Users.Commands.Register.RegisterUserCommand
 
 @section Meta{
-    <title>@tenant.SEO.Register.Title | @tenant.Domain</title>
-    <meta name="keywords" content="@tenant.SEO.Register.Keywords" />
-    <meta name="description" content="@tenant.SEO.Register.Description" />
-    <link rel="canonical" href="https://roommate.az/auth/register" />
+    <title>@tenant.StaticPages.Register.SEO.Title | @tenant.Domain</title>
+    <meta name="keywords" content="@tenant.StaticPages.Register.SEO.Keywords" />
+    <meta name="description" content="@tenant.StaticPages.Register.SEO.Description" />
+    @foreach (var lang in tenant.Languages)
+    {
+        <link rel="canonical" href="https://@tenant.Domain/@lang.Culture/auth/register" />
+    }
+}
+
+@section Headers{
+    @Html.Raw(tenant.StaticPages.Register.Headers is null ? "" :
+    string.Join("", tenant.StaticPages.Register.Headers))
 }
 
 @section Styles{

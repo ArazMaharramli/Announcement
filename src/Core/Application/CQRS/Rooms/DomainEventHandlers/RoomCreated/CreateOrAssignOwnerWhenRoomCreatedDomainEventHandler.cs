@@ -33,35 +33,41 @@ namespace Application.CQRS.Rooms.DomainEventHandlers.RoomCreated
         public async Task Handle(RoomCreatedDomainEvent request, CancellationToken cancellationToken)
         {
             var room = request.Room;
-            if (!string.IsNullOrWhiteSpace(_currentUserService.UserId))
+            var userId = _currentUserService.UserId ?? Guid.NewGuid().ToString();
+            var owner = await _dbContext.Owners.FirstOrDefaultAsync(x => x.Id == userId, cancellationToken);
+            var ownerExisted = owner is not null && !_currentUserService.IsAuthenticated;
+
+            if (owner is not null)
             {
-                room.OwnerId = _currentUserService.UserId;
+                room.Owner = owner;
+                await _dbContext.SaveEntitiesAsync(cancellationToken);
                 return;
             }
 
-            var owner = await _dbContext.Owners.FirstOrDefaultAsync(x => x.Email == room.Contact.Email, cancellationToken);
-            var ownerExisted = owner is not null;
-            if (owner is null)
+            if (!ownerExisted)
             {
-                var res = await _userManager.FindByEmailAsync(room.Contact.Email, _tenant.Domain);
-                var userId = Guid.NewGuid().ToString();
+                if (!_currentUserService.IsAuthenticated)
+                {
+                    owner = await _dbContext.Owners.FirstOrDefaultAsync(x => x.Email == room.Contact.Email, cancellationToken);
+                    var res = await _userManager.FindByEmailAsync(room.Contact.Email, _tenant.Domain);
 
-                if (res.Result.Succeeded)
-                {
-                    userId = res.User.Id;
-                }
-                else
-                {
-                    var resp = await _userManager.CreateUserAsync(
-                        name: room.Contact.Name,
-                        tenantDomain: _tenant.Domain.ToLower(),
-                        phoneNumber: room.Contact.Phone,
-                        email: room.Contact.Email,
-                        id: userId
-                    );
-                    if (!resp.Result.Succeeded)
+                    if (res.Result.Succeeded)
                     {
-                        throw new BadRequestException(string.Join(';', resp.Result.Errors));
+                        userId = res.User.Id;
+                    }
+                    else
+                    {
+                        var resp = await _userManager.CreateUserAsync(
+                            name: room.Contact.Name,
+                            tenantDomain: _tenant.Domain.ToLower(),
+                            phoneNumber: room.Contact.Phone,
+                            email: room.Contact.Email,
+                            id: userId
+                        );
+                        if (!resp.Result.Succeeded)
+                        {
+                            throw new BadRequestException(string.Join(';', resp.Result.Errors));
+                        }
                     }
 
                 }
@@ -71,11 +77,7 @@ namespace Application.CQRS.Rooms.DomainEventHandlers.RoomCreated
                 _eventBusService.AddEvent(new OwnerCreatedIntegrationEvent(owner.Id, owner.Name, owner.Email, owner.Phone));
             }
 
-            owner.AddRoom(room);
-            if (ownerExisted)
-            {
-                _dbContext.Owners.Update(owner);
-            }
+            room.Owner = owner;
 
             await _dbContext.SaveEntitiesAsync(cancellationToken);
         }
