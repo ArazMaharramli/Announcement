@@ -33,7 +33,7 @@ public class FindByRoomIdQuery : IRequest<RoomDto>
 
         public async Task<RoomDto> Handle(FindByRoomIdQuery request, CancellationToken cancellationToken)
         {
-            var requirement = await _dbContext.Rooms
+            var room = await _dbContext.Rooms
                 .Include(x => x.Amenities)
                     .ThenInclude(x => x.Translations.Where(x => x.LangCode == _currentLanguageService.LangCode))
                 .Include(x => x.Requirements)
@@ -43,12 +43,12 @@ public class FindByRoomIdQuery : IRequest<RoomDto>
                 .ProjectTo<RoomDto>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
-            if (requirement is null)
+            if (room is null)
             {
                 throw new NotFoundException(nameof(Room), request.Id);
             }
 
-            return requirement;
+            return room;
         }
     }
 }

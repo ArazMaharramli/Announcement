@@ -99,6 +99,7 @@
 		<None Remove="CQRS\Subscriptions\Commands\" />
 		<None Remove="CQRS\Subscriptions\Commands\SubscribeToSearch\" />
 		<None Remove="CQRS\Users\Commands\Update\" />
+		<None Remove="CQRS\Rooms\Queries\GetRoomsOfCurrentUser\" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.3" />
@@ -183,5 +184,6 @@
 	  <Folder Include="CQRS\Subscriptions\Commands\" />
 	  <Folder Include="CQRS\Subscriptions\Commands\SubscribeToSearch\" />
 	  <Folder Include="CQRS\Users\Commands\Update\" />
+	  <Folder Include="CQRS\Rooms\Queries\GetRoomsOfCurrentUser\" />
 	</ItemGroup>
 </Project>

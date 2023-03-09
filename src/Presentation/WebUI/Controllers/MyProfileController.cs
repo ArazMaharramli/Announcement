@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.CQRS.Rooms.Queries.GetRoomsOfCurrentUser;
 using Application.CQRS.Users.Commands.Update;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace WebUI.Controllers;
 
@@ -26,11 +26,19 @@ public class MyProfileController : BaseController
 
         return View(model);
     }
+
     [HttpPost]
     public async Task<IActionResult> PersonalInfoAsync(UpdateUserCommand command, CancellationToken cancellationToken)
     {
         var res = await Mediator.Send(command, cancellationToken);
         return RedirectToAction("Index", "Rooms");
+    }
+
+    public async Task<IActionResult> RoomsAsync(CancellationToken cancellationToken)
+    {
+        var res = await Mediator.Send(new GetRoomsOfCurrentUserQuery(), cancellationToken);
+
+        return View(res);
     }
 }
 

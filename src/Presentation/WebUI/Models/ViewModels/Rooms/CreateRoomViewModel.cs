@@ -18,6 +18,5 @@ namespace WebUI.Models.ViewModels.Rooms
         public string[] AmenitieIds { get; set; }
         public string[] RequirementIds { get; set; }
         public string[] MediaUrls { get; set; }
-
     }
 }
