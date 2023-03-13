@@ -12,7 +12,7 @@
 }
 
 @section Scripts{
-    <script src="assets/plugins/custom/formrepeater/formrepeater.bundle.js"></script>
+    <script src="adminfiles/assets/plugins/custom/formrepeater/formrepeater.bundle.js"></script>
 
     <script>var imageInputElement = document.querySelector("#kt_image_input_1");
         var imageInput = new KTImageInput(imageInputElement);
@@ -76,7 +76,7 @@
     <form class="form" method="post">
         <div class="card-body">
             <!--begin::Image input-->
-            <div class="image-input image-input-empty" id="kt_image_input_1" style="background-image: url(@(string.IsNullOrEmpty(Model.Icon)?"assets/media/svg/avatars/blank.svg":Model.Icon))">
+            <div class="image-input image-input-empty" id="kt_image_input_1" style="background-image: url(@(string.IsNullOrEmpty(Model.Icon)?"adminfiles/assets/media/svg/avatars/blank.svg":Model.Icon))">
                 <!--begin::Image preview wrapper-->
                 <div class="image-input-wrapper w-125px h-125px"></div>
                 <!--end::Image preview wrapper-->

@@ -1,9 +1,12 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Application.CQRS.Amenities.Queries.GetAll;
 using Application.CQRS.Categories.Queries.GetAll;
 using Application.CQRS.Requirements.Queries.GetAll;
 using Application.CQRS.Rooms.Commands.Create;
+using Application.CQRS.Rooms.Commands.UpdateByOwner;
+using Application.CQRS.Rooms.Queries.FindById;
 using Application.CQRS.Rooms.Queries.FindBySlug;
 using Application.CQRS.Rooms.Queries.GetActiveRooms;
 using Microsoft.AspNetCore.Mvc;
@@ -51,6 +54,33 @@ public class RoomsController : BaseController
         return View("RoomCreated");
     }
 
+    public async Task<IActionResult> EditAsync(string id, CancellationToken cancellationToken)
+    {
+        var room = await Mediator.Send(new FindByRoomIdQuery(id), cancellationToken);
+        var model = new UpdateRoomByOwnerCommand
+        {
+            Id = room.Id,
+            AddressLine = room.Address.AddressLine,
+            //Lat = room.Address.Location?.Y ?? 0,
+            //Lng = room.Address.Location?.X ?? 0,
+            AmenitieIds = room.Amenities.Select(x => x.Id).ToList(),
+            RequirementIds = room.Requirements.Select(x => x.Id).ToList(),
+            CategoryId = room.CategoryId,
+            Contact = room.Contact,
+            Description = room.Description,
+            Medias = room.Medias.Select(x => x.Url).ToList(),
+            Price = room.Price,
+            Title = room.Title,
+        };
+        return View(model);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> EditAsync(UpdateRoomByOwnerCommand command, CancellationToken cancellationToken)
+    {
+        await Mediator.Send(command);
+        return View("RoomUpdated");
+    }
     [HttpGet]
     [Route("[controller]/[action]/{slug}")]
     [Route("{lang}/[controller]/[action]/{slug}")]

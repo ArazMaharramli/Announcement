@@ -8,4 +8,6 @@ public class StaticPages
     public StaticPageModel RoomsSearch { get; set; }
     public StaticPageModel CreateRoom { get; set; }
     public StaticPageModel RoomCreated { get; set; }
+    public StaticPageModel UpdateRoom { get; set; }
+    public StaticPageModel RoomUpdated { get; set; }
 }

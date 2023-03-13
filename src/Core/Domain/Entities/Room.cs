@@ -4,124 +4,145 @@ using System.Linq;
 using Domain.Common;
 using Domain.Events;
 
-namespace Domain.Entities
+namespace Domain.Entities;
+
+public class Room : Entity
 {
-    public class Room : Entity
+    public string Title { get; set; }
+    public string Slug { get; set; }
+    public Meta Meta { get; set; }
+
+    public string Description { get; set; }
+
+    public int Price { get; set; }
+
+    public Address Address { get; set; }
+
+    public Contact Contact { get; set; }
+
+    public RoomStatus Status { get; set; }
+    public string AdminNotes { get; set; }
+
+    public string CategoryId { get; set; }
+    public Category Category { get; set; }
+
+    public string OwnerId { get; set; }
+    public Owner Owner { get; set; }
+
+    public ICollection<Amenitie> Amenities { get; set; }
+    public ICollection<Requirement> Requirements { get; set; }
+    public ICollection<Media> Medias { get; set; }
+
+    public Room()
     {
-        public string Title { get; set; }
-        public string Slug { get; set; }
-        public Meta Meta { get; set; }
+        Requirements = new HashSet<Requirement>();
+        Amenities = new HashSet<Amenitie>();
+        Medias = new HashSet<Media>();
+    }
 
-        public string Description { get; set; }
+    public Room(
+        string title,
+        string slug,
+        string description,
+        int price,
+        string address,
+        double lng,
+        double lat,
+        string contactPhone,
+        string contactName,
+        string contactEmail,
+        List<string> mediaUrls,
+        string metaKeywords,
+        string categoryId,
+        List<Amenitie> amenities,
+        List<Requirement> requirements) : this()
+    {
+        Title = title;
+        Slug = slug;
 
-        public int Price { get; set; }
+        Description = description;
+        Price = price;
 
-        public Address Address { get; set; }
+        Address = new Address(address, lng, lat);
 
-        public Contact Contact { get; set; }
-
-        public RoomStatus Status { get; set; }
-        public string AdminNotes { get; set; }
-
-        public string CategoryId { get; set; }
-        public Category Category { get; set; }
-
-        public string OwnerId { get; set; }
-        public Owner Owner { get; set; }
-
-        public ICollection<Amenitie> Amenities { get; set; }
-        public ICollection<Requirement> Requirements { get; set; }
-        public ICollection<Media> Medias { get; set; }
-
-        public Room()
+        Contact = new Contact
         {
-            Requirements = new HashSet<Requirement>();
-            Amenities = new HashSet<Amenitie>();
-            Medias = new HashSet<Media>();
-        }
+            Phone = contactPhone,
+            Name = contactName,
+            Email = contactEmail
+        };
 
-        public Room(
-            string title,
-            string slug,
-            string description,
-            int price,
-            string address,
-            double lng,
-            double lat,
-            string contactPhone,
-            string contactName,
-            string contactEmail,
-            List<string> mediaUrls,
-            string metaKeywords,
-            string categoryId,
-            List<Amenitie> amenities,
-            List<Requirement> requirements) : this()
+        AddMedias(mediaUrls);
+
+        Meta = new Meta
         {
-            Title = title;
-            Slug = slug;
+            Title = title,
+            Description = Description,
+            Keywords = metaKeywords
+        };
 
-            Description = description;
-            Price = price;
+        CategoryId = categoryId;
 
-            Address = new Address
-            {
-                AddressLine = address,
-                Location = new NetTopologySuite.Geometries.Point(new NetTopologySuite.Geometries.Coordinate(lng, lat)) { SRID = 4326 }
-            };
-            Contact = new Contact
-            {
-                Phone = contactPhone,
-                Name = contactName,
-                Email = contactEmail
-            };
+        Amenities = amenities;
+        Requirements = requirements;
 
-            Medias = mediaUrls.Select(x => new Media
-            {
-                Url = x,
-                AltTag = $"{Title} - image",
-            }).ToList();
+        Status = RoomStatus.PendingConfirmation;
 
-            Meta = new Meta
-            {
-                Title = title,
-                Description = Description,
-                Keywords = metaKeywords
-            };
+        AddRoomCreatedDomainEvent();
+    }
 
-            CategoryId = categoryId;
-
-            Amenities = amenities;
-            Requirements = requirements;
-
-            Status = RoomStatus.PendingConfirmation;
-
-            AddRoomCreatedDomainEvent();
-        }
-        public void Publish()
+    public void AddMedia(string mediaUrl)
+    {
+        Medias.Add(new Media
         {
-            _setStatus(RoomStatus.Active);
-        }
+            Url = mediaUrl,
+            AltTag = $"{Title} - image",
+        });
+    }
 
-        public void Decline(string note)
-        {
-            AdminNotes = note.Trim();
-            _setStatus(RoomStatus.Declined);
-        }
+    public void AddMedias(List<string> mediaUrls)
+    {
+        mediaUrls.ForEach(x => AddMedia(x));
+    }
 
-        public void Archieve()
-        {
-            _setStatus(RoomStatus.Archieved);
-        }
+    public void UpdateMedias(List<string> mediaUrls)
+    {
+        Medias = Medias.Where(x => mediaUrls.Contains(x.Url)).ToList();
 
-        private void _setStatus(RoomStatus status)
-        {
-            Status = status;
-        }
-        private void AddRoomCreatedDomainEvent()
-        {
-            var roomCreatedDomainEvent = new RoomCreatedDomainEvent(this);
+        mediaUrls.RemoveAll(x => !Medias.Any(z => z.Url == x));
+        mediaUrls.ForEach(x => AddMedia(x));
+    }
 
-            this.AddDomainEvent(roomCreatedDomainEvent);
-        }
+
+    public void Publish()
+    {
+        _setStatus(RoomStatus.Active);
+    }
+
+    public void Update()
+    {
+        _setStatus(RoomStatus.PendingConfirmation);
+    }
+
+    public void Decline(string note)
+    {
+        AdminNotes = note.Trim();
+        _setStatus(RoomStatus.Declined);
+    }
+
+    public void Archieve()
+    {
+        _setStatus(RoomStatus.Archieved);
+    }
+
+    private void _setStatus(RoomStatus status)
+    {
+        Status = status;
+    }
+    private void AddRoomCreatedDomainEvent()
+    {
+        var roomCreatedDomainEvent = new RoomCreatedDomainEvent(this);
+
+        this.AddDomainEvent(roomCreatedDomainEvent);
     }
 }

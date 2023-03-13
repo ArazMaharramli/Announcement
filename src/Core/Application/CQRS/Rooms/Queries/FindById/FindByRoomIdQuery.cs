@@ -18,6 +18,11 @@ public class FindByRoomIdQuery : IRequest<RoomDto>
 {
     public string Id { get; set; }
 
+    public FindByRoomIdQuery(string id)
+    {
+        Id = id;
+    }
+
     public class Handler : IRequestHandler<FindByRoomIdQuery, RoomDto>
     {
         private readonly IDbContext _dbContext;

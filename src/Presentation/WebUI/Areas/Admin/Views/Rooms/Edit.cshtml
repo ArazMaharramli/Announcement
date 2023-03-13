@@ -30,7 +30,7 @@
 }
 
 @section Scripts{
-    <script src="assets/plugins/custom/formrepeater/formrepeater.bundle.js"></script>
+    <script src="adminfiles/assets/plugins/custom/formrepeater/formrepeater.bundle.js"></script>
 
     <script async>
         var selectedamenities = [@Html.Raw(string.Join(',',Model.AmenitieIds.Select(x=>$"\"{x}\"").ToArray()))];
@@ -383,8 +383,8 @@
                     <div class="separator separator-content border-dark my-15"><span class="w-250px fw-bold">@Localizer["Address Details"]</span></div>
                     <!--end::separator-->
                     <div class="form-floating mb-7">
-                        <input class="form-control" asp-for="Address.AddressLine" />
-                        <label asp-for="Address.AddressLine"></label>
+                        <input class="form-control" asp-for="AddressLine" />
+                        <label asp-for="AddressLine"></label>
                     </div>
                     <!--begin::separator-->
                     <div class="separator separator-content border-dark my-15"><span class="w-250px fw-bold">@Localizer["Contact Details"]</span></div>

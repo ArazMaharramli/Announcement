@@ -41,6 +41,17 @@ public class AdditionalUserClaimsPrincipalFactory : UserClaimsPrincipalFactory<A
 
             identity.AddClaims(claims);
         }
+        else
+        {
+            var roles = await _userManager.GetRolesAsync(user);
+            var roleclaims = roles.SelectMany(x =>
+            {
+                var role = _roleManager.FindByNameAsync(x).Result;
+                return _roleManager.GetClaimsAsync(role).Result;
+            }).ToList();
+
+            identity.AddClaims(claims);
+        }
 
         return principal;
     }

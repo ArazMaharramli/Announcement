@@ -1,10 +1,9 @@
-﻿namespace Domain.Common
+﻿namespace Domain.Common;
+
+public enum RoomStatus
 {
-    public enum RoomStatus
-    {
-        PendingConfirmation,
-        Active,
-        Declined,
-        Archieved
-    }
+    PendingConfirmation,
+    Active,
+    Declined,
+    Archieved
 }

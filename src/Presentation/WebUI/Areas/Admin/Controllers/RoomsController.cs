@@ -65,11 +65,11 @@ namespace WebUI.Areas.Admin.Controllers
         [Authorize(Policy = SystemClaims.Rooms.Edit)]
         public async Task<IActionResult> EditAsync(string id, CancellationToken cancellationToken)
         {
-            var room = await Mediator.Send(new FindByRoomIdQuery { Id = id }, cancellationToken); ;
+            var room = await Mediator.Send(new FindByRoomIdQuery(id), cancellationToken);
             var model = new UpdateRoomCommand
             {
                 Title = room.Title,
-                Address = room.Address,
+                AddressLine = room.Address.AddressLine,
                 AmenitieIds = room.Amenities.Select(x => x.Id).ToList(),
                 RequirementIds = room.Requirements.Select(x => x.Id).ToList(),
                 CategoryId = room.CategoryId,

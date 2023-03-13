@@ -1,0 +1,308 @@
+﻿@model Application.CQRS.Rooms.Commands.UpdateByOwner.UpdateRoomByOwnerCommand
+
+@inject Application.Common.Models.ConfigModels.TenantInfo tenant
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
+
+@section Headers{
+    @Html.Raw(tenant.StaticPages.UpdateRoom.Headers is null ? "" :
+    string.Join("", tenant.StaticPages.UpdateRoom.Headers))
+}
+
+@section Styles{
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+
+    <style>
+        .iti {
+            width: 100%;
+            @*background-color: transparent;*@
+        }
+
+        .iti--separate-dial-code .iti__selected-flag {
+            background-color: transparent;
+        }
+    </style>
+}
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        const phoneInputField = document.querySelector("#phone");
+        const phoneInput = window.intlTelInput(phoneInputField, {
+            separateDialCode: true,
+            allowDropdown: true,
+            initialCountry: "az",
+            utilsScript:
+                "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+        });
+        $('#phone').on('keyup', function () {
+            if (phoneInput.isValidNumber()) {
+                $('#ContactPhone').val(phoneInput.getNumber());
+                document.querySelector('[data-valmsg-for="ContactPhone"]').innerHTML = "";
+            } else {
+                document.querySelector('[data-valmsg-for="ContactPhone"]').innerHTML = "@Localizer["Enter valid phone"]";
+            }
+        });
+            phoneInput.setNumber("@Html.Raw(Model.Contact.Phone)");
+    </script>
+
+
+    <script>
+        var selectedCategoryId = '@Model?.CategoryId';
+        var selectedAmenitieIds = @Html.Raw(Json.Serialize(Model?.AmenitieIds));
+        selectedAmenitieIds = selectedAmenitieIds ? selectedAmenitieIds : [];
+        var selectedRequirementIds = @Html.Raw(Json.Serialize(Model?.RequirementIds));
+        selectedRequirementIds = selectedRequirementIds ? selectedRequirementIds : [];
+
+        $('.select2').select2({
+            dropdownParent: null
+        });
+
+        const generateMegaOption = (imgUrl, title, id, isChecked, type, name) => {
+            var checked = isChecked ? 'checked' : '';
+            return `<label class="option">
+                        <span class="option-label">
+                            <span class="option-body">
+                                <img src="${imgUrl}" class="h-50px w-50px" />
+                                <span class="text-dark">${title}</span>
+                            </span>
+                        </span>
+
+                        <span class="option-control">
+                            <span class="${type}">
+                                <input type="${type}" name="${name}" value="${id}" ${checked} />
+                                <span></span>
+                            </span>
+                        </span>
+                    </label>`;
+        };
+
+        $.ajax({
+            url: "/rooms/categories",
+            type: 'GET',
+            success: function (res) {
+                res.forEach(function (data, index, arr) {
+                    var newOption = new Option(data.name, data.id, false, data.id==selectedCategoryId);
+                    $('#CategoryId').append(newOption).trigger('change');
+                });
+            }
+        });
+        $.ajax({
+            url: "/rooms/amenities",
+            type: 'GET',
+            success: function (res) {
+                res.forEach(function (data, index, arr) {
+                    //var newOption = new Option(data.name, data.id, false, selectedAmenitieIds.includes(data.id));
+                    //$('#AmenitieIds').append(newOption).trigger('change');
+                    var newOption = generateMegaOption(data.icon, data.name, data.id, selectedAmenitieIds.includes(data.id), 'checkbox', 'AmenitieIds');
+                    $("#amenitiesContainer").append(`<div class="col-lg-4">${newOption}</div>`);
+                });
+            }
+        });
+        $.ajax({
+            url: "/rooms/requirements",
+            type: 'GET',
+            success: function (res) {
+                res.forEach(function (data, index, arr) {
+                    var newOption = generateMegaOption(data.icon, data.name, data.id, selectedRequirementIds.includes(data.id), 'checkbox', 'RequirementIds');
+                    $("#requirementsContainer").append(`<div class="col-lg-4">${newOption}</div>`);
+                });
+            }
+        });</script>
+
+    <script> var filePreview = $('.filePreview').clone();
+        $('.filePreview').remove();
+
+        const addMediaToContainer=(url)=>{
+            var item = filePreview.clone();
+            item.find('img').attr('src', url);
+            item.find('input').attr('value', url);
+            $('#mediasContainer').append(item);
+        }
+
+        $('#mediafileinput').on('change', function () {
+            var files = $('#mediafileinput').prop('files');
+
+            KTApp.blockPage({
+                overlayColor: '#000000',
+                state: 'primary',
+                message: '@Localizer["Uploading files. Please wait."]'
+            });
+
+            for (var i = 0; i != files.length; i++) {
+                let formData = new FormData();
+                formData.append("files", files[i]);
+
+                $.ajax({
+                    url: "/files/upload",
+                    data: formData,
+                    async: false,
+                    processData: false,
+                    contentType: false,
+                    type: "POST",
+                    success: function (res) {
+                        addMediaToContainer(res.url);
+                    }
+                });
+            }
+            KTApp.unblockPage();
+        });
+
+        $('[data-delete-uploaded-file]').on('click', function () {
+            $(this).parents('.filePreview').parent().remove();
+        });</script>
+}
+
+<div class="d-flex flex-column-fluid align-items-center mb-12 mb-lg-0">
+    <div class="container pt-15">
+        <div class="card card-custom">
+            <form method="post">
+                <div class="card-header border-bottom-0 pb-2">
+                    <h3 class="card-title font-size-h1 text-dark font-weight-bolder mr-3 mb-0">
+                        @Localizer["Update announcement"]
+                    </h3>
+                </div>
+
+                <div class="card-body pt-0">
+                    <!--Begin:: Tab Nav Bar-->
+                    <ul class="nav nav-tabs nav-tabs-line mb-5 fs-6  nav-stretch">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" href="#kt_tab_pane_details">@Localizer["Details"]</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#kt_tab_pane_medias">@Localizer["Medias"]</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#kt_tab_pane_contactinfo">@Localizer["Contact info"]</a>
+                        </li>
+                    </ul>
+                    <!--End:: Tab Nav Bar-->
+                    <!--Begin:: Tab: Details-->
+                    <div class="tab-content" id="myTabContent">
+                        <div asp-validation-summary="All"></div>
+                        <div class="tab-pane fade show active" id="kt_tab_pane_details" role="tabpanel">
+                            <div class="form-group">
+                                <label class="required" asp-for="CategoryId"></label>
+                                <select asp-for="CategoryId" class="form-control select2" placeholder="@Localizer["Select the category"]"></select>
+                                <span class="form-text text-danger" asp-validation-for="Title"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="required" asp-for="Title"></label>
+                                <input asp-for="Title" class="form-control" placeholder="@Localizer["Enter the title"]" />
+                                <span class="form-text text-danger" asp-validation-for="Title"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="required" asp-for="Description"></label>
+                                <textarea asp-for="Description" class="form-control" placeholder="@Localizer["Enter the description"]"></textarea>
+                                <span class="form-text text-danger" asp-validation-for="Description"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="required" asp-for="Price"></label>
+                                <input asp-for="Price" class="form-control" placeholder="@Localizer["Enter the price"]" />
+                                <span class="form-text text-danger" asp-validation-for="Price"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="required" asp-for="AmenitieIds"></label>
+                                <span class="form-text text-danger" asp-validation-for="AmenitieIds"></span>
+                                <div class="row" id="amenitiesContainer">
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="required" asp-for="RequirementIds"></label>
+                                <span class="form-text text-danger" asp-validation-for="RequirementIds"></span>
+                                <div class="row" id="requirementsContainer">
+
+                                </div>
+                                @*<select asp-for="RequirementIds" multiple class="form-control select2"></select>*@
+                            </div>
+                        </div>
+                        <div class="tab-pane fade " id="kt_tab_pane_medias" role="tabpanel">
+                            <h3>@Localizer["Import medias"]</h3>
+                            <div class="row" id="mediasContainer">
+                                <div class="col-lg-4 col-md-6 filePreview mt-4">
+                                    <div class="card card-custom overlay">
+                                        <div class="card-body p-0">
+                                            <div class="overlay-wrapper">
+                                                <img src="" class="h-300px w-100 rounded" style="object-fit:cover;" />
+                                                <input hidden name="Medias" type="checkbox" checked />
+                                            </div>
+                                            <div class="overlay-layer">
+                                                <button type="button" class="btn font-weight-bold btn-light-primary btn-shadow ml-2" data-delete-uploaded-file>
+                                                    <i class="flaticon-delete"></i>@Localizer["Delete"]
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @foreach (var item in Model.Medias)
+                                {
+                                    <div class="col-lg-4 col-md-6 mt-4">
+                                        <div class="card card-custom overlay">
+                                            <div class="card-body p-0">
+                                                <div class="overlay-wrapper">
+                                                    <img src="@item" class="h-300px w-100 rounded" style="object-fit:cover;" />
+                                                    <input hidden name="Medias" type="checkbox" value="@item" checked />
+                                                </div>
+                                                <div class="overlay-layer">
+                                                    <button type="button" class="btn font-weight-bold btn-light-primary btn-shadow ml-2" data-delete-uploaded-file>
+                                                        <i class="flaticon-delete"></i>@Localizer["Delete"]
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <!--end::Input-->
+                            <div class="form-group mt-5">
+                                <label class="btn btn-light-primary" id="formFileMultiple">
+                                    <input type="file" style="display:none;" id="mediafileinput" multiple>
+                                    <i class="la la-plus"></i>@Localizer["Add media files"]
+                                </label>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade " id="kt_tab_pane_contactinfo" role="tabpanel">
+                            <div class="form-group">
+                                <label class="required" asp-for="Contact.Name"></label>
+                                <input asp-for="Contact.Name" class="form-control" />
+                                <span class="form-text text-danger" asp-validation-for="Contact.Name"></span>
+                            </div>
+                            <!--end::Input-->
+                            <!--begin::Input-->
+                            <div class="form-group">
+                                <label class="required" asp-for="Contact.Phone"></label>
+                                <input id="phone" class="form-control" />
+                                <input hidden asp-for="Contact.Phone" />
+                                <span class="form-text text-danger" asp-validation-for="Contact.Phone"></span>
+                            </div>
+                            <!--end::Input-->
+                            <!--begin::Input-->
+                            <div class="form-group">
+                                <label class="required" asp-for="Contact.Email"></label>
+                                <input asp-for="Contact.Email" class="form-control" />
+                                <span class="form-text text-danger" asp-validation-for="Contact.Email"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <input hidden asp-for="Id" />
+                <input hidden asp-for="AddressLine" />
+                @*<input hidden asp-for="Lng" />
+                    <input hidden asp-for="Lat" />*@
+
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-lg-3"></div>
+                        <div class="col-lg-6">
+                            <button type="submit" class="btn btn-success mr-2">Submit</button>
+                            <button type="reset" class="btn btn-secondary">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
