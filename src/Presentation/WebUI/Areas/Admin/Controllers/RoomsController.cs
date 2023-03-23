@@ -17,106 +17,105 @@ using WebUI.Controllers;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace WebUI.Areas.Admin.Controllers
+namespace WebUI.Areas.Admin.Controllers;
+
+[Area("Admin")]
+public class RoomsController : BaseController
 {
-    [Area("Admin")]
-    public class RoomsController : BaseController
+    private readonly IStringLocalizer<RoomsController> _localizer;
+
+    public RoomsController(IStringLocalizer<RoomsController> localizer)
     {
-        private readonly IStringLocalizer<RoomsController> _localizer;
+        _localizer = localizer;
+    }
 
-        public RoomsController(IStringLocalizer<RoomsController> localizer)
+    [HttpPost]
+    [Authorize(Policy = SystemClaims.Rooms.Show)]
+    public async Task<IActionResult> DatatableAsync(bool deleted = false)
+    {
+        var start = Request.Form["start"].FirstOrDefault();
+        var length = Request.Form["length"].FirstOrDefault();
+        var sortColumnIndex = Request.Form["order[0][column]"].FirstOrDefault();
+        var sortColumn = Request.Form[$"columns[{sortColumnIndex}][name]"].FirstOrDefault();
+        var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+        var searchValue = Request.Form["search[value]"].FirstOrDefault();
+        int pageSize = string.IsNullOrEmpty(length) ? 10 : Convert.ToInt32(length);
+        int skip = string.IsNullOrEmpty(start) ? 0 : Convert.ToInt32(start);
+
+        var query = new SearchRoomsQuery
         {
-            _localizer = localizer;
-        }
+            Deleted = deleted,
+            PageSize = pageSize,
+            SearchValue = searchValue,
+            Page = skip / pageSize + 1,
+            SortColumn = sortColumn,
+            SortColumnDirection = sortColumnDirection
+        };
+        var resp = await Mediator.Send(query);
+        return Ok(resp);
+    }
 
-        [HttpPost]
-        [Authorize(Policy = SystemClaims.Rooms.Show)]
-        public async Task<IActionResult> DatatableAsync(bool deleted = false)
+    [Authorize(Policy = SystemClaims.Rooms.Show)]
+    public IActionResult Index(bool deleted = false)
+    {
+        ViewBag.Deleted = deleted;
+        return View();
+    }
+
+    [Authorize(Policy = SystemClaims.Rooms.Edit)]
+    public async Task<IActionResult> EditAsync(string id, CancellationToken cancellationToken)
+    {
+        var room = await Mediator.Send(new FindByRoomIdQuery(id), cancellationToken);
+        var model = new UpdateRoomCommand
         {
-            var start = Request.Form["start"].FirstOrDefault();
-            var length = Request.Form["length"].FirstOrDefault();
-            var sortColumnIndex = Request.Form["order[0][column]"].FirstOrDefault();
-            var sortColumn = Request.Form[$"columns[{sortColumnIndex}][name]"].FirstOrDefault();
-            var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
-            var searchValue = Request.Form["search[value]"].FirstOrDefault();
-            int pageSize = string.IsNullOrEmpty(length) ? 10 : Convert.ToInt32(length);
-            int skip = string.IsNullOrEmpty(start) ? 0 : Convert.ToInt32(start);
+            Title = room.Title,
+            AddressLine = room.Address.AddressLine,
+            AmenitieIds = room.Amenities.Select(x => x.Id).ToList(),
+            RequirementIds = room.Requirements.Select(x => x.Id).ToList(),
+            CategoryId = room.CategoryId,
+            Contact = room.Contact,
+            Description = room.Description,
+            Id = room.Id,
+            Medias = room.Medias,
+            Meta = room.Meta,
+            Price = room.Price,
+            Slug = room.Slug,
+            Status = room.Status
+        };
+        return View(model);
+    }
+    [HttpPost]
+    [Authorize(Policy = SystemClaims.Rooms.Edit)]
+    public async Task<IActionResult> EditAsync(UpdateRoomCommand command, CancellationToken cancellationToken)
+    {
+        await Mediator.Send(command, cancellationToken);
+        return Ok();
+    }
+    [HttpPost]
+    [Authorize(Policy = SystemClaims.Rooms.Delete)]
+    public async Task<IActionResult> Delete([FromBody] DeleteRoomsCommand command)
+    {
+        var resp = await Mediator.Send(command);
 
-            var query = new SearchRoomsQuery
-            {
-                Deleted = deleted,
-                PageSize = pageSize,
-                SearchValue = searchValue,
-                Page = skip / pageSize + 1,
-                SortColumn = sortColumn,
-                SortColumnDirection = sortColumnDirection
-            };
-            var resp = await Mediator.Send(query);
-            return Ok(resp);
-        }
+        return Ok();
+    }
 
-        [Authorize(Policy = SystemClaims.Rooms.Show)]
-        public IActionResult Index(bool deleted = false)
-        {
-            ViewBag.Deleted = deleted;
-            return View();
-        }
+    [HttpPost]
+    [Authorize(Policy = SystemClaims.Rooms.Approve)]
+    public async Task<IActionResult> Approve([FromBody] PublishRoomCommand command)
+    {
+        var resp = await Mediator.Send(command);
 
-        [Authorize(Policy = SystemClaims.Rooms.Edit)]
-        public async Task<IActionResult> EditAsync(string id, CancellationToken cancellationToken)
-        {
-            var room = await Mediator.Send(new FindByRoomIdQuery(id), cancellationToken);
-            var model = new UpdateRoomCommand
-            {
-                Title = room.Title,
-                AddressLine = room.Address.AddressLine,
-                AmenitieIds = room.Amenities.Select(x => x.Id).ToList(),
-                RequirementIds = room.Requirements.Select(x => x.Id).ToList(),
-                CategoryId = room.CategoryId,
-                Contact = room.Contact,
-                Description = room.Description,
-                Id = room.Id,
-                Medias = room.Medias,
-                Meta = room.Meta,
-                Price = room.Price,
-                Slug = room.Slug,
-                Status = room.Status
-            };
-            return View(model);
-        }
-        [HttpPost]
-        [Authorize(Policy = SystemClaims.Rooms.Edit)]
-        public async Task<IActionResult> EditAsync(UpdateRoomCommand command, CancellationToken cancellationToken)
-        {
-            await Mediator.Send(command, cancellationToken);
-            return Ok();
-        }
-        [HttpPost]
-        [Authorize(Policy = SystemClaims.Rooms.Delete)]
-        public async Task<IActionResult> Delete([FromBody] DeleteRoomsCommand command)
-        {
-            var resp = await Mediator.Send(command);
+        return Ok();
+    }
 
-            return Ok();
-        }
+    [HttpPost]
+    [Authorize(Policy = SystemClaims.Rooms.Decline)]
+    public async Task<IActionResult> Decline([FromBody] DeclineRoomCommand command)
+    {
+        var resp = await Mediator.Send(command);
 
-        [HttpPost]
-        [Authorize(Policy = SystemClaims.Rooms.Approve)]
-        public async Task<IActionResult> Approve([FromBody] PublishRoomCommand command)
-        {
-            var resp = await Mediator.Send(command);
-
-            return Ok();
-        }
-
-        [HttpPost]
-        [Authorize(Policy = SystemClaims.Rooms.Decline)]
-        public async Task<IActionResult> Decline([FromBody] DeclineRoomCommand command)
-        {
-            var resp = await Mediator.Send(command);
-
-            return Ok();
-        }
+        return Ok();
     }
 }
 

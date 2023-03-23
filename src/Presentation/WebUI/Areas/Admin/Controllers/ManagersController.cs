@@ -27,7 +27,7 @@ namespace WebUI.Areas.Admin.Controllers
             _mediator = mediator;
         }
 
-        //[Authorize(Policy = SystemClaims.Managers.Show)]
+        [Authorize(Policy = SystemClaims.Managers.Show)]
         public IActionResult Index()
         {
             return View();
@@ -38,7 +38,7 @@ namespace WebUI.Areas.Admin.Controllers
             return View();
         }
 
-        //[Authorize(Policy = SystemClaims.Managers.Show)]
+        [Authorize(Policy = SystemClaims.Managers.Show)]
         public async Task<IActionResult> DatatableAsync(CancellationToken cancellationToken, bool deleted = false)
         {
             //var searchLang = Request.Form["query[language]"].FirstOrDefault();
@@ -63,14 +63,14 @@ namespace WebUI.Areas.Admin.Controllers
             return Ok(await _mediator.Send(query, cancellationToken));
         }
 
-        //[Authorize(Policy = SystemClaims.Managers.Create)]
+        [Authorize(Policy = SystemClaims.Managers.Create)]
         public IActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
-        //[Authorize(Policy = SystemClaims.Managers.Create)]
+        [Authorize(Policy = SystemClaims.Managers.Create)]
         public async Task<IActionResult> Create(CreateManagerCommand command)
         {
             var res = await _mediator.Send(command);
@@ -78,7 +78,7 @@ namespace WebUI.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        //[Authorize(Policy = SystemClaims.Managers.Edit)]
+        [Authorize(Policy = SystemClaims.Managers.Edit)]
         public async Task<IActionResult> EditAsync(string id, CancellationToken cancellationToken)
         {
             var query = new FindByManagerIdQuery
@@ -99,7 +99,7 @@ namespace WebUI.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Policy = SystemClaims.Managers.Edit)]
+        [Authorize(Policy = SystemClaims.Managers.Edit)]
         public async Task<IActionResult> EditAsync(UpdateManagerCommand command, CancellationToken cancellationToken)
         {
             var resp = await _mediator.Send(command, cancellationToken);
@@ -107,7 +107,7 @@ namespace WebUI.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        //[Authorize(Policy = SystemClaims.Managers.Edit)]
+        [Authorize(Policy = SystemClaims.Managers.EditPermissions)]
         public async Task<IActionResult> EditPermissionsAsync(string id, CancellationToken cancellationToken)
         {
             var query = new FindByManagerIdQuery
@@ -126,7 +126,7 @@ namespace WebUI.Areas.Admin.Controllers
             return View(model);
         }
         [HttpPost]
-        //[Authorize(Policy = SystemClaims.Managers.Edit)]
+        [Authorize(Policy = SystemClaims.Managers.EditPermissions)]
         public async Task<IActionResult> EditPermissionsAsync(UpdateManagerRolesAndClaimsCommand command, CancellationToken cancellationToken)
         {
             var resp = await _mediator.Send(command, cancellationToken);
@@ -136,7 +136,7 @@ namespace WebUI.Areas.Admin.Controllers
 
 
         [HttpPost]
-        //[Authorize(Policy = SystemClaims.Managers.Delete)]
+        [Authorize(Policy = SystemClaims.Managers.Delete)]
         public async Task<IActionResult> DeleteAsync([FromBody] DeleteManagersCommand command, CancellationToken cancellationToken)
         {
             var resp = await _mediator.Send(command, cancellationToken);
@@ -144,7 +144,7 @@ namespace WebUI.Areas.Admin.Controllers
             return Ok();
         }
         [HttpPost]
-        //[Authorize(Policy = SystemClaims.Managers.Recover)]
+        [Authorize(Policy = SystemClaims.Managers.Recover)]
         public async Task<IActionResult> Recover([FromBody] RecoverManagersCommand command, CancellationToken cancellationToken)
         {
             var resp = await _mediator.Send(command, cancellationToken);

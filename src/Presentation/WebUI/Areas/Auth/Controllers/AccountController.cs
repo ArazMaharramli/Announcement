@@ -35,17 +35,17 @@ namespace WebUI.Controllers
         }
 
         // GET: /<controller>/
-        public IActionResult Login()
+        public IActionResult Login(string returnUrl)
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> LoginAsync(FindUserByEmailQuery model, CancellationToken cancellationToken)
+        public async Task<IActionResult> LoginAsync(FindUserByEmailQuery model, string returnUrl, CancellationToken cancellationToken)
         {
             var res = await _mediatr.Send(model, cancellationToken);
             await _mediatr.Publish(new SendEmailConfirmationCodeCommand { UserId = res.Id }, cancellationToken);
-            return RedirectToAction("ConfirmEmail", "Account", new { id = res.Id });
+            return RedirectToAction("ConfirmEmail", "Account", new { id = res.Id, returnUrl = returnUrl });
         }
 
         public IActionResult Register()
@@ -77,7 +77,7 @@ namespace WebUI.Controllers
             return View();
         }
 
-        public IActionResult ConfirmEmail(string id)
+        public IActionResult ConfirmEmail(string id, string returnUrl)
         {
             var model = new ConfirmEmailCommand
             {
@@ -87,16 +87,20 @@ namespace WebUI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ConfirmEmailAsync(ConfirmEmailCommand command)
+        public async Task<IActionResult> ConfirmEmailAsync(ConfirmEmailCommand command, string returnUrl)
         {
             var response = await _mediatr.Send(command);
             if (response.Succeeded)
             {
                 await _signInManager.SignInAsync(await _userManager.FindByIdAsync(command.UserId), true);
-                return RedirectToAction("Index", "Rooms", new
+                if (string.IsNullOrEmpty(returnUrl))
                 {
-                    Area = ""
-                });
+                    return RedirectToAction("Index", "Rooms", new
+                    {
+                        Area = ""
+                    });
+                }
+                return LocalRedirect(returnUrl);
             }
             foreach (var error in response.Errors)
             {

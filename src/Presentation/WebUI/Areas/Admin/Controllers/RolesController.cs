@@ -37,6 +37,7 @@ public class RolesController : Controller
         return View(model);
     }
 
+    [Authorize(Policy = SystemClaims.Roles.Show)]
     public async Task<IActionResult> Get()
     {
         var roles = await _mediator.Send(new GetAllRolesQuery());
@@ -49,6 +50,7 @@ public class RolesController : Controller
         return Ok(model);
     }
 
+    [Authorize(Policy = SystemClaims.Roles.Show)]
     public async Task<IActionResult> GetRole([FromRoute] string id)
     {
         var roles = await _mediator.Send(new FindByRoleNameOrIdQuery { Id = id });
